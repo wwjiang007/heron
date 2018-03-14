@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron Tracker"><meta property="og:url" content="/docs/operators/heron-tracker/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Heron Tracker</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron Tracker"><meta property="og:url" content="/docs/operators/heron-tracker/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Heron Tracker</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -15,13 +15,15 @@ More on the role of the Tracker can be found
 <p>Heron uses <a href="http://bazel.io/">bazel</a> for compiling.
 <a href="../../developers/compiling/compiling">Compiling</a> describes how to setup bazel
 for heron.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Build heron-tracker
-</span><span class="c1"></span>$ bazel build heron/tools/tracker/src/python:heron-tracker
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># Build heron-tracker</span>
+$ bazel build heron/tools/tracker/src/python:heron-tracker
 
-<span class="c1"># The location of heron-tracker pex executable is
-</span><span class="c1"># bazel-bin/heron/tools/tracker/src/python/heron-tracker
-</span><span class="c1"># To run using default options:
-</span><span class="c1"></span>$ ./bazel-bin/heron/tools/tracker/src/python/heron-tracker</code></pre></div>
+<span class="c1"># The location of heron-tracker pex executable is</span>
+<span class="c1"># bazel-bin/heron/tools/tracker/src/python/heron-tracker</span>
+<span class="c1"># To run using default options:</span>
+$ ./bazel-bin/heron/tools/tracker/src/python/heron-tracker
+</code></pre></div>
+
 <p><code>heron-tracker</code> is a self executable
 <a href="https://pex.readthedocs.io/en/latest/whatispex.html">pex</a> archive.</p>
 
@@ -34,30 +36,32 @@ for heron.</p>
 <p>This is a list of locations where topology writes its states. An example of
 <a href="../deployment/statemanagers/zookeeper">zookeeper state manager</a> and
 <a href="../deployment/statemanagers/localfs">local file state manager</a> look like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">## Contains the sources where the states are stored.</span><span class="w">
-</span><span class="w"></span><span class="c"># Each source has these attributes:</span><span class="w">
-</span><span class="w"></span><span class="c"># 1. type - type of state manager (zookeeper or file, etc.)</span><span class="w">
-</span><span class="w"></span><span class="c"># 2. name - name to be used for this source</span><span class="w">
-</span><span class="w"></span><span class="c"># 3. hostport - only used to connect to zk, must be of the form &#39;host:port&#39;</span><span class="w">
-</span><span class="w"></span><span class="c"># 4. rootpath - where all the states are stored</span><span class="w">
-</span><span class="w"></span><span class="c"># 5. tunnelhost - if ssh tunneling needs to be established to connect to it</span><span class="w">
-</span><span class="w"></span>statemgrs<span class="p">:</span><span class="w">
-</span><span class="w">  </span>-<span class="w">
-</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span><span class="s2">&#34;file&#34;</span><span class="w">
-</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;local&#34;</span><span class="w">
-</span><span class="w">    </span>rootpath<span class="p">:</span><span class="w"> </span><span class="s2">&#34;~/.herondata/repository/state/local&#34;</span><span class="w">
-</span><span class="w">    </span>tunnelhost<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost&#34;</span><span class="w">
-</span><span class="w"></span><span class="c">#</span><span class="w">
-</span><span class="w"></span><span class="c"># To use &#39;localzk&#39;, launch a zookeeper server locally</span><span class="w">
-</span><span class="w"></span><span class="c"># and create the following path:</span><span class="w">
-</span><span class="w"></span><span class="c">#  *. /heron/topologies</span><span class="w">
-</span><span class="w"></span><span class="c">#</span><span class="w">
-</span><span class="w"></span><span class="c">#  -</span><span class="w">
-</span><span class="w"></span><span class="c">#    type: &#34;zookeeper&#34;</span><span class="w">
-</span><span class="w"></span><span class="c">#    name: &#34;localzk&#34;</span><span class="w">
-</span><span class="w"></span><span class="c">#    hostport: &#34;localhost:2181&#34;</span><span class="w">
-</span><span class="w"></span><span class="c">#    rootpath: &#34;/heron&#34;</span><span class="w">
-</span><span class="w"></span><span class="c">#    tunnelhost: &#34;localhost&#34; -</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1">## Contains the sources where the states are stored.</span>
+<span class="c1"># Each source has these attributes:</span>
+<span class="c1"># 1. type - type of state manager (zookeeper or file, etc.)</span>
+<span class="c1"># 2. name - name to be used for this source</span>
+<span class="c1"># 3. hostport - only used to connect to zk, must be of the form &#39;host:port&#39;</span>
+<span class="c1"># 4. rootpath - where all the states are stored</span>
+<span class="c1"># 5. tunnelhost - if ssh tunneling needs to be established to connect to it</span>
+<span class="l l-Scalar l-Scalar-Plain">statemgrs</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&quot;file&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;local&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">rootpath</span><span class="p p-Indicator">:</span> <span class="s">&quot;~/.herondata/repository/state/local&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">tunnelhost</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># To use &#39;localzk&#39;, launch a zookeeper server locally</span>
+<span class="c1"># and create the following path:</span>
+<span class="c1">#  *. /heron/topologies</span>
+<span class="c1">#</span>
+<span class="c1">#  -</span>
+<span class="c1">#    type: &quot;zookeeper&quot;</span>
+<span class="c1">#    name: &quot;localzk&quot;</span>
+<span class="c1">#    hostport: &quot;localhost:2181&quot;</span>
+<span class="c1">#    rootpath: &quot;/heron&quot;</span>
+<span class="c1">#    tunnelhost: &quot;localhost&quot; -</span>
+</code></pre></div>
+
 <p>Topologies from all the state managers would be read and can be queried from
 Tracker.</p>
 
@@ -73,20 +77,22 @@ will be filled appropriately. This parameter can be used to link metrics
 dashboards with topology UI page.</p>
 
 <p><img src="https://twitter.github.io/heron/img/viz-link.png" alt="Viz Link" /></p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># The URL that points to a topology&#39;s metrics dashboard.</span><span class="w">
-</span><span class="w"></span><span class="c"># This value can use following parameters to create a valid</span><span class="w">
-</span><span class="w"></span><span class="c"># URL based on the topology. All parameters are self-explanatory.</span><span class="w">
-</span><span class="w"></span><span class="c"># These are found in the execution state of the topology.</span><span class="w">
-</span><span class="w"></span><span class="c">#</span><span class="w">
-</span><span class="w"></span><span class="c">#   ${CLUSTER}</span><span class="w">
-</span><span class="w"></span><span class="c">#   ${ENVIRON}</span><span class="w">
-</span><span class="w"></span><span class="c">#   ${TOPOLOGY}</span><span class="w">
-</span><span class="w"></span><span class="c">#   ${ROLE}</span><span class="w">
-</span><span class="w"></span><span class="c">#   ${USER}</span><span class="w">
-</span><span class="w"></span><span class="c">#</span><span class="w">
-</span><span class="w"></span><span class="c"># This is a sample, and should be changed to point to corresponding dashboard.</span><span class="w">
-</span><span class="w"></span><span class="c">#</span><span class="w">
-</span><span class="w"></span><span class="c"># viz.url.format: &#34;http://localhost/${CLUSTER}/${ENVIRON}/${TOPOLOGY}/${ROLE}/${USER}&#34;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># The URL that points to a topology&#39;s metrics dashboard.</span>
+<span class="c1"># This value can use following parameters to create a valid</span>
+<span class="c1"># URL based on the topology. All parameters are self-explanatory.</span>
+<span class="c1"># These are found in the execution state of the topology.</span>
+<span class="c1">#</span>
+<span class="c1">#   ${CLUSTER}</span>
+<span class="c1">#   ${ENVIRON}</span>
+<span class="c1">#   ${TOPOLOGY}</span>
+<span class="c1">#   ${ROLE}</span>
+<span class="c1">#   ${USER}</span>
+<span class="c1">#</span>
+<span class="c1"># This is a sample, and should be changed to point to corresponding dashboard.</span>
+<span class="c1">#</span>
+<span class="c1"># viz.url.format: &quot;http://localhost/${CLUSTER}/${ENVIRON}/${TOPOLOGY}/${ROLE}/${USER}&quot;</span>
+</code></pre></div>
+
 <h3 id="heron-tracker-args">Heron Tracker Args</h3>
 
 <ul>
@@ -94,9 +100,11 @@ dashboards with topology UI page.</p>
 <li><code>--config-file</code> - The location of the config file for tracker. Default config
 file is <code>~/.herontools/conf/heron_tracker.yaml</code>.</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-tracker
-<span class="c1"># is equivalent to
-</span><span class="c1"></span>$ heron-ui --port<span class="o">=</span><span class="m">8888</span> --config-file<span class="o">=</span>~/.herontools/conf/heron_tracker.yaml</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-tracker
+<span class="c1"># is equivalent to</span>
+$ heron-ui --port<span class="o">=</span><span class="m">8888</span> --config-file<span class="o">=</span>~/.herontools/conf/heron_tracker.yaml
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

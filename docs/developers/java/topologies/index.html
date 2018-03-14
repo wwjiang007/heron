@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Writing and Launching Topologies in Java"><meta property="og:url" content="/docs/developers/java/topologies/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Writing and Launching Topologies in Java</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Writing and Launching Topologies in Java"><meta property="og:url" content="/docs/developers/java/topologies/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Writing and Launching Topologies in Java</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -31,15 +31,17 @@ via <a href="http://search.maven.org/">Maven Central</a>.</p>
 
 <p>To install the <code>heron-api</code> library using Maven, add this to the <code>dependencies</code> block of your <code>pom.xml</code>
 configuration file:</p>
-<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>com.twitter.heron<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>heron-api<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;version&gt;</span>0.17.5<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span></code></pre></div>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+
 <h4 id="compiling-a-jar-with-dependencies">Compiling a JAR with dependencies</h4>
 
 <p>In order to run a Java topology in a Heron cluster, you&rsquo;ll need to package your topology as a &ldquo;fat&rdquo; JAR with dependencies included. You can use the <a href="https://maven.apache.org/plugins/maven-assembly-plugin/usage.html">Maven Assembly Plugin</a> to generate JARs with dependencies. To install the plugin and add a Maven goal for a single JAR, add this to the <code>plugins</code> block in your <code>pom.xml</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;plugin&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>maven-assembly-plugin<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;configuration&gt;</span>
         <span class="nt">&lt;descriptorRefs&gt;</span>
@@ -60,15 +62,21 @@ configuration file:</p>
             <span class="nt">&lt;/goals&gt;</span>
         <span class="nt">&lt;/execution&gt;</span>
     <span class="nt">&lt;/executions&gt;</span>
-<span class="nt">&lt;/plugin&gt;</span></code></pre></div>
+<span class="nt">&lt;/plugin&gt;</span>
+</code></pre></div>
+
 <p>Once your <code>pom.xml</code> is properly set up, you can compile the JAR with dependencies using this command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ mvn assembly:assembly</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ mvn assembly:assembly
+</code></pre></div>
+
 <p>By default, this will add a JAR in your project&rsquo;s <code>target</code> folder with the name <code>PROJECT-NAME-VERSION-jar-with-dependencies.jar</code>. Here&rsquo;s an example topology submission command using a compiled JAR:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ mvn assembly:assembly
-$ heron submit <span class="nb">local</span> <span class="se">\
-</span><span class="se"></span>  target/my-project-1.2.3-jar-with-dependencies.jar <span class="se">\
-</span><span class="se"></span>  com.example.Main <span class="se">\
-</span><span class="se"></span>  MyTopology arg1 arg2</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ mvn assembly:assembly
+$ heron submit <span class="nb">local</span> <span class="se">\</span>
+  target/my-project-1.2.3-jar-with-dependencies.jar <span class="se">\</span>
+  com.example.Main <span class="se">\</span>
+  MyTopology arg1 arg2
+</code></pre></div>
+
 <h3 id="writing-your-topology-logic">Writing your topology logic</h3>
 
 <p>Heron <a href="../../../concepts/topologies">topologies</a> are processing graphs consisting
@@ -107,9 +115,11 @@ of <a href="../spouts">spouts</a> that ingest data and <a href="../bolts">bolts<
 </table>
 
 <p>Here&rsquo;s a simple example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">TopologyBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TopologyBuilder</span><span class="o">();</span>
-<span class="n">builder</span><span class="o">.</span><span class="na">setSpout</span><span class="o">(</span><span class="s">&#34;word&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">TestWordSpout</span><span class="o">(),</span> <span class="n">5</span><span class="o">);</span>
-<span class="n">builder</span><span class="o">.</span><span class="na">setBolt</span><span class="o">(</span><span class="s">&#34;exclaim&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">ExclamationBolt</span><span class="o">(),</span> <span class="n">4</span><span class="o">);</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">TopologyBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TopologyBuilder</span><span class="o">();</span>
+<span class="n">builder</span><span class="o">.</span><span class="na">setSpout</span><span class="o">(</span><span class="s">&quot;word&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">TestWordSpout</span><span class="o">(),</span> <span class="mi">5</span><span class="o">);</span>
+<span class="n">builder</span><span class="o">.</span><span class="na">setBolt</span><span class="o">(</span><span class="s">&quot;exclaim&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">ExclamationBolt</span><span class="o">(),</span> <span class="mi">4</span><span class="o">);</span>
+</code></pre></div>
+
 <p>In addition to the component specification, you also need to specify how tuples
 will be routed between your topology components. There are a few different grouping
 strategies available:</p>
@@ -157,18 +167,24 @@ strategies available:</p>
 
 <p>The following snippet is a simple example of specifying shuffle grouping
 between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">builder</span><span class="o">.</span><span class="na">setBolt</span><span class="o">(</span><span class="s">&#34;exclaim&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">ExclamationBolt</span><span class="o">(),</span> <span class="n">4</span><span class="o">)</span>
-  <span class="o">.</span><span class="na">shuffleGrouping</span><span class="o">(</span><span class="s">&#34;word&#34;</span><span class="o">);</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">builder</span><span class="o">.</span><span class="na">setBolt</span><span class="o">(</span><span class="s">&quot;exclaim&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">ExclamationBolt</span><span class="o">(),</span> <span class="mi">4</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">shuffleGrouping</span><span class="o">(</span><span class="s">&quot;word&quot;</span><span class="o">);</span>
+</code></pre></div>
+
 <p>Once the components and the grouping are specified, the topology can be built.</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">HeronTopology</span> <span class="n">topology</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">createTopology</span><span class="o">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">HeronTopology</span> <span class="n">topology</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">createTopology</span><span class="o">();</span>
+</code></pre></div>
+
 <p>See the <a href="https://github.com/twitter/heron/blob/master/examples/src/java/com/twitter/heron/examples/ExclamationTopology.java"><code>ExclamationTopology</code></a> for the complete example. More examples can be found in the  <a href="https://github.com/twitter/heron/tree/master/examples/src/java/com/twitter/heron/examples"><code>examples package</code></a>.</p>
 
 <h2 id="applying-delivery-semantics-to-topologies">Applying delivery semantics to topologies</h2>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
 
 <span class="n">Config</span> <span class="n">topologyConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Config</span><span class="o">();</span>
 
-<span class="n">config</span><span class="o">.</span><span class="na">setTopologyReliabilityMode</span><span class="o">(</span><span class="n">Config</span><span class="o">.</span><span class="na">TopologyReliabilityMode</span><span class="o">.</span><span class="na">EFFECTIVELY_ONCE</span><span class="o">);</span></code></pre></div>
+<span class="n">config</span><span class="o">.</span><span class="na">setTopologyReliabilityMode</span><span class="o">(</span><span class="n">Config</span><span class="o">.</span><span class="na">TopologyReliabilityMode</span><span class="o">.</span><span class="na">EFFECTIVELY_ONCE</span><span class="o">);</span>
+</code></pre></div>
+
 <p>There are three delivery semantics available corresponding to the three delivery semantics that Heron provides:</p>
 
 <ul>
@@ -192,7 +208,7 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
 <p>Each Heron bolt has an <code>OutputCollector</code> that can ack tuples using the <code>ack</code> method. Tuples can be acked inside the <code>execute</code> method that each bolt uses to process incoming tuples. <em>When</em> a bolt acks tuples is up to you. Tuples can be acked immediately upon receipt, after data has been saved to a database, after a message has been successfully published to a pub-sub topic, etc.</p>
 
 <p>Here&rsquo;s an example of a bolt that acks tuples when they&rsquo;re successfully processed:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.bolt.BaseRichBolt</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.bolt.BaseRichBolt</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.bolt.OutputCollector</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.topology.TopologyContext</span><span class="o">;</span>
 
@@ -204,8 +220,8 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">applyProcessingOperation</span><span class="o">(</span><span class="n">Tuple</span> <span class="n">tuple</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="c1">// Some processing logic for each tuple received by the bolt
-</span><span class="c1"></span>    <span class="o">}</span>
+        <span class="c1">// Some processing logic for each tuple received by the bolt</span>
+    <span class="o">}</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="n">Tuple</span> <span class="n">tuple</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
@@ -215,7 +231,9 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
             <span class="n">outputCollector</span><span class="o">.</span><span class="na">fail</span><span class="o">(</span><span class="n">tuple</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>In this bolt, there&rsquo;s an <code>applyProcessingOperation</code> function that processes each incoming tuple. One of two things can result from this function:</p>
 
 <ol>
@@ -235,23 +253,27 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
 <h3 id="specifying-a-message-id">Specifying a message ID</h3>
 
 <p>If you want a spout to receive acks from downstream bolts, the spout needs to specify a message ID every time the spout&rsquo;s <code>SpoutOutputCollector</code> emits a tuple to downstream bolts. Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.spout.BaseRichSpout</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.spout.BaseRichSpout</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">Object</span> <span class="nf">generateMessageId</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// Some logic to produce a unique ID
-</span><span class="c1"></span>    <span class="o">}</span>
+        <span class="c1">// Some logic to produce a unique ID</span>
+    <span class="o">}</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextTuple</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">someValue</span><span class="o">),</span> <span class="n">generateMessageId</span><span class="o">());</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>In this example, each tuple emitted by the spout includes a unique message ID. If no ID is specified, as in the example below, then the spout simply <em>will not receive acks</em>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NoAckReceivedSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NoAckReceivedSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextTuple</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">someValue</span><span class="o">));</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <blockquote>
 <p>When implementing acking logic&mdash;as well as <a href="#failing">failing logic</a>&mdash;each tuple that is acked/failed <strong>must have a unique ID</strong>. Otherwise, the spout receiving the ack will not be able to identify <em>which</em> tuple has been acked/failed.</p>
 </blockquote>
@@ -263,26 +285,28 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
 <p>In order to specify what your spout does when an ack is received, you need to implement an <code>ack</code> function in your spout. That function takes a Java <code>Object</code> containing the tuple&rsquo;s ID, which means that you can potentially serialize the message ID to any type you&rsquo;d like.</p>
 
 <p>In this example, the spout simply logs the message ID:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">Object</span> <span class="nf">generateMessageId</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// Some logic to produce a unique ID
-</span><span class="c1"></span>    <span class="o">}</span>
+        <span class="c1">// Some logic to produce a unique ID</span>
+    <span class="o">}</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextTuple</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">someValue</span><span class="o">),</span> <span class="n">generateMessageId</span><span class="o">());</span>
     <span class="o">}</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ack</span><span class="o">(</span><span class="n">Object</span> <span class="n">messageId</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// This will simply print the message ID whenever an ack arrives
-</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">String</span><span class="o">)</span> <span class="n">messageId</span><span class="o">);</span>
+        <span class="c1">// This will simply print the message ID whenever an ack arrives</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">String</span><span class="o">)</span> <span class="n">messageId</span><span class="o">);</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>In this example, the spout performs a series of actions when receiving the ack:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextTuple</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">someCondition</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">String</span> <span class="n">randomHash</span> <span class="o">=</span> <span class="c1">// Generate a random hash as a message ID
-</span><span class="c1"></span>            <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">val</span><span class="o">),</span> <span class="n">randomHash</span><span class="o">);</span>
+            <span class="n">String</span> <span class="n">randomHash</span> <span class="o">=</span> <span class="c1">// Generate a random hash as a message ID</span>
+            <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">val</span><span class="o">),</span> <span class="n">randomHash</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">}</span>
 
@@ -290,11 +314,13 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
         <span class="n">saveItemToDatabase</span><span class="o">(</span><span class="n">item</span><span class="o">);</span>
         <span class="n">publishToPubSubTopic</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <h3 id="failing">Failing</h3>
 
 <p><strong>Failing</strong> a tuple is essentially the opposite of acking it, i.e. it indicates that some operation has failed. Bolts can fail tuples by calling the <code>fail</code> method on the <code>OutputCollector</code> rather than <code>ack</code>. Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckingBolt</span> <span class="kd">extends</span> <span class="n">BaseRichBolt</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckingBolt</span> <span class="kd">extends</span> <span class="n">BaseRichBolt</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="n">Tuple</span> <span class="n">tuple</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
             <span class="n">someProcessingOperation</span><span class="o">(</span><span class="n">tuple</span><span class="o">);</span>
@@ -303,28 +329,34 @@ between a <code>word</code> spout and an <code>exclaim</code> bolt.</p>
             <span class="n">collector</span><span class="o">.</span><span class="na">fail</span><span class="o">(</span><span class="n">tuple</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>In this example, an exception-throwing processing operation is attempted. If it succeeds, the tuple is acked; if it fails and an exception is thrown, the tuple is failed.</p>
 
 <p>As with acks, spouts can be set up to handle failed tuples by implementing the <code>fail</code> method, which takes the message ID as the argument (just like the <code>ack</code> method). Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AckReceivingSpout</span> <span class="kd">extends</span> <span class="n">BaseRichSpout</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextTuple</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">someValue</span><span class="o">),</span> <span class="n">someMessageId</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">fail</span><span class="o">(</span><span class="n">Object</span> <span class="n">messageId</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// Process the messageId
-</span><span class="c1"></span>    <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+        <span class="c1">// Process the messageId</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>As with acking, spouts must include a message ID when emitting tuples or else they will not receive fail messages.</p>
 
 <h3 id="acking-failing-and-timeouts">Acking, failing, and timeouts</h3>
 
 <p>If you&rsquo;re setting up your spouts and bolts to include an ack/fail logic, you can specify that a tuple will automatically be failed if a timeout threshold is reached before the tuple is acked. In this example, all tuples passing through all bolts will be failed if not acked within 10 seconds:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
 
 <span class="n">Config</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Config</span><span class="o">();</span>
-<span class="n">config</span><span class="o">.</span><span class="na">setMessageTimeoutSecs</span><span class="o">(</span><span class="n">10</span><span class="o">);</span></code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<span class="n">config</span><span class="o">.</span><span class="na">setMessageTimeoutSecs</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

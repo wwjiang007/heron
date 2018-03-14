@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up Local File System State Manager"><meta property="og:url" content="/docs/operators/deployment/statemanagers/localfs/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up Local File System State Manager</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up Local File System State Manager"><meta property="og:url" content="/docs/operators/deployment/statemanagers/localfs/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up Local File System State Manager</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -36,17 +36,19 @@ directories are already there, set it to <code>False</code>. The absence of this
 <h3 id="example-local-file-system-state-manager-configuration">Example Local File System State Manager Configuration</h3>
 
 <p>Below is an example configuration (in <code>statemgr.yaml</code>) for a local file system running in <code>localhost</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># local state manager class for managing state in a persistent fashion</span><span class="w">
-</span><span class="w"></span>heron.class.state.manager<span class="p">:</span><span class="w"> </span>com.twitter.heron.statemgr.localfs.LocalFileSystemStateManager<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># local state manager connection string</span><span class="w">
-</span><span class="w"></span>heron.statemgr.connection.string<span class="p">:</span><span class="w"> </span>LOCALMODE<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># path of the root address to store the state in a local file system</span><span class="w">
-</span><span class="w"></span>heron.statemgr.root.path<span class="p">:</span><span class="w"> </span>${HOME}/.herondata/repository/state/${CLUSTER}<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># create the sub directories, if needed</span><span class="w">
-</span><span class="w"></span>heron.statemgr.localfs.is.initialize.file.tree<span class="p">:</span><span class="w"> </span>True</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># local state manager class for managing state in a persistent fashion</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.state.manager</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.statemgr.localfs.LocalFileSystemStateManager</span>
+
+<span class="c1"># local state manager connection string</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.connection.string</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">LOCALMODE</span>
+
+<span class="c1"># path of the root address to store the state in a local file system</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.root.path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">${HOME}/.herondata/repository/state/${CLUSTER}</span>
+
+<span class="c1"># create the sub directories, if needed</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.localfs.is.initialize.file.tree</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

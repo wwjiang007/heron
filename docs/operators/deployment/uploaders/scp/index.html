@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up SCP Uploader"><meta property="og:url" content="/docs/operators/deployment/uploaders/scp/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up SCP Uploader</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up SCP Uploader"><meta property="og:url" content="/docs/operators/deployment/uploaders/scp/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up SCP Uploader</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -38,33 +38,37 @@ i.e &ldquo;user@host&rdquo;</li>
 <h3 id="example-scp-uploader-configuration">Example SCP Uploader Configuration</h3>
 
 <p>Below is an example configuration (in <code>uploader.yaml</code>) for a SCP uploader:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># uploader class for transferring the topology jar/tar files to storage</span><span class="w">
-</span><span class="w"></span>heron.class.uploader<span class="p">:</span><span class="w">         </span>com.twitter.heron.uploader.scp.ScpUploader<span class="w">
-</span><span class="w"></span><span class="c"># This is the scp command options that will be used by the uploader, this can be used to</span><span class="w">
-</span><span class="w"></span><span class="c"># specify custom options such as the location of ssh keys.</span><span class="w">
-</span><span class="w"></span>heron.uploader.scp.command.options<span class="p">:</span><span class="w">   </span><span class="s2">&#34;-i ~/.ssh/id_rsa&#34;</span><span class="w">
-</span><span class="w"></span><span class="c"># The scp connection string sets the remote user name and host used by the uploader.</span><span class="w">
-</span><span class="w"></span>heron.uploader.scp.command.connection<span class="p">:</span><span class="w">   </span><span class="s2">&#34;user@host&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The ssh command options that will be used when connecting to the uploading host to execute</span><span class="w">
-</span><span class="w"></span><span class="c"># command such as delete files, make directories.</span><span class="w">
-</span><span class="w"></span>heron.uploader.ssh.command.options<span class="p">:</span><span class="w">   </span><span class="s2">&#34;-i ~/.ssh/id_rsa&#34;</span><span class="w">
-</span><span class="w"></span><span class="c"># The ssh connection string sets the remote user name and host used by the uploader.</span><span class="w">
-</span><span class="w"></span>heron.uploader.ssh.command.connection<span class="p">:</span><span class="w">   </span><span class="s2">&#34;user@host&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># the directory where the file will be uploaded, make sure the user has the necessary permissions</span><span class="w">
-</span><span class="w"></span><span class="c"># to upload the file here.</span><span class="w">
-</span><span class="w"></span>heron.uploader.scp.dir.path<span class="p">:</span><span class="w">   </span>${HOME}/heron/repository/${CLUSTER}/${ROLE}/${TOPOLOGY}</code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># uploader class for transferring the topology jar/tar files to storage</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.uploader</span><span class="p p-Indicator">:</span>         <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.uploader.scp.ScpUploader</span>
+<span class="c1"># This is the scp command options that will be used by the uploader, this can be used to</span>
+<span class="c1"># specify custom options such as the location of ssh keys.</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.scp.command.options</span><span class="p p-Indicator">:</span>   <span class="s">&quot;-i</span><span class="nv"> </span><span class="s">~/.ssh/id_rsa&quot;</span>
+<span class="c1"># The scp connection string sets the remote user name and host used by the uploader.</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.scp.command.connection</span><span class="p p-Indicator">:</span>   <span class="s">&quot;user@host&quot;</span>
+
+<span class="c1"># The ssh command options that will be used when connecting to the uploading host to execute</span>
+<span class="c1"># command such as delete files, make directories.</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.ssh.command.options</span><span class="p p-Indicator">:</span>   <span class="s">&quot;-i</span><span class="nv"> </span><span class="s">~/.ssh/id_rsa&quot;</span>
+<span class="c1"># The ssh connection string sets the remote user name and host used by the uploader.</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.ssh.command.connection</span><span class="p p-Indicator">:</span>   <span class="s">&quot;user@host&quot;</span>
+
+<span class="c1"># the directory where the file will be uploaded, make sure the user has the necessary permissions</span>
+<span class="c1"># to upload the file here.</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.scp.dir.path</span><span class="p p-Indicator">:</span>   <span class="l l-Scalar l-Scalar-Plain">${HOME}/heron/repository/${CLUSTER}/${ROLE}/${TOPOLOGY}</span>
+</code></pre></div>
+
 <p>The uploader will use SSH to create the entire directory structure specified in <code>heron.uploader.scp.dir.path</code>
 by running <code>mkdir -p</code> before using SCP to upload the topology package.</p>
 
 <p>Below is an example <code>scp</code> command configuration in the <code>heron.aurora</code> file. The cmdline is run by every node
 in the cluster to <strong>download</strong> the topology package.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">fetch_user_package</span> <span class="o">=</span> Process<span class="o">(</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="nv">fetch_user_package</span> <span class="o">=</span> Process<span class="o">(</span>
   <span class="nv">name</span> <span class="o">=</span> <span class="s1">&#39;fetch_user_package&#39;</span>,
-  <span class="nv">cmdline</span> <span class="o">=</span> <span class="s1">&#39;scp -i ~/.ssh/id_rsa user@host:%s %s &amp;&amp; tar zxf %s&#39;</span> % <span class="o">(</span>heron_topology_jar_uri, <span class="se">\
-</span><span class="se"></span>      topology_package_file, topology_package_file<span class="o">)</span>
-<span class="o">)</span></code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+  <span class="nv">cmdline</span> <span class="o">=</span> <span class="s1">&#39;scp -i ~/.ssh/id_rsa user@host:%s %s &amp;&amp; tar zxf %s&#39;</span> % <span class="o">(</span>heron_topology_jar_uri, <span class="se">\</span>
+      topology_package_file, topology_package_file<span class="o">)</span>
+<span class="o">)</span>
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Testing Heron"><meta property="og:url" content="/docs/contributors/testing/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Testing Heron</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Testing Heron"><meta property="og:url" content="/docs/contributors/testing/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Testing Heron</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -11,20 +11,32 @@ as described in <a href="../../developers/compiling/compiling">Compiling Heron</
 <h3 id="running-unit-tests">Running Unit Tests</h3>
 
 <p>The following command will run all tests:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel <span class="nb">test</span> --config<span class="o">=</span>darwin heron/...</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel <span class="nb">test</span> --config<span class="o">=</span>darwin heron/...
+</code></pre></div>
+
 <p>To run a specific <a href="http://bazel.io/docs/test-encyclopedia.html">test
 target</a>, pass the test target name.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel <span class="nb">test</span> --config<span class="o">=</span>darwin heron/statemgrs/tests/java:localfs-statemgr_unittest</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel <span class="nb">test</span> --config<span class="o">=</span>darwin heron/statemgrs/tests/java:localfs-statemgr_unittest
+</code></pre></div>
+
 <h3 id="discovering-unit-test-targets">Discovering Unit Test Targets</h3>
 
 <p>To see a full listing of all Bazel test targets:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel query <span class="s1">&#39;kind(&#34;.*_test rule&#34;, ...)&#39;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel query <span class="s1">&#39;kind(&quot;.*_test rule&quot;, ...)&#39;</span>
+</code></pre></div>
+
 <p>For <strong>Java</strong> targets only:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel query <span class="s1">&#39;kind(&#34;java_test rule&#34;, ...)&#39;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel query <span class="s1">&#39;kind(&quot;java_test rule&quot;, ...)&#39;</span>
+</code></pre></div>
+
 <p>For <strong>C++</strong> targets:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel query <span class="s1">&#39;kind(&#34;cc_test rule&#34;, ...)&#39;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel query <span class="s1">&#39;kind(&quot;cc_test rule&quot;, ...)&#39;</span>
+</code></pre></div>
+
 <p>For <strong>Python</strong> targets:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel query <span class="s1">&#39;kind(&#34;pex_test rule&#34;, ...)&#39;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel query <span class="s1">&#39;kind(&quot;pex_test rule&quot;, ...)&#39;</span>
+</code></pre></div>
+
 <h3 id="running-integration-tests">Running Integration Tests</h3>
 
 <p>Integration tests are divided into two categories:</p>
@@ -35,15 +47,17 @@ target</a>, pass the test target name.</p>
 <p>These integration tests are designed for testing the functionality of
 Heron, such as topologies and groupings.
 To run the functional integration tests on a Mac OS X, do the following:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./scripts/run_integration_test.sh</code></pre></div></li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ ./scripts/run_integration_test.sh
+</code></pre></div></li>
 
 <li><p>Failure integration tests</p>
 
 <p>These integration tests are designed for testing recovery from failure/restart
 in certain processes, such as Topology Master and Metrics Manager.
 To run the failure integration tests on a Mac OS X, do the following:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build --config<span class="o">=</span>darwin integration_test/src/...
-$ ./bazel-bin/integration_test/src/python/local_test_runner/local-test-runner</code></pre></div></li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel build --config<span class="o">=</span>darwin integration_test/src/...
+$ ./bazel-bin/integration_test/src/python/local_test_runner/local-test-runner
+</code></pre></div></li>
 </ul>
 </article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {

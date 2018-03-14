@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Compiling Heron"><meta property="og:url" content="/docs/developers/compiling/compiling/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Compiling Heron</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Compiling Heron"><meta property="og:url" content="/docs/developers/compiling/compiling/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Compiling Heron</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -44,9 +44,11 @@ is required by Bazel and Heron;
 
 <p>Export the <code>CC</code> and <code>CXX</code> environment variables with a path specific to your
 machine:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>/your-path-to/bin/c_compiler
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>/your-path-to/bin/c_compiler
 $ <span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>/your-path-to/bin/c++_compiler
-$ <span class="nb">echo</span> <span class="nv">$CC</span> <span class="nv">$CXX</span></code></pre></div>
+$ <span class="nb">echo</span> <span class="nv">$CC</span> <span class="nv">$CXX</span>
+</code></pre></div>
+
 <h2 id="installing-bazel">Installing Bazel</h2>
 
 <p>Heron uses the <a href="http://bazel.io">Bazel</a> build tool. Bazel releases can be found
@@ -61,8 +63,10 @@ have Bazel 0.5.4.</p>
 
 <p>There is a Python script that you can run to configure Bazel on supported
 platforms:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">cd</span> /path/to/heron
-$ ./bazel_configure.py</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">cd</span> /path/to/heron
+$ ./bazel_configure.py
+</code></pre></div>
+
 <h2 id="building">Building</h2>
 
 <h3 id="bazel-os-environments">Bazel OS Environments</h3>
@@ -79,18 +83,24 @@ are supported:</p>
 
 <p>For example, on Mac OS X (<code>darwin</code>), the following command will build all
 packages:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build --config<span class="o">=</span>darwin heron/...</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel build --config<span class="o">=</span>darwin heron/...
+</code></pre></div>
+
 <p>Production release packages include additional performance optimizations
 not enabled by default. Enabling these optimizations increases build time.
 To enable production optimizations, include the <code>opt</code> flag:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build -c opt --config<span class="o">=</span>PLATFORM heron/...</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel build -c opt --config<span class="o">=</span>PLATFORM heron/...
+</code></pre></div>
+
 <h3 id="building-all-components">Building All Components</h3>
 
 <p>The Bazel build process can produce either executable install scripts or
 bundled tars. To build executables or tars for all Heron components at once,
 use the following <code>bazel build</code> commands, respectively:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build --config<span class="o">=</span>PLATFORM scripts/packages:binpkgs
-$ bazel build --config<span class="o">=</span>PLATFORM scripts/packages:tarpkgs</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel build --config<span class="o">=</span>PLATFORM scripts/packages:binpkgs
+$ bazel build --config<span class="o">=</span>PLATFORM scripts/packages:tarpkgs
+</code></pre></div>
+
 <p>Resulting artifacts can be found in subdirectories below the <code>bazel-bin</code>
 directory. The <code>heron-tracker</code> executable, for example, can be found at
 <code>bazel-bin/heron/tools/tracker/src/python/heron-tracker</code>.</p>
@@ -101,7 +111,9 @@ directory. The <code>heron-tracker</code> executable, for example, can be found 
 for a single Heron component (such as the <a href="../../../operators/heron-tracker">Heron
 Tracker</a>) by passing a target to the <code>bazel
 build</code> command. For example, the following command would build the <a href="../../../operators/heron-tracker">Heron Tracker</a>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build --config<span class="o">=</span>darwin heron/tools/tracker/src/python:heron-tracker</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bazel build --config<span class="o">=</span>darwin heron/tools/tracker/src/python:heron-tracker
+</code></pre></div>
+
 <h2 id="testing-heron">Testing Heron</h2>
 
 <p>Instructions for running Heron unit tests can be found at <a href="../../../contributors/testing">Testing

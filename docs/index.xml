@@ -40,7 +40,7 @@ How Heron on Aurora Works Aurora doesn&amp;rsquo;t have a Heron scheduler per se
       <guid>https://twitter.github.io/heron/docs/developers/compiling/linux/</guid>
       <description>Heron can currently be built on the following Linux platforms:
  Ubuntu 14.04 CentOS 7  Building on Ubuntu 14.04 To build Heron on a fresh Ubuntu 14.04 installation:
-Step 1 &amp;mdash; Update Ubuntu $ sudo apt-get update -y $ sudo apt-get upgrade -y Step 2 &amp;mdash; Install required libraries $ sudo apt-get install git build-essential automake cmake libtool-bin zip \  libunwind-setjmp0-dev zlib1g-dev unzip pkg-config python-setuptools -y Step 3 &amp;mdash; Set the following environment variables export CC=/usr/bin/gcc export CCX=/usr/bin/g++ Step 4 &amp;mdash; Install JDK 8 and set JAVA_HOME $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update -y $ sudo apt-get install oracle-java8-installer -y $ export JAVA_HOME=&amp;#34;/usr/lib/jvm/java-8-oracle&amp;#34; Step 5 - Install Bazel 0.</description>
+Step 1 &amp;mdash; Update Ubuntu $ sudo apt-get update -y $ sudo apt-get upgrade -y  Step 2 &amp;mdash; Install required libraries $ sudo apt-get install git build-essential automake cmake libtool-bin zip \ libunwind-setjmp0-dev zlib1g-dev unzip pkg-config python-setuptools -y  Step 3 &amp;mdash; Set the following environment variables export CC=/usr/bin/gcc export CCX=/usr/bin/g++  Step 4 &amp;mdash; Install JDK 8 and set JAVA_HOME $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update -y $ sudo apt-get install oracle-java8-installer -y $ export JAVA_HOME=&amp;quot;/usr/lib/jvm/java-8-oracle&amp;quot;  Step 5 - Install Bazel 0.</description>
     </item>
     
     <item>
@@ -51,7 +51,7 @@ Step 1 &amp;mdash; Update Ubuntu $ sudo apt-get update -y $ sudo apt-get upgrade
       <guid>https://twitter.github.io/heron/docs/developers/compiling/mac/</guid>
       <description>This is a step-by-step guide to building Heron on Mac OS X (versions 10.10 and 10.11).
 Step 1 &amp;mdash; Install Homebrew If Homebrew isn&amp;rsquo;t yet installed on your system, you can install it using this one-liner:
-$ /usr/bin/ruby -e &amp;#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;#34; Step 2 &amp;mdash; Install bazel and other required libraries brew install bazel brew install automake brew install cmake brew install libtool Step 3 &amp;mdash; Set the following environment variables $ export CC=/usr/bin/clang $ export CXX=/usr/bin/clang++ $ echo $CC $CXX Step 4 &amp;mdash; Fetch the latest version of Heron&amp;rsquo;s source code $ git clone https://github.</description>
+$ /usr/bin/ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;  Step 2 &amp;mdash; Install bazel and other required libraries brew install bazel brew install automake brew install cmake brew install libtool  Step 3 &amp;mdash; Set the following environment variables $ export CC=/usr/bin/clang $ export CXX=/usr/bin/clang++ $ echo $CC $CXX  Step 4 &amp;mdash; Fetch the latest version of Heron&amp;rsquo;s source code $ git clone https://github.</description>
     </item>
     
     <item>
@@ -235,8 +235,7 @@ The port to connect to heron shell for each container is stored in the physical 
       
       <guid>https://twitter.github.io/heron/docs/concepts/topologies/</guid>
       <description>&amp;times; New Streamlet API for HeronAs of version 0.16.0, Heron offers a new Streamlet API that you can use to write topologies in a more declarative, functional manner, without needing to specify spout and bolt logic directly. The Streamlet API is currently in beta and available for Java. The Streamlet API for Python will be available soon.
-More information on the Streamlet API can be found below.
- A Heron topology is a directed acyclic graph (DAG) used to process streams of data.</description>
+More information on the Streamlet API can be found below.  A Heron topology is a directed acyclic graph (DAG) used to process streams of data.</description>
     </item>
     
     <item>
@@ -385,7 +384,7 @@ Requirements In order to run Heron in standalone mode, you&amp;rsquo;ll need to 
       <guid>https://twitter.github.io/heron/docs/developers/python/spouts/</guid>
       <description>Python API docs You can find API docs for the heronpy library here.
  To create a spout for a Heron topology, you need to subclass the Spout class, which has the following methods.
-class Spout(BaseSpout): def initialize(self, config, context) def next_tuple(self) def ack(self, tup_id) def fail(self, tup_id) def activate(self) def deactivate(self) def close(self) Spout class methods The Spout class provides a number of methods that you should implement when subclassing.</description>
+class Spout(BaseSpout): def initialize(self, config, context) def next_tuple(self) def ack(self, tup_id) def fail(self, tup_id) def activate(self) def deactivate(self) def close(self)  Spout class methods The Spout class provides a number of methods that you should implement when subclassing.</description>
     </item>
     
     <item>
@@ -396,7 +395,7 @@ class Spout(BaseSpout): def initialize(self, config, context) def next_tuple(sel
       <guid>https://twitter.github.io/heron/docs/developers/python/bolts/</guid>
       <description>Python API docs You can find API docs for the heronpy library here.
  Bolts must implement the Bolt interface, which has the following methods.
-class Bolt(BaseBolt): def initialize(self, config, context) def process(self, tup)  The initialize() method is called when the bolt is first initialized and provides the bolt with the executing environment. It is equivalent to prepare() method of the IBolt interface in Java. Note that you should not override __init__() constructor of Bolt class for initialization of custom variables, since it is used internally by HeronInstance; instead, initialize() should be used to initialize any custom variables or connections to databases.</description>
+class Bolt(BaseBolt): def initialize(self, config, context) def process(self, tup)   The initialize() method is called when the bolt is first initialized and provides the bolt with the executing environment. It is equivalent to prepare() method of the IBolt interface in Java. Note that you should not override __init__() constructor of Bolt class for initialization of custom variables, since it is used internally by HeronInstance; instead, initialize() should be used to initialize any custom variables or connections to databases.</description>
     </item>
     
     <item>
@@ -406,7 +405,7 @@ class Bolt(BaseBolt): def initialize(self, config, context) def process(self, tu
       
       <guid>https://twitter.github.io/heron/docs/developers/java/bolts/</guid>
       <description>&amp;times; Don&amp;#39;t want to manually create spouts and bolts? Try the Heron Streamlet APIIf you find manually creating and connecting spouts and bolts to be overly cumbersome, we recommend trying out the Heron Streamlet API for Java, which enables you to create your topology logic using a highly streamlined logic inspired by functional programming concepts.  Bolts must implement the IBolt interface.
-public interface IBolt extends Serializable { void prepare(Map&amp;lt;String, Object&amp;gt; heronConf, TopologyContext context, OutputCollector collector); void execute(Tuple input); void cleanup(); }  The prepare method is called when the bolt is first initialized and provides the bolt with the executing environment.</description>
+public interface IBolt extends Serializable { void prepare(Map&amp;lt;String, Object&amp;gt; heronConf, TopologyContext context, OutputCollector collector); void execute(Tuple input); void cleanup(); }   The prepare method is called when the bolt is first initialized and provides the bolt with the executing environment.</description>
     </item>
     
     <item>
@@ -437,7 +436,7 @@ public interface IBolt extends Serializable { void prepare(Map&amp;lt;String, Ob
       
       <guid>https://twitter.github.io/heron/docs/developers/java/spouts/</guid>
       <description>&amp;times; Don&amp;#39;t want to manually create spouts and bolts? Try the Heron Streamlet APIIf you find manually creating and connecting spouts and bolts to be overly cumbersome, we recommend trying out the Heron Streamlet API for Java, which enables you to create your topology logic using a highly streamlined logic inspired by functional programming concepts.  Spouts must implement the ISpout interface.
-public interface ISpout extends Serializable { void open(Map&amp;lt;String, Object&amp;gt; conf, TopologyContext context, SpoutOutputCollector collector); void close(); void activate(); void deactivate(); void nextTuple(); void ack(Object msgId); void fail(Object msgId); }  The open method is called when the spout is initialized and provides the spout with the executing environment.</description>
+public interface ISpout extends Serializable { void open(Map&amp;lt;String, Object&amp;gt; conf, TopologyContext context, SpoutOutputCollector collector); void close(); void activate(); void deactivate(); void nextTuple(); void ack(Object msgId); void fail(Object msgId); }   The open method is called when the spout is initialized and provides the spout with the executing environment.</description>
     </item>
     
     <item>
@@ -469,7 +468,7 @@ One of two state managers can be used for coordination when deploying locally:
       <guid>https://twitter.github.io/heron/docs/operators/heron-cli/</guid>
       <description>The Heron CLI us used to to manage every aspect of the topology lifecycle.
 Deploying the heron CLI Executable To use heron CLI, download the heron-client-install for your platfrom from release binaries and run the installation script. For example, if you have downloaded the version 0.13.5, you invoke the installation script as follows:
-$ chmod +x heron-client-install-0.13.5-darwin.sh $ ./heron-client-install-0.13.5-darwin.sh --user Heron client installer ---------------------- Uncompressing...... Heron is now installed! Make sure you have &amp;#34;/Users/$USER/bin&amp;#34; in your path.</description>
+$ chmod +x heron-client-install-0.13.5-darwin.sh $ ./heron-client-install-0.13.5-darwin.sh --user Heron client installer ---------------------- Uncompressing...... Heron is now installed! Make sure you have &amp;quot;/Users/$USER/bin&amp;quot; in your path.</description>
     </item>
     
     <item>
@@ -510,7 +509,7 @@ Step 1. Add Heron dependencies to pom.xml Copy the pom.xml segments below and pa
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/nomad/</guid>
-      <description>Heron supports Hashicorp&amp;rsquo;s Nomad as a scheduler. Nomad may be a good option for smaller deployments that don&amp;rsquo;t require a bulkier scheduler like Mesos or Kubernetes.
+      <description>Heron supports Hashicorp&amp;rsquo;s Nomad as a scheduler. You can use Nomad for either small- or large-scale Heron deployments or to run Heron locally in standalone mode.
 Nomad setup Setting up a nomad cluster will not be covered here. See the official Nomad docs for instructions.
  Heron currently only supports the raw exec driver for Nomad.
  When setting up your Nomad cluster, the following are required:
@@ -539,7 +538,7 @@ To set up your Heron cluster to export to Prometheus, you need to make two chang
  Support for developing Heron topologies in Python is provided by a Python library called heronpy.
  Python API docs You can find API docs for the heronpy library here.
  Setup First, you need to install the heronpy library using pip, EasyInstall, or an analogous tool:
-$ pip install heronpy $ easy_install heronpy Then you can include heronpy in your project files.</description>
+$ pip install heronpy $ easy_install heronpy  Then you can include heronpy in your project files.</description>
     </item>
     
     <item>
@@ -720,9 +719,8 @@ General    Config Meaning Default     heron.check.tmaster.location.interval.sec 
       <guid>https://twitter.github.io/heron/docs/contributors/testing/</guid>
       <description>Heron uses Bazel for building and running unit tests. Before running tests, first set up your build environment as described in Compiling Heron.
 Running Unit Tests The following command will run all tests:
-$ bazel test --config=darwin heron/... To run a specific test target, pass the test target name.
-$ bazel test --config=darwin heron/statemgrs/tests/java:localfs-statemgr_unittest Discovering Unit Test Targets To see a full listing of all Bazel test targets:
-$ bazel query &amp;#39;kind(&amp;#34;.</description>
+$ bazel test --config=darwin heron/...  To run a specific test target, pass the test target name.
+$ bazel test --config=darwin heron/statemgrs/tests/java:localfs-statemgr_unittest  Discovering Unit Test Targets To see a full listing of all Bazel test targets:</description>
     </item>
     
     <item>

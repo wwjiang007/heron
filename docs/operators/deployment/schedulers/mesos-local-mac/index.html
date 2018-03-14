@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting up Heron with Mesos Cluster Locally on Mac"><meta property="og:url" content="/docs/operators/deployment/schedulers/mesos-local-mac/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting up Heron with Mesos Cluster Locally on Mac</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting up Heron with Mesos Cluster Locally on Mac"><meta property="og:url" content="/docs/operators/deployment/schedulers/mesos-local-mac/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting up Heron with Mesos Cluster Locally on Mac</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -43,16 +43,20 @@ of the Mesos install. If Mesos is installed through <code>brew</code>, the libra
 <p>After setting up Heron and Mesos, submit a topology using the following command. By default this
 command loads the config in <code>$HOME/.heron/conf</code>. Add <code>--config-path=your_conf_path</code> to change the
 config path.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">heron submit mesos --verbose ~/.heron/examples/heron-examples.jar <span class="se">\
-</span><span class="se"></span>com.twitter.heron.examples.ExclamationTopology ExclamationTopology</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>heron submit mesos --verbose ~/.heron/examples/heron-examples.jar <span class="se">\</span>
+com.twitter.heron.examples.ExclamationTopology ExclamationTopology
+</code></pre></div>
+
 <p>The following will be displayed upon a successful submit.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:04:41 -0700<span class="o">]</span> com.twitter.heron.scheduler.mesos.MesosLauncher INFO: <span class="se">\
-</span><span class="se"></span>For checking the status and logs of the topology, use the working directory <span class="se">\
-</span><span class="se"></span><span class="nv">$HOME</span>/.herondata/topologies/mesos/<span class="nv">$USER</span>/ExclamationTopology
-<span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:04:41 -0700<span class="o">]</span> com.twitter.heron.scheduler.SubmitterMain FINE:  Topology <span class="se">\
-</span><span class="se"></span>ExclamationTopology submitted successfully
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>2016-07-25 22:04:41 -0700<span class="o">]</span> com.twitter.heron.scheduler.mesos.MesosLauncher INFO: <span class="se">\</span>
+For checking the status and logs of the topology, use the working directory <span class="se">\</span>
+<span class="nv">$HOME</span>/.herondata/topologies/mesos/<span class="nv">$USER</span>/ExclamationTopology
+<span class="o">[</span>2016-07-25 22:04:41 -0700<span class="o">]</span> com.twitter.heron.scheduler.SubmitterMain FINE:  Topology <span class="se">\</span>
+ExclamationTopology submitted successfully
 INFO: Topology <span class="s1">&#39;ExclamationTopology&#39;</span> launched successfully
-INFO: Elapsed time: <span class="m">4</span>.114s.</code></pre></div>
+INFO: Elapsed time: 4.114s.
+</code></pre></div>
+
 <p>Note that this doesn&rsquo;t necessarily mean the topology is successfully launched in Mesos, to verify
 check the working directory as shown in the output. You will see:</p>
 
@@ -64,20 +68,24 @@ check the working directory as shown in the output. You will see:</p>
 
 <p>The log file will show whether the launch succeeded. If it succeeded, at the end of the log file
 it will show the task is running.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:15:47 -0700<span class="o">]</span> com.twitter.heron.scheduler.mesos.framework.MesosFramework INFO: <span class="se">\
-</span><span class="se"></span>Received status update <span class="o">[</span>...<span class="o">]</span>
-<span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:15:47 -0700<span class="o">]</span> com.twitter.heron.scheduler.mesos.framework.MesosFramework INFO: <span class="se">\
-</span><span class="se"></span>Task with id <span class="s1">&#39;container_1_1469510147073:0&#39;</span> RUNNING</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>2016-07-25 22:15:47 -0700<span class="o">]</span> com.twitter.heron.scheduler.mesos.framework.MesosFramework INFO: <span class="se">\</span>
+Received status update <span class="o">[</span>...<span class="o">]</span>
+<span class="o">[</span>2016-07-25 22:15:47 -0700<span class="o">]</span> com.twitter.heron.scheduler.mesos.framework.MesosFramework INFO: <span class="se">\</span>
+Task with id <span class="s1">&#39;container_1_1469510147073:0&#39;</span> RUNNING
+</code></pre></div>
+
 <p>If the launch fails, an error message will be included. For example, if the Mesos library isn&rsquo;t
 found in the configured location, the following exception will occur.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:04:42 -0700<span class="o">]</span> stderr STDERR:  Failed to load native Mesos library from <span class="se">\
-</span><span class="se"></span>/usr/lib/mesos/0.28.1/lib
-<span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:04:42 -0700<span class="o">]</span> stderr STDERR:  Exception in thread <span class="s2">&#34;main&#34;</span>
-<span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:04:42 -0700<span class="o">]</span> stderr STDERR:  java.lang.UnsatisfiedLinkError: no mesos in <span class="se">\ </span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>2016-07-25 22:04:42 -0700<span class="o">]</span> stderr STDERR:  Failed to load native Mesos library from <span class="se">\</span>
+/usr/lib/mesos/0.28.1/lib
+<span class="o">[</span>2016-07-25 22:04:42 -0700<span class="o">]</span> stderr STDERR:  Exception in thread <span class="s2">&quot;main&quot;</span>
+<span class="o">[</span>2016-07-25 22:04:42 -0700<span class="o">]</span> stderr STDERR:  java.lang.UnsatisfiedLinkError: no mesos in <span class="se">\ </span>
 java.library.path
-<span class="o">[</span><span class="m">2016</span>-07-25 <span class="m">22</span>:04:42 -0700<span class="o">]</span> stderr STDERR:      at <span class="se">\
-</span><span class="se"></span>java.lang.ClassLoader.loadLibrary<span class="o">(</span>ClassLoader.java:1867<span class="o">)</span>
-...</code></pre></div>
+<span class="o">[</span>2016-07-25 22:04:42 -0700<span class="o">]</span> stderr STDERR:      at <span class="se">\</span>
+java.lang.ClassLoader.loadLibrary<span class="o">(</span>ClassLoader.java:1867<span class="o">)</span>
+...
+</code></pre></div>
+
 <h2 id="mesos-management-console">Mesos Management Console</h2>
 
 <p>Another way to check your topology is running is to look at the Mesos management console. If it
@@ -105,11 +113,15 @@ container.</p>
 <code>$HOME/.herontools/conf/heron_tracker.yaml</code> to <code>$HOME/.herondata/repository/state/mesos</code> before
 starting the tracker. This configuration sets the location of the state manager root path. Start
 tracker and the UI.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-tracker
-... Running on port: <span class="m">8888</span>
-... Using config file: <span class="nv">$HOME</span>/.herontools/conf/heron_tracker.yaml</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-ui
-... Running on port: <span class="m">8889</span>
-... Using tracker url: http://localhost:8888</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-tracker
+... Running on port: 8888
+... Using config file: <span class="nv">$HOME</span>/.herontools/conf/heron_tracker.yaml
+</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-ui
+... Running on port: 8889
+... Using tracker url: http://localhost:8888
+</code></pre></div>
+
 <p>Go to the UI at <a href="http://localhost:8889">http://localhost:8889</a> to see the topology.</p>
 
 <p><img src="https://twitter.github.io/heron/img/mesos-local-heron-ui.png" alt="mesos-local-heron-ui" /></p>
@@ -125,7 +137,9 @@ tracker and the UI.</p>
 <h2 id="kill-topology">Kill Topology</h2>
 
 <p>To kill the topology, run:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">heron <span class="nb">kill</span> mesos ExclamationTopology</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>heron <span class="nb">kill</span> mesos ExclamationTopology
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

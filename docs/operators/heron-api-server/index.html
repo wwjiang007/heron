@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="The Heron API server"><meta property="og:url" content="/docs/operators/heron-api-server/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - The Heron API server</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="The Heron API server"><meta property="og:url" content="/docs/operators/heron-api-server/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - The Heron API server</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -24,9 +24,11 @@ function load() { if (window.location.hash) shiftWindow(); }
 </ul>
 
 <p>Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-apiserver <span class="se">\
-</span><span class="se"></span>  --base-template mesos <span class="se">\
-</span><span class="se"></span>  --cluster sandbox</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-apiserver <span class="se">\</span>
+  --base-template mesos <span class="se">\</span>
+  --cluster sandbox
+</code></pre></div>
+
 <h2 id="base-templates">Base templates</h2>
 
 <p>The Heron API server works by accepting incoming commands from the <a href="../heron-cli">Heron CLI tool</a> and interacts with a variety of Heron components, including:</p>
@@ -37,9 +39,11 @@ function load() { if (window.location.hash) shiftWindow(); }
 </ul>
 
 <p>When you <a href="#installation">install</a> the Heron tools, a directory will automatically be created in <code>~/.herontools/conf</code> on MacOS and <code>/usr/local/herontools/conf</code> on other platforms. That directory contains a number of base templates for all of the currently supported schedulers. Modify the configuration for your scheduler, for example <a href="../deployment/schedulers/mesos">Mesos</a> using the YAML files in the <code>mesos</code> folder, and then select the proper base template using the <code>--base-template</code> flag. Here&rsquo;s an example for Mesos:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-apiserver <span class="se">\
-</span><span class="se"></span>  --base-template mesos <span class="se">\
-</span><span class="se"></span>  --cluster my-cluster</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-apiserver <span class="se">\</span>
+  --base-template mesos <span class="se">\</span>
+  --cluster my-cluster
+</code></pre></div>
+
 <blockquote>
 <p>For a full guide to Heron configuration, see <a href="../deployment/configuration">Configuring a cluster</a>.</p>
 </blockquote>
@@ -47,9 +51,11 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h2 id="cluster-name">Cluster name</h2>
 
 <p>In addition to specifying a base template when starting up the API server, you also need to specify a name for the cluster that the Heron API server will be serving. Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-apiserver <span class="se">\
-</span><span class="se"></span>  --base-template mesos <span class="se">\
-</span><span class="se"></span>  --cluster us-west-prod</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-apiserver <span class="se">\</span>
+  --base-template mesos <span class="se">\</span>
+  --cluster us-west-prod
+</code></pre></div>
+
 
 <div class="alert alert-danger alert-dismissible" role="alert">
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -85,11 +91,13 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h2 id="configuration-overrides">Configuration overrides</h2>
 
 <p>When you specify a <a href="#base-templates">base template</a> when running the Heron API server, the server will use whatever configuration is found in the template files. You can override configuration on a per-parameter basis, however, using the <code>-D</code> flag. Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-apiserver <span class="se">\
-</span><span class="se"></span>  --base-template aurora <span class="se">\
-</span><span class="se"></span>  --cluster us-west-prod <span class="se">\
-</span><span class="se"></span>  -D heron.statemgr.connection.string<span class="o">=</span>zk-1:2181,zk-2:2181,zk-3:2181 <span class="se">\
-</span><span class="se"></span>  -D heron.class.uploader<span class="o">=</span>com.acme.uploaders.MyCustomUploader</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-apiserver <span class="se">\</span>
+  --base-template aurora <span class="se">\</span>
+  --cluster us-west-prod <span class="se">\</span>
+  -D heron.statemgr.connection.string<span class="o">=</span>zk-1:2181,zk-2:2181,zk-3:2181 <span class="se">\</span>
+  -D heron.class.uploader<span class="o">=</span>com.acme.uploaders.MyCustomUploader
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

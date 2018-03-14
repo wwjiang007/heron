@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Aurora Cluster"><meta property="og:url" content="/docs/operators/deployment/schedulers/aurora/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Aurora Cluster</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Aurora Cluster"><meta property="og:url" content="/docs/operators/deployment/schedulers/aurora/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Aurora Cluster</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -37,11 +37,13 @@ HDFS, you need to change the fetch user package command in <code>heron.aurora</c
 <code>hdfs</code> command instead of <code>curl</code>.</p>
 
 <h3 id="heron-aurora-example-binary-fetch-using-hdfs"><code>heron.aurora</code> example binary fetch using HDFS</h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">fetch_heron_system</span> <span class="o">=</span> Process<span class="o">(</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="nv">fetch_heron_system</span> <span class="o">=</span> Process<span class="o">(</span>
   <span class="nv">name</span> <span class="o">=</span> <span class="s1">&#39;fetch_heron_system&#39;</span>,
   <span class="nv">cmdline</span> <span class="o">=</span> <span class="s1">&#39;hdfs dfs -get %s %s &amp;&amp; tar zxf %s&#39;</span> % <span class="o">(</span>heron_core_release_uri, 
         core_release_file, core_release_file<span class="o">)</span>
-<span class="o">)</span></code></pre></div>
+<span class="o">)</span>
+</code></pre></div>
+
 <p>Once your Heron binaries are hosted somewhere that is accessible to Aurora, you
 should run tests to ensure that Aurora can successfully fetch them.</p>
 
@@ -57,11 +59,13 @@ Details on configuring the uploaders can be found in the documentation for the
 fetch the topology.</p>
 
 <h3 id="heron-aurora-example-topology-fetch-using-hdfs"><code>heron.aurora</code> example topology fetch using HDFS</h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">fetch_user_package</span> <span class="o">=</span> Process<span class="o">(</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="nv">fetch_user_package</span> <span class="o">=</span> Process<span class="o">(</span>
   <span class="nv">name</span> <span class="o">=</span> <span class="s1">&#39;fetch_user_package&#39;</span>,
   <span class="nv">cmdline</span> <span class="o">=</span> <span class="s1">&#39;hdfs dfs -get %s %s &amp;&amp; tar zxf %s&#39;</span> % <span class="o">(</span>heron_topology_jar_uri, 
           topology_package_file, topology_package_file<span class="o">)</span>
-<span class="o">)</span></code></pre></div>
+<span class="o">)</span>
+</code></pre></div>
+
 <h2 id="aurora-scheduler-configuration">Aurora Scheduler Configuration</h2>
 
 <p>To configure Heron to use Aurora scheduler, modify the <code>scheduler.yaml</code>
@@ -87,20 +91,22 @@ is a service. In the case of Aurora, it should be set to <code>False</code>.</p>
 </ul>
 
 <h3 id="example-aurora-scheduler-configuration">Example Aurora Scheduler Configuration</h3>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># scheduler class for distributing the topology for execution</span><span class="w">
-</span><span class="w"></span>heron.class.scheduler<span class="p">:</span><span class="w"> </span>com.twitter.heron.scheduler.aurora.AuroraScheduler<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># launcher class for submitting and launching the topology</span><span class="w">
-</span><span class="w"></span>heron.class.launcher<span class="p">:</span><span class="w"> </span>com.twitter.heron.scheduler.aurora.AuroraLauncher<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># location of the core package</span><span class="w">
-</span><span class="w"></span>heron.package.core.uri<span class="p">:</span><span class="w"> </span>file<span class="p">:</span>///vagrant/.herondata/dist/heron-core-release.tar.gz<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># location of java - pick it up from shell environment</span><span class="w">
-</span><span class="w"></span>heron.directory.sandbox.java.home<span class="p">:</span><span class="w"> </span>/usr/lib/jvm/java-<span class="m">1.8</span>.<span class="m">0</span>-openjdk-amd<span class="m">64</span>/<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># Invoke the IScheduler as a library directly</span><span class="w">
-</span><span class="w"></span>heron.scheduler.is.service<span class="p">:</span><span class="w"> </span>False</code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># scheduler class for distributing the topology for execution</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.scheduler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.scheduler.aurora.AuroraScheduler</span>
+
+<span class="c1"># launcher class for submitting and launching the topology</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.launcher</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.scheduler.aurora.AuroraLauncher</span>
+
+<span class="c1"># location of the core package</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.package.core.uri</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">file:///vagrant/.herondata/dist/heron-core-release.tar.gz</span>
+
+<span class="c1"># location of java - pick it up from shell environment</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.directory.sandbox.java.home</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/usr/lib/jvm/java-1.8.0-openjdk-amd64/</span>
+
+<span class="c1"># Invoke the IScheduler as a library directly</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.scheduler.is.service</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
+
 <h2 id="working-with-topologies">Working with Topologies</h2>
 
 <p>After setting up ZooKeeper and generating an Aurora-accessible Heron core binary

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron on Kubernetes with Helm"><meta property="og:url" content="/docs/operators/deployment/schedulers/kubernetes-helm/"><meta property="og:description" content="The fastest and easiest way to install Heron on Kubernetes"><meta name="twitter:description" content="The fastest and easiest way to install Heron on Kubernetes"><title>Heron Documentation - Heron on Kubernetes with Helm</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron on Kubernetes with Helm"><meta property="og:url" content="/docs/operators/deployment/schedulers/kubernetes-helm/"><meta property="og:description" content="The fastest and easiest way to install Heron on Kubernetes"><meta name="twitter:description" content="The fastest and easiest way to install Heron on Kubernetes"><title>Heron Documentation - Heron on Kubernetes with Helm</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -28,36 +28,52 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h3 id="helm-for-macos">Helm for macOS</h3>
 
 <p>You can install Helm on macOS using <a href="https://brew.sh">Homebrew</a>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ brew install kubernetes-helm</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ brew install kubernetes-helm
+</code></pre></div>
+
 <h3 id="helm-for-linux">Helm for Linux</h3>
 
 <p>You can install Helm on Linux using a simple installation script:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get &gt; install-helm.sh
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get &gt; install-helm.sh
 $ chmod <span class="m">700</span> install-helm.sh
-$ ./install-helm.sh</code></pre></div>
+$ ./install-helm.sh
+</code></pre></div>
+
 <h2 id="installing-helm-in-your-kubernetes-cluster">Installing Helm in your Kubernetes cluster</h2>
 
 <p>To run Helm on Kubernetes, you need to first make sure that <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl">kubectl</a> is using the right configuration context for your cluster. To check which context is being used:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ kubectl config current-context</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl config current-context
+</code></pre></div>
+
 <p>If the context is correct, then you can get Helm running using just one command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm init</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm init
+</code></pre></div>
+
 <p>If the output of that command includes <code>Happy Helming!</code> then Helm is ready to go.</p>
 
 <h2 id="installing-heron-on-kubernetes">Installing Heron on Kubernetes</h2>
 
 <p>Once you&rsquo;ve installed the Helm client on your machine and gotten Helm running in your Kubernetes cluster, you need to make your client aware of the <code>heron-charts</code> Helm repository, which houses the chart for Heron:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm repo add heron-charts https://storage.googleapis.com/heron-charts
-<span class="s2">&#34;heron-charts&#34;</span> has been added to your repositories</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm repo add heron-charts https://storage.googleapis.com/heron-charts
+<span class="s2">&quot;heron-charts&quot;</span> has been added to your repositories
+</code></pre></div>
+
 <p>Now you can install the Heron package:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron
+</code></pre></div>
+
 <p>This will install Heron and provide the installation with a random name like <code>jazzy-anaconda</code>. To provide the installation with a name, such as <code>heron-kubernetes</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --name heron-kubernetes</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron <span class="se">\</span>
+  --name heron-kubernetes
+</code></pre></div>
+
 <h3 id="specifying-a-platform">Specifying a platform</h3>
 
 <p>The default platform for running Heron on Kubernetes is <a href="#minikube">Minikube</a>. To specify a different platform, you can use the <code>--set platform=PLATFORM</code> flag. Here&rsquo;s an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --set <span class="nv">platform</span><span class="o">=</span>gke</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron <span class="se">\</span>
+  --set <span class="nv">platform</span><span class="o">=</span>gke
+</code></pre></div>
+
 <p>The available platforms are:</p>
 
 <table>
@@ -102,17 +118,21 @@ $ ./install-helm.sh</code></pre></div>
 </ul>
 
 <p>To start up Minikube with the minimum necessary resources:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ minikube start <span class="se">\
-</span><span class="se"></span>  --memory<span class="o">=</span><span class="m">7168</span> <span class="se">\
-</span><span class="se"></span>  --cpus<span class="o">=</span><span class="m">5</span> <span class="se">\
-</span><span class="se"></span>  --disk-size<span class="o">=</span>20g</code></pre></div>
-<p>Once Minikube is running, you can then install Heron in one of two ways:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Use the Minikube default
-</span><span class="c1"></span>$ helm install heron-charts/heron
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ minikube start <span class="se">\</span>
+  --memory<span class="o">=</span><span class="m">7168</span> <span class="se">\</span>
+  --cpus<span class="o">=</span><span class="m">5</span> <span class="se">\</span>
+  --disk-size<span class="o">=</span>20g
+</code></pre></div>
 
-<span class="c1"># Explicitly select Minikube
-</span><span class="c1"></span>$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --set <span class="nv">platform</span><span class="o">=</span>minikube</code></pre></div>
+<p>Once Minikube is running, you can then install Heron in one of two ways:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># Use the Minikube default</span>
+$ helm install heron-charts/heron
+
+<span class="c1"># Explicitly select Minikube</span>
+$ helm install heron-charts/heron <span class="se">\</span>
+  --set <span class="nv">platform</span><span class="o">=</span>minikube
+</code></pre></div>
+
 <h4 id="google-kubernetes-engine">Google Kubernetes Engine</h4>
 
 <p>The resources required to run Heron on <a href="https://cloud.google.com/kubernetes-engine/">Google Kubernetes Engine</a> vary based on your use case. To run a basic Heron cluster intended for development and experimentation, you&rsquo;ll need at least:</p>
@@ -123,9 +143,11 @@ $ ./install-helm.sh</code></pre></div>
 </ul>
 
 <p>To create a cluster with those resources using the <a href="https://cloud.google.com/sdk/gcloud/">gcloud</a> tool:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gcloud container clusters create heron-gke-dev-cluster <span class="se">\
-</span><span class="se"></span>  --num-nodes<span class="o">=</span><span class="m">3</span> <span class="se">\
-</span><span class="se"></span>  --machine-type<span class="o">=</span>n1-standard-2</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud container clusters create heron-gke-dev-cluster <span class="se">\</span>
+  --num-nodes<span class="o">=</span><span class="m">3</span> <span class="se">\</span>
+  --machine-type<span class="o">=</span>n1-standard-2
+</code></pre></div>
+
 <p>For a production-ready cluster you&rsquo;ll want a larger cluster with:</p>
 
 <ul>
@@ -134,25 +156,35 @@ $ ./install-helm.sh</code></pre></div>
 </ul>
 
 <p>To create such a cluster:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gcloud container clusters create heron-gke-prod-cluster <span class="se">\
-</span><span class="se"></span>  --num-nodes<span class="o">=</span><span class="m">8</span> <span class="se">\
-</span><span class="se"></span>  --machine-type<span class="o">=</span>n1-standard-8</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud container clusters create heron-gke-prod-cluster <span class="se">\</span>
+  --num-nodes<span class="o">=</span><span class="m">8</span> <span class="se">\</span>
+  --machine-type<span class="o">=</span>n1-standard-8
+</code></pre></div>
+
 <p>Once the cluster has been successfully created, you&rsquo;ll need to install that cluster&rsquo;s credentials locally so that they can be used by <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">kubectl</a>. You can do this in just one command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gcloud container clusters get-credentials heron-gke-dev-cluster # or heron-gke-prod-cluster</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud container clusters get-credentials heron-gke-dev-cluster <span class="c1"># or heron-gke-prod-cluster</span>
+</code></pre></div>
+
 <p>Once, the cluster is running (that could take a few minutes), you can initialize Helm on the cluster:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm init</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm init
+</code></pre></div>
+
 <p>Then, you&rsquo;ll need to adjust some RBAC permissions for your cluster:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ kubectl create serviceaccount tiller <span class="se">\
-</span><span class="se"></span>  --namespace kube-system <span class="se">\
-</span><span class="se"></span>$ kubectl create clusterrolebinding tiller-cluster-rule <span class="se">\
-</span><span class="se"></span>  --clusterrole cluster-admin <span class="se">\
-</span><span class="se"></span>  --serviceaccount kube-system:tiller
-$ kubectl patch deploy tiller-deploy <span class="se">\
-</span><span class="se"></span>  --namespace kube-system <span class="se">\
-</span><span class="se"></span>  --patch <span class="s1">&#39;{&#34;spec&#34;:{&#34;template&#34;:{&#34;spec&#34;:{&#34;serviceAccount&#34;:&#34;tiller&#34;}}}}&#39;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl create serviceaccount tiller <span class="se">\</span>
+  --namespace kube-system <span class="se">\</span>
+$ kubectl create clusterrolebinding tiller-cluster-rule <span class="se">\</span>
+  --clusterrole cluster-admin <span class="se">\</span>
+  --serviceaccount kube-system:tiller
+$ kubectl patch deploy tiller-deploy <span class="se">\</span>
+  --namespace kube-system <span class="se">\</span>
+  --patch <span class="s1">&#39;{&quot;spec&quot;:{&quot;template&quot;:{&quot;spec&quot;:{&quot;serviceAccount&quot;:&quot;tiller&quot;}}}}&#39;</span>
+</code></pre></div>
+
 <p>Finally, you can install Heron:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --set <span class="nv">platform</span><span class="o">=</span>gke</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron <span class="se">\</span>
+  --set <span class="nv">platform</span><span class="o">=</span>gke
+</code></pre></div>
+
 <h5 id="resource-configurations">Resource configurations</h5>
 
 <p>Helm enables you to supply sets of variables via YAML files. There are currently a handful of different resource configurations that can be applied to your Heron on GKE cluster upon installation:</p>
@@ -179,19 +211,25 @@ $ kubectl patch deploy tiller-deploy <span class="se">\
 </table>
 
 <p>To apply the <code>small</code> configuration, for example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --set <span class="nv">platform</span><span class="o">=</span>gke <span class="se">\
-</span><span class="se"></span>  --values https://raw.githubusercontent.com/twitter/heron/master/deploy/kubernetes/gcp/small.yaml</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron <span class="se">\</span>
+  --set <span class="nv">platform</span><span class="o">=</span>gke <span class="se">\</span>
+  --values https://raw.githubusercontent.com/twitter/heron/master/deploy/kubernetes/gcp/small.yaml
+</code></pre></div>
+
 <h4 id="amazon-web-services">Amazon Web Services</h4>
 
 <p>To run Heron on Kubernetes on Amazon Web Services (AWS), you&rsquo;ll need to</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --set <span class="nv">platform</span><span class="o">=</span>aws</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron <span class="se">\</span>
+  --set <span class="nv">platform</span><span class="o">=</span>aws
+</code></pre></div>
+
 <h4 id="bare-metal">Bare metal</h4>
 
 <p>To run Heron on a bare metal Kubernetes cluster:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ helm install heron-charts/heron <span class="se">\
-</span><span class="se"></span>  --set <span class="nv">platform</span><span class="o">=</span>baremetal</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ helm install heron-charts/heron <span class="se">\</span>
+  --set <span class="nv">platform</span><span class="o">=</span>baremetal
+</code></pre></div>
+
 <h2 id="running-topologies-on-heron-on-kubernetes">Running topologies on Heron on Kubernetes</h2>
 
 <p>Once you have a Heron cluster up and running on Kubernetes via Helm, you can use the <a href="../../../heron-cli"><code>heron</code> CLI tool</a> like normal if you set the proper URL for the <a href="../../../heron-api-server">Heron API server</a>. When running Heron on Kubernetes, that URL is:</p>
@@ -200,17 +238,21 @@ $ kubectl patch deploy tiller-deploy <span class="se">\
 </code></pre>
 
 <p>To set that URL:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config heron-kubernetes <span class="nb">set</span> service_url <span class="se">\
-</span><span class="se"></span>  http://localhost:8001/api/v1/proxy/namespaces/default/services/heron-kubernetes-heron-apiserver:9000/api/v1/version</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron config heron-kubernetes <span class="nb">set</span> service_url <span class="se">\</span>
+  http://localhost:8001/api/v1/proxy/namespaces/default/services/heron-kubernetes-heron-apiserver:9000/api/v1/version
+</code></pre></div>
+
 <blockquote>
 <p>When setting the <code>heron</code> CLI configuration, make sure that the cluster name matches the name of the Helm installation. This can be either the name auto-generated by Helm or the name you supplied via the <code>--name</code> flag upon installation (in some of the examples above, the <code>heron-kubernetes</code> name was used). Make sure to adjust the name accordingly if necessary.</p>
 </blockquote>
 
 <p>To test your cluster, you can submit an example topology:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit heron-kubernetes <span class="se">\
-</span><span class="se"></span>  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\
-</span><span class="se"></span>  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\
-</span><span class="se"></span>  WindowedWordCount</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron submit heron-kubernetes <span class="se">\</span>
+  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\</span>
+  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\</span>
+  WindowedWordCount
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

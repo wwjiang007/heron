@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Simulator Mode"><meta property="og:url" content="/docs/developers/simulator-mode/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Simulator Mode</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Simulator Mode"><meta property="og:url" content="/docs/developers/simulator-mode/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Simulator Mode</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -17,19 +17,25 @@ cluster.</p>
 in <code>storm-compatibility-unshaded_deploy.jar</code>  (under <code>bazel-bin/storm-compatibility/src/java</code>).</p>
 
 <p>For example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.simulator.Simulator</span><span class="o">;</span>
-<span class="n">Simulator</span> <span class="n">simulator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Simulator</span><span class="o">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.simulator.Simulator</span><span class="o">;</span>
+<span class="n">Simulator</span> <span class="n">simulator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Simulator</span><span class="o">();</span>
+</code></pre></div>
+
 <p>You can then submit topologies using the <code>submitTopology</code> method on the <code>Simulator</code> object. Just
 like the corresponding method on <code>StormSubmitter</code>, <code>submitTopology</code> takes a name, a topology
 configuration, and a topology object.</p>
 
 <p>For example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">simulator</span><span class="o">.</span><span class="na">submitTopology</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="n">conf</span><span class="o">,</span> <span class="n">builder</span><span class="o">.</span><span class="na">createTopology</span><span class="o">());</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">simulator</span><span class="o">.</span><span class="na">submitTopology</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">,</span> <span class="n">conf</span><span class="o">,</span> <span class="n">builder</span><span class="o">.</span><span class="na">createTopology</span><span class="o">());</span>
+</code></pre></div>
+
 <p>Other lifecycle methods to use with simulator mode are:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">simulator</span><span class="o">.</span><span class="na">killTopology</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">);</span>
-<span class="n">simulator</span><span class="o">.</span><span class="na">activate</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">);</span>
-<span class="n">simulator</span><span class="o">.</span><span class="na">deactivate</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">);</span>
-<span class="n">simulator</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">simulator</span><span class="o">.</span><span class="na">killTopology</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">);</span>
+<span class="n">simulator</span><span class="o">.</span><span class="na">activate</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">);</span>
+<span class="n">simulator</span><span class="o">.</span><span class="na">deactivate</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">);</span>
+<span class="n">simulator</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
+</code></pre></div>
+
 <p>To kill a topology, one could also terminate the process.</p>
 
 <p>The simulator mode will run in separate threads other than the main thread. All the above methods are

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up Http Uploader"><meta property="og:url" content="/docs/operators/deployment/uploaders/http/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up Http Uploader</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up Http Uploader"><meta property="og:url" content="/docs/operators/deployment/uploaders/http/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up Http Uploader</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -25,10 +25,12 @@ uploaded.</p></li>
 <h3 id="example-http-uploader-configuration">Example Http Uploader Configuration</h3>
 
 <p>Below is an example configuration (in <code>uploader.yaml</code>) for a Http uploader:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># uploader class for transferring the topology jar/tar files to storage</span><span class="w">
-</span><span class="w"></span>heron.class.uploader<span class="p">:</span><span class="w"> </span>com.twitter.heron.uploader.http.HttpUploader<span class="w">
-</span><span class="w">
-</span><span class="w"></span>heron.uploader.http.uri<span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//localhost<span class="p">:</span><span class="m">9000</span>/api/v<span class="m">1</span>/file/upload</code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># uploader class for transferring the topology jar/tar files to storage</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.uploader</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.uploader.http.HttpUploader</span>
+
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.http.uri</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">http://localhost:9000/api/v1/file/upload</span>
+</code></pre></div>
+
 <p>Also Heron&rsquo;s API server can be used as a file server for the HttpUploader to upload topology
 package/jars as follows:</p>
 

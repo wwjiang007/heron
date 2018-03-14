@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up S3 Uploader"><meta property="og:url" content="/docs/operators/deployment/uploaders/s3/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up S3 Uploader</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting Up S3 Uploader"><meta property="og:url" content="/docs/operators/deployment/uploaders/s3/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting Up S3 Uploader</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -31,17 +31,19 @@ write access to the bucket</p></li>
 <h3 id="example-s3-uploader-configuration">Example S3 Uploader Configuration</h3>
 
 <p>Below is an example configuration (in <code>uploader.yaml</code>) for a S3 uploader:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># uploader class for transferring the topology jar/tar files to storage</span><span class="w">
-</span><span class="w"></span>heron.class.uploader<span class="p">:</span><span class="w"> </span>com.twitter.heron.uploader.s<span class="m">3.</span>S3Uploader<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># S3 bucket to put the jar file into</span><span class="w">
-</span><span class="w"></span>heron.uploader.s<span class="m">3.</span>bucket<span class="p">:</span><span class="w"> </span>heron-topologies-company-com<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># AWS access key</span><span class="w">
-</span><span class="w"></span>heron.uploader.s<span class="m">3.</span>access_key<span class="p">:</span><span class="w"> </span>access_key<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># AWS secret access key</span><span class="w">
-</span><span class="w"></span>heron.uploader.s<span class="m">3.</span>secret_key<span class="p">:</span><span class="w"> </span>secret_access_key</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># uploader class for transferring the topology jar/tar files to storage</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.uploader</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.uploader.s3.S3Uploader</span>
+
+<span class="c1"># S3 bucket to put the jar file into</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.s3.bucket</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">heron-topologies-company-com</span>
+
+<span class="c1"># AWS access key</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.s3.access_key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">access_key</span>
+
+<span class="c1"># AWS secret access key</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.uploader.s3.secret_key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">secret_access_key</span>
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

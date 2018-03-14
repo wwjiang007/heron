@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting up Heron with Aurora Cluster Locally on Linux"><meta property="og:url" content="/docs/operators/deployment/schedulers/aurora-local-setup/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting up Heron with Aurora Cluster Locally on Linux</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Setting up Heron with Aurora Cluster Locally on Linux"><meta property="og:url" content="/docs/operators/deployment/schedulers/aurora-local-setup/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Setting up Heron with Aurora Cluster Locally on Linux</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -18,19 +18,29 @@ following steps can be found in <a href="http://aurora.apache.org/documentation/
 <p>Download and install VirtualBox and Vagrant on your machine. If vagrant is successfully
 installed in your machine the following command should list several common commands
 for this tool</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ vagrant</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ vagrant
+</code></pre></div>
+
 <h3 id="step-2-clone-the-aurora-repository">Step 2: Clone the Aurora repository</h3>
 
 <p>You can get the source repository for Aurora with the following command</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ dgit clone git://git.apache.org/aurora.git</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ dgit clone git://git.apache.org/aurora.git
+</code></pre></div>
+
 <p>Once the clone is complete cd into the aurora folder</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">cd</span> aurora</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">cd</span> aurora
+</code></pre></div>
+
 <h3 id="step-3-starting-local-aurora-cluster">Step 3: Starting Local Aurora Cluster</h3>
 
 <p>To start the local cluster all you have to do is execute the following command. It will install all the needed dependencies like Apache Mesos and Zookeeper in the VM.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ vagrant up</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ vagrant up
+</code></pre></div>
+
 <p>Additionally to get rid of some of the warning messages that you get during up command execute the following command</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ vagrant plugin install vagrant-vbguest</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ vagrant plugin install vagrant-vbguest
+</code></pre></div>
+
 <p>You can verify that the Aurora cluster is properly running by opening the following links in your web-browser</p>
 
 <ul>
@@ -51,7 +61,9 @@ named <code>devcluster</code> this will be important to note when submitting typ
 deployment working. Since this is a fresh VM instance you will have to install the basic software such as &ldquo;unzip&rdquo; and set
 the JAVA_HOME path as an environmental variable ( Just need to add this to .bashrc file). After you have the basic stuff
 working follow the following steps to install Heron in the VM. You can ssh into the VM with the following command</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ vagrant ssh</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ vagrant ssh
+</code></pre></div>
+
 <h3 id="step-1-a-download-installation-script-files">Step 1.a : Download installation script files</h3>
 
 <p>You can download the script files that match your Linux distribution from
@@ -72,7 +84,7 @@ working follow the following steps to install Heron in the VM. You can ssh into 
 </ul>
 
 <h3 id="step-1-b-execute-the-client-and-tools-shell-scripts">Step 1.b: Execute the client and tools shell scripts</h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ chmod +x heron-client-install-VERSION-PLATFORM.sh
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ chmod +x heron-client-install-VERSION-PLATFORM.sh
 $ ./heron-client-install-VERSION-PLATFORM.sh --user
 Heron client installer
 ----------------------
@@ -80,13 +92,19 @@ Heron client installer
 Uncompressing......
 Heron is now installed!
 
-Make sure you have <span class="s2">&#34;/home/vagrant/bin&#34;</span> in your path.</code></pre></div>
+Make sure you have <span class="s2">&quot;/home/vagrant/bin&quot;</span> in your path.
+</code></pre></div>
+
 <p>After this you need to add the path &ldquo;/home/vagrant/bin&rdquo;. You can just execute the following command
 or add it to the end of  .bashrc file ( which is more convenient ).</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/home/vagrant/bin</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/home/vagrant/bin
+</code></pre></div>
+
 <p>Install the following packages to make sure that you have all the needed dependencies in the VM.
 You might have to do sudo apt-get update before you execute the following.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo apt-get install git build-essential automake cmake libtool zip libunwind-setjmp0-dev zlib1g-dev unzip pkg-config -y</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ sudo apt-get install git build-essential automake cmake libtool zip libunwind-setjmp0-dev zlib1g-dev unzip pkg-config -y
+</code></pre></div>
+
 <h2 id="configuring-state-manager-apache-zookeeper">Configuring State Manager ( Apache Zookeeper )</h2>
 
 <p>Since Heron only uses Apache Zookeeper for coordination the load on the Zookeeper
@@ -100,79 +118,95 @@ located in the directory <code>/home/vagrant/.heron/conf/aurora</code>.</p>
 
 <p>Open the file <code>statemgr.yaml</code> using vim ( or some other text editor you prefer )
 and add/edit the file to include the following.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># local state manager class for managing state in a persistent fashion</span><span class="w">
-</span><span class="w"></span>heron.class.state.manager<span class="p">:</span><span class="w"> </span>com.twitter.heron.statemgr.zookeeper.curator.CuratorStateManager<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># local state manager connection string</span><span class="w">
-</span><span class="w"></span>heron.statemgr.connection.string<span class="p">:</span><span class="w">  </span><span class="s2">&#34;127.0.0.1:2181&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># path of the root address to store the state in a local file system</span><span class="w">
-</span><span class="w"></span>heron.statemgr.root.path<span class="p">:</span><span class="w"> </span><span class="s2">&#34;/heronroot&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># create the zookeeper nodes, if they do not exist</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.is.initialize.tree<span class="p">:</span><span class="w"> </span>True<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># timeout in ms to wait before considering zookeeper session is dead</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.session.timeout.ms<span class="p">:</span><span class="w"> </span><span class="m">30000</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># timeout in ms to wait before considering zookeeper connection is dead</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.connection.timeout.ms<span class="p">:</span><span class="w"> </span><span class="m">30000</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># timeout in ms to wait before considering zookeeper connection is dead</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.retry.count<span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># duration of time to wait until the next retry</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.retry.interval.ms<span class="p">:</span><span class="w"> </span><span class="m">10000</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># local state manager class for managing state in a persistent fashion</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.state.manager</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.statemgr.zookeeper.curator.CuratorStateManager</span>
+
+<span class="c1"># local state manager connection string</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.connection.string</span><span class="p p-Indicator">:</span>  <span class="s">&quot;127.0.0.1:2181&quot;</span>
+
+<span class="c1"># path of the root address to store the state in a local file system</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.root.path</span><span class="p p-Indicator">:</span> <span class="s">&quot;/heronroot&quot;</span>
+
+<span class="c1"># create the zookeeper nodes, if they do not exist</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.is.initialize.tree</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># timeout in ms to wait before considering zookeeper session is dead</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.session.timeout.ms</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">30000</span>
+
+<span class="c1"># timeout in ms to wait before considering zookeeper connection is dead</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.connection.timeout.ms</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">30000</span>
+
+<span class="c1"># timeout in ms to wait before considering zookeeper connection is dead</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.retry.count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="c1"># duration of time to wait until the next retry</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.retry.interval.ms</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
+</code></pre></div>
+
 <h2 id="creating-paths-in-zookeeper">Creating Paths in Zookeeper</h2>
 
 <p>Next you need to create some paths within Zookeeper since some of the paths
 are not created by Heron automatically. So you need to create them manually.
 Since Aurora installation already installed Zookeeper, you can use the Zookeeper
 cli to create the manual paths.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo ./usr/share/zookeeper/bin/zkCli.sh</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ sudo ./usr/share/zookeeper/bin/zkCli.sh
+</code></pre></div>
+
 <p>This will connect to the Zookeeper instance running locally. Then execute the
 following commands from within the client to create paths <code>/heronroot/topologies</code>
 and <code>/heron/topologies</code>. Later in &ldquo;Associating new Aurora cluster into Heron UI&rdquo;
 you will see that you only need to create <code>/heronroot/topologies</code> but for now lets
 create both to make sure you don&rsquo;t get any errors when you run things.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">create /heronroot null
-create /heronroot/topologies null</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">create /heron null
-create /heron/topologies null</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>create /heronroot null
+create /heronroot/topologies null
+</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>create /heron null
+create /heron/topologies null
+</code></pre></div>
+
 <h2 id="configuring-scheduler-apache-aurora">Configuring Scheduler ( Apache Aurora )</h2>
 
 <p>Next you need to configure Apache Aurora to be used as the Scheduler for our Heron
 local cluster. In order to do this you need to edit the <code>scheduler.yaml</code> file that is
 also located in <code>/home/vagrant/.heron/conf/aurora</code>. Add/Edit the file to include the
 following. More information regarding parameters can be found in <a href="../aurora">Aurora Cluster</a></p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># scheduler class for distributing the topology for execution</span><span class="w">
-</span><span class="w"></span>heron.class.scheduler<span class="p">:</span><span class="w"> </span>com.twitter.heron.scheduler.aurora.AuroraScheduler<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># launcher class for submitting and launching the topology</span><span class="w">
-</span><span class="w"></span>heron.class.launcher<span class="p">:</span><span class="w"> </span>com.twitter.heron.scheduler.aurora.AuroraLauncher<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># location of the core package</span><span class="w">
-</span><span class="w"></span>heron.package.core.uri<span class="p">:</span><span class="w"> </span>file<span class="p">:</span>///home/vagrant/.heron/dist/heron-core.tar.gz<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># location of java - pick it up from shell environment</span><span class="w">
-</span><span class="w"></span>heron.directory.sandbox.java.home<span class="p">:</span><span class="w"> </span>/usr/lib/jvm/java-<span class="m">1.8</span>.<span class="m">0</span>-openjdk-amd<span class="m">64</span>/<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># Invoke the IScheduler as a library directly</span><span class="w">
-</span><span class="w"></span>heron.scheduler.is.service<span class="p">:</span><span class="w"> </span>False</code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># scheduler class for distributing the topology for execution</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.scheduler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.scheduler.aurora.AuroraScheduler</span>
+
+<span class="c1"># launcher class for submitting and launching the topology</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.launcher</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.scheduler.aurora.AuroraLauncher</span>
+
+<span class="c1"># location of the core package</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.package.core.uri</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">file:///home/vagrant/.heron/dist/heron-core.tar.gz</span>
+
+<span class="c1"># location of java - pick it up from shell environment</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.directory.sandbox.java.home</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/usr/lib/jvm/java-1.8.0-openjdk-amd64/</span>
+
+<span class="c1"># Invoke the IScheduler as a library directly</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.scheduler.is.service</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
+
 <p>Additionally edit the <code>client.yaml</code> file and change the core uri to make it consistant.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># location of the core package</span><span class="w">
-</span><span class="w"></span>heron.package.core.uri<span class="p">:</span><span class="w"> </span>file<span class="p">:</span>///home/vagrant/.heron/dist/heron-core.tar.gz</code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># location of the core package</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.package.core.uri</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">file:///home/vagrant/.heron/dist/heron-core.tar.gz</span>
+</code></pre></div>
+
 <h3 id="important-step-change-folder-name-aurora-to-devcluster">Important Step: Change folder name <code>aurora</code> to <code>devcluster</code></h3>
 
 <p>Next you need to change the folder name of <code>/home/vagrant/.heron/conf/aurora</code> to
 <code>/home/vagrant/.heron/conf/devcluster</code>. This is because the name of your aurora
 cluster is <code>devcluster</code> as you noted in a previous step. You can do this with the
 following commands</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">cd</span> /home/vagrant/.heron/conf/
-$ mv aurora devcluster</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">cd</span> /home/vagrant/.heron/conf/
+$ mv aurora devcluster
+</code></pre></div>
+
 <h2 id="submitting-example-topology-to-aurora-cluster">Submitting Example Topology to Aurora cluster</h2>
 
 <p>Now you can submit a topology to the aurora cluster. this can be done with the following command.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit devcluster/heronuser/devel --config-path ~/.heron/conf/ ~/.heron/examples/heron-examples.jar com.twitter.heron.examples.ExclamationTopology ExclamationTopology</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron submit devcluster/heronuser/devel --config-path ~/.heron/conf/ ~/.heron/examples/heron-examples.jar com.twitter.heron.examples.ExclamationTopology ExclamationTopology
+</code></pre></div>
+
 <p>Now you should be able to see the topology in the Aurora UI ( <a href="http://192.168.33.7:8081/scheduler/heronuser">http://192.168.33.7:8081/scheduler/heronuser</a> ) .</p>
 
 <p><img src="https://twitter.github.io/heron/img/aurora-local-topology-submitted.png" alt="Heron topology" /></p>
@@ -197,44 +231,50 @@ so that it can identify the Aurora Cluster.</p>
 
 <p>Heron Tracker configurations are located at <code>/home/vagrant/.herontools/conf</code> the configuration file is named <code>heron_tracker.yaml</code>.
 By default you should see the following in the file</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">statemgrs<span class="p">:</span><span class="w">
-</span><span class="w">  </span>-<span class="w">
-</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span><span class="s2">&#34;file&#34;</span><span class="w">
-</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;local&#34;</span><span class="w">
-</span><span class="w">    </span>rootpath<span class="p">:</span><span class="w"> </span><span class="s2">&#34;~/.herondata/repository/state/local&#34;</span><span class="w">
-</span><span class="w">    </span>tunnelhost<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost&#34;</span><span class="w">
-</span><span class="w">  </span>-<span class="w">
-</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span><span class="s2">&#34;zookeeper&#34;</span><span class="w">
-</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localzk&#34;</span><span class="w">
-</span><span class="w">    </span>hostport<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost:2181&#34;</span><span class="w">
-</span><span class="w">    </span>rootpath<span class="p">:</span><span class="w"> </span><span class="s2">&#34;/heron&#34;</span><span class="w">
-</span><span class="w">    </span>tunnelhost<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost&#34;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">statemgrs</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&quot;file&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;local&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">rootpath</span><span class="p p-Indicator">:</span> <span class="s">&quot;~/.herondata/repository/state/local&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">tunnelhost</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost&quot;</span>
+  <span class="p p-Indicator">-</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&quot;zookeeper&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;localzk&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">hostport</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost:2181&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">rootpath</span><span class="p p-Indicator">:</span> <span class="s">&quot;/heron&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">tunnelhost</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost&quot;</span>
+</code></pre></div>
+
 <p>You can see that there already two entries. Before, you had to create paths in Zookeeper for <code>/heron/topologies</code> this is
 because the entry named <code>localzk</code> in this file. If you remove this you will not need to create that path in Zookeeper.
 Now all you have to is to add a new entry for the aurora cluster into this file ( lets comment out <code>localzk</code> ).
 Then the file would look like below.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">statemgrs<span class="p">:</span><span class="w">
-</span><span class="w">  </span>-<span class="w">
-</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span><span class="s2">&#34;file&#34;</span><span class="w">
-</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;local&#34;</span><span class="w">
-</span><span class="w">    </span>rootpath<span class="p">:</span><span class="w"> </span><span class="s2">&#34;~/.herondata/repository/state/local&#34;</span><span class="w">
-</span><span class="w">    </span>tunnelhost<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost&#34;</span><span class="w">
-</span><span class="w">  </span><span class="c">#-</span><span class="w">
-</span><span class="w">   </span><span class="c">#type: &#34;zookeeper&#34;</span><span class="w">
-</span><span class="w">   </span><span class="c"># name: &#34;localzk&#34;</span><span class="w">
-</span><span class="w">   </span><span class="c"># hostport: &#34;localhost:2181&#34;</span><span class="w">
-</span><span class="w">   </span><span class="c"># rootpath: &#34;/heron&#34;</span><span class="w">
-</span><span class="w">   </span><span class="c"># tunnelhost: &#34;localhost&#34;</span><span class="w">
-</span><span class="w">  </span>-<span class="w">
-</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span><span class="s2">&#34;zookeeper&#34;</span><span class="w">
-</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;devcluster&#34;</span><span class="w">
-</span><span class="w">    </span>hostport<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost:2181&#34;</span><span class="w">
-</span><span class="w">    </span>rootpath<span class="p">:</span><span class="w"> </span><span class="s2">&#34;/heronroot&#34;</span><span class="w">
-</span><span class="w">    </span>tunnelhost<span class="p">:</span><span class="w"> </span><span class="s2">&#34;localhost&#34;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">statemgrs</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&quot;file&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;local&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">rootpath</span><span class="p p-Indicator">:</span> <span class="s">&quot;~/.herondata/repository/state/local&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">tunnelhost</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost&quot;</span>
+  <span class="c1">#-</span>
+   <span class="c1">#type: &quot;zookeeper&quot;</span>
+   <span class="c1"># name: &quot;localzk&quot;</span>
+   <span class="c1"># hostport: &quot;localhost:2181&quot;</span>
+   <span class="c1"># rootpath: &quot;/heron&quot;</span>
+   <span class="c1"># tunnelhost: &quot;localhost&quot;</span>
+  <span class="p p-Indicator">-</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&quot;zookeeper&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;devcluster&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">hostport</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost:2181&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">rootpath</span><span class="p p-Indicator">:</span> <span class="s">&quot;/heronroot&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">tunnelhost</span><span class="p p-Indicator">:</span> <span class="s">&quot;localhost&quot;</span>
+</code></pre></div>
+
 <p>Now you can start Heron tracker and then Heron UI, Now you will be able to see the aurora cluster from the
 Heron UI ( <a href="http://192.168.33.7:8889/topologies">http://192.168.33.7:8889/topologies</a> ) as below</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-tracker
-$ heron-ui</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-tracker
+$ heron-ui
+</code></pre></div>
+
 <p><img src="https://twitter.github.io/heron/img/heron-ui-topology-submitted.png" alt="Heron topology" /></p>
 </article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {

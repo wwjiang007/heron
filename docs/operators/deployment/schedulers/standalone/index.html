@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron standalone"><meta property="og:url" content="/docs/operators/deployment/schedulers/standalone/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Heron standalone</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron standalone"><meta property="og:url" content="/docs/operators/deployment/schedulers/standalone/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Heron standalone</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -19,12 +19,16 @@ function load() { if (window.location.hash) shiftWindow(); }
 <p>Once you have the <code>heron-admin</code> CLI tool installed, you need to provide a list of hosts for both the Heron cluster itself and for <a href="https://zookeeper.apache.org">ZooKeeper</a>.</p>
 
 <p>You can easily do this by running the following command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-admin standalone set</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-admin standalone <span class="nb">set</span>
+</code></pre></div>
+
 <p>That will open up an <code>inventory.yaml</code> file in whichever editor is specified in your <code>EDITOR</code> environment variable. The default is <a href="http://www.vim.org/">Vim</a>. That YAML file looks like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">cluster<span class="p">:</span><span class="w">
-</span><span class="w"></span>-<span class="w"> </span><span class="m">127.0</span>.<span class="m">0.1</span><span class="w">
-</span><span class="w"></span>zookeepers<span class="p">:</span><span class="w">
-</span><span class="w"></span>-<span class="w"> </span><span class="m">127.0</span>.<span class="m">0.1</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">cluster</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+<span class="l l-Scalar l-Scalar-Plain">zookeepers</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+</code></pre></div>
+
 <p>You can modify the file to include all hosts for your standalone cluster and for ZooKeeper. Remember you need to be able to ssh into all the nodes listed in the cluster section. Once you&rsquo;ve added the lists of hosts for the Heron standalone cluster and ZooKeeper and saved the file, you can move on to <a href="#starting-and-stopping-the-cluster">starting the cluster</a>.</p>
 
 <blockquote>
@@ -34,101 +38,125 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h2 id="starting-and-stopping-the-cluster">Starting and stopping the cluster</h2>
 
 <p>To start Heron in standalone mode once the host configuration has been applied:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-admin standalone cluster start</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-admin standalone cluster start
+</code></pre></div>
+
 <p>You should see output like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Roles:
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>:  - Master Servers: <span class="o">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="o">]</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>:  - Slave Servers: <span class="o">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="o">]</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>:  - Zookeeper Servers: <span class="o">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="o">]</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Updating config files...
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting master on <span class="m">127</span>.0.0.1
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting masters
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting slave on <span class="m">127</span>.0.0.1
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting slaves
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> cluster to come up... <span class="m">0</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:08 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting Heron API Server on <span class="m">127</span>.0.0.1
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:08 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> apiserver to come up... <span class="m">0</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:09 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> apiserver to come up... <span class="m">1</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:16 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting Heron API Server
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:16 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting Heron Tools on <span class="m">127</span>.0.0.1
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:16 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> apiserver to come up... <span class="m">0</span>
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:17 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting Heron Tools
-<span class="o">[</span><span class="m">2018</span>-01-22 <span class="m">10</span>:37:17 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Heron standalone cluster complete!</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Roles:
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>:  - Master Servers: <span class="o">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="o">]</span>
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>:  - Slave Servers: <span class="o">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="o">]</span>
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>:  - Zookeeper Servers: <span class="o">[</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="o">]</span>
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Updating config files...
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting master on 127.0.0.1
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting masters
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting slave on 127.0.0.1
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting slaves
+<span class="o">[</span>2018-01-22 10:37:06 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> cluster to come up... 0
+<span class="o">[</span>2018-01-22 10:37:08 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting Heron API Server on 127.0.0.1
+<span class="o">[</span>2018-01-22 10:37:08 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> apiserver to come up... 0
+<span class="o">[</span>2018-01-22 10:37:09 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> apiserver to come up... 1
+<span class="o">[</span>2018-01-22 10:37:16 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting Heron API Server
+<span class="o">[</span>2018-01-22 10:37:16 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Starting Heron Tools on 127.0.0.1
+<span class="o">[</span>2018-01-22 10:37:16 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Waiting <span class="k">for</span> apiserver to come up... 0
+<span class="o">[</span>2018-01-22 10:37:17 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Done starting Heron Tools
+<span class="o">[</span>2018-01-22 10:37:17 -0800<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span>: Heron standalone cluster complete!
+</code></pre></div>
+
 <p>If you see the <code>Heron standalone cluster complete!</code> message, that means that the cluster is ready for you to <a href="#submitting-a-topology">submit</a> and manage topologies.</p>
 
 <p>You can stop the cluster at any time using the <code>stop</code> command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-admin standalone cluster stop</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-admin standalone cluster stop
+</code></pre></div>
+
 <p>You will be prompted to confirm that you want to stop the cluster by typing <strong>yes</strong> or <strong>y</strong> (or <strong>no</strong> or <strong>n</strong> if you don&rsquo;t want to). If you enter <strong>yes</strong> or <strong>y</strong> and press <strong>Enter</strong>, all Heron-related jobs will be de-scheduled on Nomad.</p>
 
 <h2 id="fetching-info-about-your-standalone-cluster">Fetching info about your standalone cluster</h2>
 
 <p>At any time, you can retrieve information about your standalone cluster by running:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-admin standalone info</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-admin standalone info
+</code></pre></div>
+
 <p>This will return a JSON string containing a list of hosts for Heron and ZooKeeper as well as URLs for the <a href="../../../heron-api-server">Heron API server</a>, <a href="../../../heron-ui">Heron UI</a>, and <a href="../../../heron-tracker">Heron Tracker</a>. Here is a cluster info JSON string if all defaults are retained:</p>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
-  <span class="nt">&#34;numNodes&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="nt">&#34;nodes&#34;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&#34;127.0.0.1&#34;</span>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span></span><span class="p">{</span>
+  <span class="nt">&quot;numNodes&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nt">&quot;nodes&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;127.0.0.1&quot;</span>
   <span class="p">],</span>
-  <span class="nt">&#34;roles&#34;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&#34;masters&#34;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&#34;127.0.0.1&#34;</span>
+  <span class="nt">&quot;roles&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;masters&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;127.0.0.1&quot;</span>
     <span class="p">],</span>
-    <span class="nt">&#34;slaves&#34;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&#34;127.0.0.1&#34;</span>
+    <span class="nt">&quot;slaves&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;127.0.0.1&quot;</span>
     <span class="p">],</span>
-    <span class="nt">&#34;zookeepers&#34;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&#34;127.0.0.1&#34;</span>
+    <span class="nt">&quot;zookeepers&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;127.0.0.1&quot;</span>
     <span class="p">]</span>
   <span class="p">},</span>
-  <span class="nt">&#34;urls&#34;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&#34;serviceUrl&#34;</span><span class="p">:</span> <span class="s2">&#34;http://127.0.0.1:9000&#34;</span><span class="p">,</span>
-    <span class="nt">&#34;heronUi&#34;</span><span class="p">:</span> <span class="s2">&#34;http://127.0.0.1:8889&#34;</span><span class="p">,</span>
-    <span class="nt">&#34;heronTracker&#34;</span><span class="p">:</span> <span class="s2">&#34;http://127.0.0.1:8888&#34;</span>
+  <span class="nt">&quot;urls&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;serviceUrl&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:9000&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;heronUi&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8889&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;heronTracker&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8888&quot;</span>
   <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span>
+</code></pre></div>
+
 <p>You can also get more specific bits of info using the <code>get</code> command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Heron Tracker URL
-</span><span class="c1"></span>$ heron-admin standalone get heron-tracker-url
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># Heron Tracker URL</span>
+$ heron-admin standalone get heron-tracker-url
 
-<span class="c1"># Heron UI URL
-</span><span class="c1"></span>$ heron-admin standalone get heron-ui-url
+<span class="c1"># Heron UI URL</span>
+$ heron-admin standalone get heron-ui-url
 
-<span class="c1"># Heron cluster service URL
-</span><span class="c1"></span>$ heron-admin standalone get service-url</code></pre></div>
+<span class="c1"># Heron cluster service URL</span>
+$ heron-admin standalone get service-url
+</code></pre></div>
+
 <h2 id="setting-the-service-url">Setting the service URL</h2>
 
 <p>Once your standalone cluster is running, there&rsquo;s one final step before you can interact with the cluster: you need to specify the service URL for the <a href="../../../heron-api-server">Heron API server</a> for the standalone cluster. You can fetch that URL in two different ways:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Using the &#34;get&#34; command
-</span><span class="c1"></span>$ heron-admin standalone get service-url
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># Using the &quot;get&quot; command</span>
+$ heron-admin standalone get service-url
 
-<span class="c1"># Using the &#34;info&#34; command
-</span><span class="c1"></span>$ heron-admin standalone info <span class="p">|</span> jq .urls.serviceUrl <span class="p">|</span> tr -d <span class="s1">&#39;&#34;&#39;</span></code></pre></div>
+<span class="c1"># Using the &quot;info&quot; command</span>
+$ heron-admin standalone info <span class="p">|</span> jq .urls.serviceUrl <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span>
+</code></pre></div>
+
 <p>Once you have the URL, you can use the <code>heron config</code> command to set the service URL:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config standalone <span class="nb">set</span> service_url SERVICE_URL</code></pre></div>
-<p>Here are some more convenient ways to set the service URL:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Using the &#34;get&#34; command
-</span><span class="c1"></span>$ heron config standalone <span class="nb">set</span> service_url <span class="se">\
-</span><span class="se"></span>  <span class="k">$(</span>heron-admin standalone get service-url<span class="k">)</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron config standalone <span class="nb">set</span> service_url SERVICE_URL
+</code></pre></div>
 
-<span class="c1"># Using the &#34;info&#34; command
-</span><span class="c1"></span>$ heron config standalone <span class="nb">set</span> service_url <span class="se">\
-</span><span class="se"></span>  <span class="k">$(</span>heron-admin standalone info <span class="p">|</span> jq .urls.serviceUrl <span class="p">|</span> tr -d <span class="s1">&#39;&#34;&#39;</span><span class="k">)</span></code></pre></div>
+<p>Here are some more convenient ways to set the service URL:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># Using the &quot;get&quot; command</span>
+$ heron config standalone <span class="nb">set</span> service_url <span class="se">\</span>
+  <span class="k">$(</span>heron-admin standalone get service-url<span class="k">)</span>
+
+<span class="c1"># Using the &quot;info&quot; command</span>
+$ heron config standalone <span class="nb">set</span> service_url <span class="se">\</span>
+  <span class="k">$(</span>heron-admin standalone info <span class="p">|</span> jq .urls.serviceUrl <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+</code></pre></div>
+
 <p>If you&rsquo;re running a standalone cluster locally on your laptop, the service URL will always be <code>http://localhost:9000</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config standalone <span class="nb">set</span> service_url http://localhost:9000</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron config standalone <span class="nb">set</span> service_url http://localhost:9000
+</code></pre></div>
+
 <h2 id="submitting-a-topology">Submitting a topology</h2>
 
 <p>Once your standalone cluster is up and running and you&rsquo;ve set the service URL for the <a href="../../../heron-cli"><code>heron</code> CLI tool</a>, you can submit and manage topologies by specifying the <code>standalone</code> cluster. Here&rsquo;s an example topology submission command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit standalone <span class="se">\
-</span><span class="se"></span>  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\
-</span><span class="se"></span>  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\
-</span><span class="se"></span>  WindowedWordCount</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron submit standalone <span class="se">\</span>
+  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\</span>
+  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\</span>
+  WindowedWordCount
+</code></pre></div>
+
 <p>You can also specify the service url as part of the submission command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit standalone <span class="se">\
-</span><span class="se"></span>  --service-url http://localhost:9000 <span class="se">\
-</span><span class="se"></span>  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\
-</span><span class="se"></span>  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\
-</span><span class="se"></span>  WindowedWordCount</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron submit standalone <span class="se">\</span>
+  --service-url http://localhost:9000 <span class="se">\</span>
+  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\</span>
+  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\</span>
+  WindowedWordCount
+</code></pre></div>
+
 <p>Once the topology has been submitted, it can be deactivated, killed, updated, and so on, just like topologies on any other scheduler.</p>
 
 <h2 id="managing-nomad">Managing Nomad</h2>
@@ -144,7 +172,9 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h3 id="common-problems">Common Problems</h3>
 
 <p>If you see the following in &lsquo;/tmp/nomad_server_log&rsquo;</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Error starting agent: Failed to start Consul server: Failed to start lan serf: Failed to parse advertise address!</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>Error starting agent: Failed to start Consul server: Failed to start lan serf: Failed to parse advertise address!
+</code></pre></div>
+
 <p>The Nomad server cannot determine the network address to advertise itself on.  You will need to manually set that address. You can do that by modifying the configuration file:</p>
 
 <p>~/.heron/conf/standalone/resources/master.hcl</p>

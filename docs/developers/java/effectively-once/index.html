@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Effectively-once Java topologies"><meta property="og:url" content="/docs/developers/java/effectively-once/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Effectively-once Java topologies</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Effectively-once Java topologies"><meta property="og:url" content="/docs/developers/java/effectively-once/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Effectively-once Java topologies</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -21,10 +21,12 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h2 id="specifying-delivery-semantics">Specifying delivery semantics</h2>
 
 <p>You can specify the <a href="../../../concepts/delivery-semantics">delivery semantics</a> of a Heron topology via configuration. To apply effectively-once semantics to a topology:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
 
 <span class="n">Config</span> <span class="n">topologyConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Config</span><span class="o">();</span>
-<span class="n">topologyConfig</span><span class="o">.</span><span class="na">setTopologyReliabilityMode</span><span class="o">(</span><span class="n">Config</span><span class="o">.</span><span class="na">TopologyReliabilityMode</span><span class="o">.</span><span class="na">ATLEAST_ONCE</span><span class="o">);</span></code></pre></div>
+<span class="n">topologyConfig</span><span class="o">.</span><span class="na">setTopologyReliabilityMode</span><span class="o">(</span><span class="n">Config</span><span class="o">.</span><span class="na">TopologyReliabilityMode</span><span class="o">.</span><span class="na">ATLEAST_ONCE</span><span class="o">);</span>
+</code></pre></div>
+
 <p>The other possible values for the <code>TopologyReliabilityMode</code> enum are <code>ATMOST_ONCE</code> and <code>EFFECTIVELY_ONCE</code>.</p>
 
 <blockquote>
@@ -89,7 +91,7 @@ function load() { if (window.location.hash) shiftWindow(); }
 <blockquote>
 <p>It&rsquo;s important to note that <em>all</em> components in stateful topologies must be stateful (i.e. implement the <code>IStatefulComponent</code> interface) for the topology to provide effectively-once semantics. That includes spouts, even simple ones like the spout in this example.</p>
 </blockquote>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.spout.BaseRichSpout</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.spout.BaseRichSpout</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.spout.SpoutOutputCollector</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.state.State</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.topology.IStatefulComponent</span><span class="o">;</span>
@@ -107,15 +109,15 @@ function load() { if (window.location.hash) shiftWindow(); }
     <span class="kd">public</span> <span class="nf">RandomIntSpout</span><span class="o">()</span> <span class="o">{</span>
     <span class="o">}</span>
 
-    <span class="c1">// Generates a random integer between 1 and 100
-</span><span class="c1"></span>    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">randomInt</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">ThreadLocalRandom</span><span class="o">.</span><span class="na">current</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">101</span><span class="o">);</span>
+    <span class="c1">// Generates a random integer between 1 and 100</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">randomInt</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">ThreadLocalRandom</span><span class="o">.</span><span class="na">current</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">101</span><span class="o">);</span>
     <span class="o">}</span>
 
-    <span class="c1">// These two methods are required to implement the IStatefulComponent interface
-</span><span class="c1"></span>    <span class="nd">@Override</span>
+    <span class="c1">// These two methods are required to implement the IStatefulComponent interface</span>
+    <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">preSave</span><span class="o">(</span><span class="n">String</span> <span class="n">checkpointId</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;Saving spout state at checkpoint %s&#34;</span><span class="o">,</span> <span class="n">checkpointId</span><span class="o">));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Saving spout state at checkpoint %s&quot;</span><span class="o">,</span> <span class="n">checkpointId</span><span class="o">));</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
@@ -123,15 +125,15 @@ function load() { if (window.location.hash) shiftWindow(); }
         <span class="n">count</span> <span class="o">=</span> <span class="n">state</span><span class="o">;</span>
     <span class="o">}</span>
 
-    <span class="c1">// These three methods are required to extend the BaseRichSpout abstract class
-</span><span class="c1"></span>    <span class="nd">@Override</span>
+    <span class="c1">// These three methods are required to extend the BaseRichSpout abstract class</span>
+    <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">open</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">,</span> <span class="n">TopologyContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">SpoutOutputCollector</span> <span class="n">collector</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">spoutOutputCollector</span> <span class="o">=</span> <span class="n">collector</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">declareOutputFields</span><span class="o">(</span><span class="n">OutputFieldsDeclarer</span> <span class="n">declarer</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">declarer</span><span class="o">.</span><span class="na">declare</span><span class="o">(</span><span class="k">new</span> <span class="n">Fields</span><span class="o">(</span><span class="s">&#34;random-int&#34;</span><span class="o">));</span>
+        <span class="n">declarer</span><span class="o">.</span><span class="na">declare</span><span class="o">(</span><span class="k">new</span> <span class="n">Fields</span><span class="o">(</span><span class="s">&quot;random-int&quot;</span><span class="o">));</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
@@ -139,7 +141,9 @@ function load() { if (window.location.hash) shiftWindow(); }
         <span class="kt">int</span> <span class="n">randomInt</span> <span class="o">=</span> <span class="n">randomInt</span><span class="o">();</span>
         <span class="n">collector</span><span class="o">.</span><span class="na">emit</span><span class="o">(</span><span class="k">new</span> <span class="n">Values</span><span class="o">(</span><span class="n">randomInt</span><span class="o">));</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>A few things to note in this spout:</p>
 
 <ul>
@@ -152,7 +156,7 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h3 id="example-stateful-bolt">Example stateful bolt</h3>
 
 <p>The <code>AdditionBolt</code> takes incoming tuples from the <code>RandomIntSpout</code> and adds each integer to produce a running sum. If the sum ever exceeds 1 million, then it resets to zero.</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.bolt.BaseRichBolt</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.bolt.BaseRichBolt</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.bolt.OutputCollector</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.state.State</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.topology.IStatefulComponent</span><span class="o">;</span>
@@ -167,10 +171,10 @@ function load() { if (window.location.hash) shiftWindow(); }
     <span class="kd">public</span> <span class="nf">AdditionBolt</span><span class="o">()</span> <span class="o">{</span>
     <span class="o">}</span>
 
-    <span class="c1">// These two methods are required to implement the IStatefulComponent interface
-</span><span class="c1"></span>    <span class="nd">@Override</span>
+    <span class="c1">// These two methods are required to implement the IStatefulComponent interface</span>
+    <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">preSave</span><span class="o">(</span><span class="n">String</span> <span class="n">checkpointId</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;Saving spout state at checkpoint %s&#34;</span><span class="o">,</span> <span class="n">checkpointId</span><span class="o">));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Saving spout state at checkpoint %s&quot;</span><span class="o">,</span> <span class="n">checkpointId</span><span class="o">));</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
@@ -178,39 +182,41 @@ function load() { if (window.location.hash) shiftWindow(); }
         <span class="n">count</span> <span class="o">=</span> <span class="n">state</span><span class="o">;</span>
     <span class="o">}</span>
 
-    <span class="c1">// These three methods are required to extend the BaseRichSpout abstract class
-</span><span class="c1"></span>    <span class="nd">@Override</span>
+    <span class="c1">// These three methods are required to extend the BaseRichSpout abstract class</span>
+    <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">prepare</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;,</span> <span class="n">TopologyContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">OutputCollector</span> <span class="n">collector</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">outputCollector</span> <span class="o">=</span> <span class="n">collector</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">declareOutputFields</span><span class="o">(</span><span class="n">OutputFieldsDeclarer</span> <span class="n">declarer</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// This bolt has no output fields, so none will be declared
-</span><span class="c1"></span>    <span class="o">}</span>
+        <span class="c1">// This bolt has no output fields, so none will be declared</span>
+    <span class="o">}</span>
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="n">Tuple</span> <span class="n">tuple</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// Extract the incoming random integer from the arriving tuple
-</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">incomingRandomInt</span> <span class="o">=</span> <span class="n">tuple</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">tuple</span><span class="o">.</span><span class="na">fieldIndex</span><span class="o">(</span><span class="s">&#34;random-int&#34;</span><span class="o">));</span>
+        <span class="c1">// Extract the incoming random integer from the arriving tuple</span>
+        <span class="kt">int</span> <span class="n">incomingRandomInt</span> <span class="o">=</span> <span class="n">tuple</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">tuple</span><span class="o">.</span><span class="na">fieldIndex</span><span class="o">(</span><span class="s">&quot;random-int&quot;</span><span class="o">));</span>
 
-        <span class="c1">// Get the current sum from the count object, defaulting to zero in case
-</span><span class="c1"></span>        <span class="c1">// this is the first processing operation.
-</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">currentSum</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="na">getOrDefault</span><span class="o">(</span><span class="s">&#34;count&#34;</span><span class="o">,</span> <span class="n">0</span><span class="o">);</span>
+        <span class="c1">// Get the current sum from the count object, defaulting to zero in case</span>
+        <span class="c1">// this is the first processing operation.</span>
+        <span class="kt">int</span> <span class="n">currentSum</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="na">getOrDefault</span><span class="o">(</span><span class="s">&quot;count&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
 
         <span class="kt">int</span> <span class="n">newSum</span> <span class="o">=</span> <span class="n">incomingValue</span> <span class="o">+</span> <span class="n">currentSum</span><span class="o">;</span>
 
-        <span class="c1">// Reset the sum to zero if it exceeds 1,000,000
-</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">newSum</span> <span class="o">&gt;</span> <span class="n">1000000</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">newSum</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+        <span class="c1">// Reset the sum to zero if it exceeds 1,000,000</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">newSum</span> <span class="o">&gt;</span> <span class="mi">1000000</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">newSum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
         <span class="o">}</span>
 
-        <span class="c1">// Update the count state
-</span><span class="c1"></span>        <span class="n">count</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;count&#34;</span><span class="o">,</span> <span class="n">newSum</span><span class="o">);</span>
+        <span class="c1">// Update the count state</span>
+        <span class="n">count</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;count&quot;</span><span class="o">,</span> <span class="n">newSum</span><span class="o">);</span>
 
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The current saved sum is: %d&#34;</span><span class="o">,</span> <span class="n">newSum</span><span class="o">));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;The current saved sum is: %d&quot;</span><span class="o">,</span> <span class="n">newSum</span><span class="o">));</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <p>A few things to notice in this bolt:</p>
 
 <ul>
@@ -222,7 +228,7 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h3 id="putting-the-topology-together">Putting the topology together</h3>
 
 <p>Now that we have a stateful spout and bolt in place, we can build and configure the topology:</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.twitter.heron.api.Config</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.HeronSubmitter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.exception.AlreadyAliveException</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.twitter.heron.api.exception.InvalidTopologyException</span><span class="o">;</span>
@@ -233,39 +239,47 @@ function load() { if (window.location.hash) shiftWindow(); }
     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">AlreadyAliveException</span><span class="o">,</span> <span class="n">InvalidTopologyException</span> <span class="o">{</span>
         <span class="n">Config</span> <span class="n">topologyConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Config</span><span class="o">();</span>
 
-        <span class="c1">// Apply effectively-once semantics and set the checkpoint interval to 10 seconds
-</span><span class="c1"></span>        <span class="n">topologyConfig</span><span class="o">.</span><span class="na">setTopologyReliabilityMode</span><span class="o">(</span><span class="n">Config</span><span class="o">.</span><span class="na">TopologyReliabilityMode</span><span class="o">.</span><span class="na">EFFECTIVELY_ONCE</span><span class="o">);</span>
-        <span class="n">topologyConfig</span><span class="o">.</span><span class="na">setTopologyStatefulCheckpointIntervalSecs</span><span class="o">(</span><span class="n">10</span><span class="o">);</span>
+        <span class="c1">// Apply effectively-once semantics and set the checkpoint interval to 10 seconds</span>
+        <span class="n">topologyConfig</span><span class="o">.</span><span class="na">setTopologyReliabilityMode</span><span class="o">(</span><span class="n">Config</span><span class="o">.</span><span class="na">TopologyReliabilityMode</span><span class="o">.</span><span class="na">EFFECTIVELY_ONCE</span><span class="o">);</span>
+        <span class="n">topologyConfig</span><span class="o">.</span><span class="na">setTopologyStatefulCheckpointIntervalSecs</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
 
-        <span class="c1">// Build the topology out of the example spout and bolt
-</span><span class="c1"></span>        <span class="n">TopologyBuilder</span> <span class="n">topologyBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TopologyBuilder</span><span class="o">();</span>
-        <span class="n">topologyBuilder</span><span class="o">.</span><span class="na">setSpout</span><span class="o">(</span><span class="s">&#34;random-int-spout&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">RandomIntSpout</span><span class="o">());</span>
-        <span class="n">topologyBuilder</span><span class="o">.</span><span class="na">setBolt</span><span class="o">(</span><span class="s">&#34;addition-bolt&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">AdditionBolt</span><span class="o">())</span>
-                <span class="o">.</span><span class="na">fieldsGrouping</span><span class="o">(</span><span class="s">&#34;random-int-spout&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Fields</span><span class="o">(</span><span class="s">&#34;random-int&#34;</span><span class="o">));</span>
+        <span class="c1">// Build the topology out of the example spout and bolt</span>
+        <span class="n">TopologyBuilder</span> <span class="n">topologyBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TopologyBuilder</span><span class="o">();</span>
+        <span class="n">topologyBuilder</span><span class="o">.</span><span class="na">setSpout</span><span class="o">(</span><span class="s">&quot;random-int-spout&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">RandomIntSpout</span><span class="o">());</span>
+        <span class="n">topologyBuilder</span><span class="o">.</span><span class="na">setBolt</span><span class="o">(</span><span class="s">&quot;addition-bolt&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">AdditionBolt</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">fieldsGrouping</span><span class="o">(</span><span class="s">&quot;random-int-spout&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Fields</span><span class="o">(</span><span class="s">&quot;random-int&quot;</span><span class="o">));</span>
 
-        <span class="n">HeronSubmitter</span><span class="o">.</span><span class="na">submitTopology</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="n">0</span><span class="o">],</span> <span class="n">config</span><span class="o">,</span> <span class="n">topologyBuilder</span><span class="o">.</span><span class="na">createTopology</span><span class="o">());</span>
+        <span class="n">HeronSubmitter</span><span class="o">.</span><span class="na">submitTopology</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">],</span> <span class="n">config</span><span class="o">,</span> <span class="n">topologyBuilder</span><span class="o">.</span><span class="na">createTopology</span><span class="o">());</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span>
+</code></pre></div>
+
 <h3 id="submitting-the-topology">Submitting the topology</h3>
 
 <p>The code for this topology can be found in <a href="https://github.com/streamlio/heron-java-effectively-once-example">this GitHub repository</a>. You can clone the repo locally like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ git clone https://github.com/streamlio/heron-java-effectively-once-example</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ git clone https://github.com/streamlio/heron-java-effectively-once-example
+</code></pre></div>
+
 <p>Once you have the repo locally, you can submit the topology to a <a href="../../../getting-started">running Heron installation</a> like this (if you have <a href="https://maven.apache.org/">Maven</a> installed):</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">cd</span> heron-java-effectively-once-example
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">cd</span> heron-java-effectively-once-example
 $ mvn assembly:assembly
-$ heron submit <span class="nb">local</span> <span class="se">\
-</span><span class="se"></span>  target/effectivelyonce-latest-jar-with-dependencies.jar <span class="se">\
-</span><span class="se"></span>  io.streaml.example.effectivelyonce.RunningSumTopology <span class="se">\
-</span><span class="se"></span>  RunningSumTopology</code></pre></div>
+$ heron submit <span class="nb">local</span> <span class="se">\</span>
+  target/effectivelyonce-latest-jar-with-dependencies.jar <span class="se">\</span>
+  io.streaml.example.effectivelyonce.RunningSumTopology <span class="se">\</span>
+  RunningSumTopology
+</code></pre></div>
+
 <blockquote>
 <p>By default, Heron uses the <a href="../../../operators/deployment/statemanagers/localfs">local filesystem</a> as a State Manager. If you&rsquo;re running Heron locally using the instructions in the <a href="../../../getting-started">Quick Start Guide</a> then you won&rsquo;t need to change any settings to run this example stateful topology with effectively-once semantics.</p>
 </blockquote>
 
 <p>From there, you can see the log output for the bolt by running the <a href="../../../operators/heron-tracker">Heron Tracker</a> and <a href="../../../operators/heron-ui">Heron UI</a>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-tracker
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heron-tracker
 
-<span class="c1"># In a different terminal window
-</span><span class="c1"></span>$ heron-ui</code></pre></div>
+<span class="c1"># In a different terminal window</span>
+$ heron-ui
+</code></pre></div>
+
 <blockquote>
 <p>For installation instructions for the Heron Tracker and the Heron UI, see the <a href="../../../getting-started">Quick Start Guide</a>.</p>
 </blockquote>
@@ -275,12 +289,14 @@ $ heron submit <span class="nb">local</span> <span class="se">\
 <p><img src="https://twitter.github.io/heron/img/logical-topology.png" alt="Logical topology drilldown" /></p>
 
 <p>Click on <strong>addition-bolt</strong> on the right (under <strong>1 Container and 1 Instances</strong>) and then click on the blug <strong>logs</strong> button. You should see log output like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span><span class="m">2017</span>-10-06 <span class="m">13</span>:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: <span class="m">0</span>
-<span class="o">[</span><span class="m">2017</span>-10-06 <span class="m">13</span>:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: <span class="m">68</span>
-<span class="o">[</span><span class="m">2017</span>-10-06 <span class="m">13</span>:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: <span class="m">93</span>
-<span class="o">[</span><span class="m">2017</span>-10-06 <span class="m">13</span>:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: <span class="m">117</span>
-<span class="o">[</span><span class="m">2017</span>-10-06 <span class="m">13</span>:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: <span class="m">123</span>
-<span class="o">[</span><span class="m">2017</span>-10-06 <span class="m">13</span>:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: <span class="m">185</span></code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>2017-10-06 13:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: 0
+<span class="o">[</span>2017-10-06 13:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: 68
+<span class="o">[</span>2017-10-06 13:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: 93
+<span class="o">[</span>2017-10-06 13:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: 117
+<span class="o">[</span>2017-10-06 13:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: 123
+<span class="o">[</span>2017-10-06 13:39:07 -0700<span class="o">]</span> <span class="o">[</span>STDOUT<span class="o">]</span> stdout: The current saved sum is: 185
+</code></pre></div>
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://twitter.github.io/heron/js/bootstrap.js"></script><script src="https://twitter.github.io/heron/js/jquery.scrollTo.js"></script><script src="https://twitter.github.io/heron/js/app.min.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

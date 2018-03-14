@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="DC/OS Deployments"><meta property="og:url" content="/docs/operators/deployment/schedulers/dcos/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - DC/OS Deployments</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://twitter.github.io/heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://twitter.github.io/heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.25-DEV" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://twitter.github.io/heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="DC/OS Deployments"><meta property="og:url" content="/docs/operators/deployment/schedulers/dcos/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - DC/OS Deployments</title><link rel="stylesheet" href="https://twitter.github.io/heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://twitter.github.io/heron/css/style.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -86,31 +86,33 @@ publicly-available Docker repository.</p></li>
 </ul>
 
 <h3 id="example-marathon-scheduler-configuration">Example Marathon Scheduler Configuration</h3>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># scheduler class for distributing the topology for execution</span><span class="w">
-</span><span class="w"></span>heron.class.scheduler<span class="p">:</span><span class="w">                       </span>com.twitter.heron.scheduler.marathon.MarathonScheduler<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># launcher class for submitting and launching the topology</span><span class="w">
-</span><span class="w"></span>heron.class.launcher<span class="p">:</span><span class="w">                        </span>com.twitter.heron.scheduler.marathon.MarathonLauncher<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># location of java - pick it up from shell environment</span><span class="w">
-</span><span class="w"></span>heron.directory.sandbox.java.home<span class="p">:</span><span class="w">          </span>$JAVA_HOME<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># location of heron - pick it up from shell environment</span><span class="w">
-</span><span class="w"></span>heron.directory.home<span class="p">:</span><span class="w">                       </span>$HERON_HOME<span class="w">
-</span><span class="w">
-</span><span class="w"></span>heron.directory.conf<span class="p">:</span><span class="w">                       </span><span class="s2">&#34;./heron-conf/&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The URI of marathon scheduler</span><span class="w">
-</span><span class="w"></span>heron.marathon.scheduler.uri<span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;core.dcos_url&gt;/service/marathon&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The token of the marathon scheduler</span><span class="w">
-</span><span class="w"></span>heron.marathon.scheduler.auth.token<span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;auth_token&gt;&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># Invoke the IScheduler as a library directly</span><span class="w">
-</span><span class="w"></span>heron.scheduler.is.service<span class="p">:</span><span class="w">                  </span>False<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># docker repo for heron with core packages installed</span><span class="w">
-</span><span class="w"></span>heron.executor.docker.image<span class="p">:</span><span class="w"> </span><span class="s1">&#39;streamlio/heron:latest-ubuntu14.04&#39;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># scheduler class for distributing the topology for execution</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.scheduler</span><span class="p p-Indicator">:</span>                       <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.scheduler.marathon.MarathonScheduler</span>
+
+<span class="c1"># launcher class for submitting and launching the topology</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.launcher</span><span class="p p-Indicator">:</span>                        <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.scheduler.marathon.MarathonLauncher</span>
+
+<span class="c1"># location of java - pick it up from shell environment</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.directory.sandbox.java.home</span><span class="p p-Indicator">:</span>          <span class="l l-Scalar l-Scalar-Plain">$JAVA_HOME</span>
+
+<span class="c1"># location of heron - pick it up from shell environment</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.directory.home</span><span class="p p-Indicator">:</span>                       <span class="l l-Scalar l-Scalar-Plain">$HERON_HOME</span>
+
+<span class="l l-Scalar l-Scalar-Plain">heron.directory.conf</span><span class="p p-Indicator">:</span>                       <span class="s">&quot;./heron-conf/&quot;</span>
+
+<span class="c1"># The URI of marathon scheduler</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.marathon.scheduler.uri</span><span class="p p-Indicator">:</span> <span class="s">&quot;&lt;core.dcos_url&gt;/service/marathon&quot;</span>
+
+<span class="c1"># The token of the marathon scheduler</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.marathon.scheduler.auth.token</span><span class="p p-Indicator">:</span> <span class="s">&quot;&lt;auth_token&gt;&quot;</span>
+
+<span class="c1"># Invoke the IScheduler as a library directly</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.scheduler.is.service</span><span class="p p-Indicator">:</span>                  <span class="l l-Scalar l-Scalar-Plain">False</span>
+
+<span class="c1"># docker repo for heron with core packages installed</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.executor.docker.image</span><span class="p p-Indicator">:</span> <span class="s">&#39;streamlio/heron:latest-ubuntu14.04&#39;</span>
+</code></pre></div>
+
 <h2 id="state-manager-configuration">State Manager Configuration</h2>
 
 <p>To configure Heron to use the correct State Manager configuration, modify the <code>statemgr.yaml</code>
@@ -162,47 +164,49 @@ process</p></li>
 </ul>
 
 <h3 id="example-state-manager-configuration">Example State Manager Configuration</h3>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># local state manager class for managing state in a persistent fashion</span><span class="w">
-</span><span class="w"></span>heron.class.state.manager<span class="p">:</span><span class="w"> </span>com.twitter.heron.statemgr.zookeeper.curator.CuratorStateManager<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># local state manager connection string</span><span class="w">
-</span><span class="w"></span>heron.statemgr.connection.string<span class="p">:</span><span class="w">  </span><span class="s2">&#34;leader.mesos:2181&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># path of the root address to store the state in a local file system</span><span class="w">
-</span><span class="w"></span>heron.statemgr.root.path<span class="p">:</span><span class="w"> </span><span class="s2">&#34;/heron&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># create the zookeeper nodes, if they do not exist</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.is.initialize.tree<span class="p">:</span><span class="w"> </span>True<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># timeout in ms to wait before considering zookeeper session is dead</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.session.timeout.ms<span class="p">:</span><span class="w"> </span><span class="m">30000</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># timeout in ms to wait before considering zookeeper connection is dead</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.connection.timeout.ms<span class="p">:</span><span class="w"> </span><span class="m">30000</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># timeout in ms to wait before considering zookeeper connection is dead</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.retry.count<span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># duration of time to wait until the next retry</span><span class="w">
-</span><span class="w"></span>heron.statemgr.zookeeper.retry.interval.ms<span class="p">:</span><span class="w"> </span><span class="m">10000</span><span class="w">
-</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span>heron.statemgr.is.tunnel.needed<span class="p">:</span><span class="w"> </span>True<span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The connection timeout in ms when trying to connect to zk server</span><span class="w">
-</span><span class="w"></span>heron.statemgr.tunnel.connection.timeout.ms<span class="p">:</span><span class="w">    </span><span class="m">1000</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The count of retry to check whether has direct access on zk server</span><span class="w">
-</span><span class="w"></span>heron.statemgr.tunnel.connection.retry.count<span class="p">:</span><span class="w">   </span><span class="m">2</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The interval in ms between two retry checking whether has direct access on zk server</span><span class="w">
-</span><span class="w"></span>heron.statemgr.tunnel.retry.interval.ms<span class="p">:</span><span class="w">        </span><span class="m">1000</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># The count of retry to verify whether seting up a tunnel process</span><span class="w">
-</span><span class="w"></span>heron.statemgr.tunnel.verify.count<span class="p">:</span><span class="w">             </span><span class="m">10</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c"># SSH tunnel host</span><span class="w">
-</span><span class="w"></span>heron.statemgr.tunnel.host<span class="p">:</span><span class="w">              </span><span class="s2">&#34;centos@&lt;host&gt;&#34;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="c1"># local state manager class for managing state in a persistent fashion</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.class.state.manager</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">com.twitter.heron.statemgr.zookeeper.curator.CuratorStateManager</span>
+
+<span class="c1"># local state manager connection string</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.connection.string</span><span class="p p-Indicator">:</span>  <span class="s">&quot;leader.mesos:2181&quot;</span>
+
+<span class="c1"># path of the root address to store the state in a local file system</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.root.path</span><span class="p p-Indicator">:</span> <span class="s">&quot;/heron&quot;</span>
+
+<span class="c1"># create the zookeeper nodes, if they do not exist</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.is.initialize.tree</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># timeout in ms to wait before considering zookeeper session is dead</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.session.timeout.ms</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">30000</span>
+
+<span class="c1"># timeout in ms to wait before considering zookeeper connection is dead</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.connection.timeout.ms</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">30000</span>
+
+<span class="c1"># timeout in ms to wait before considering zookeeper connection is dead</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.retry.count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="c1"># duration of time to wait until the next retry</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.zookeeper.retry.interval.ms</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
+
+
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.is.tunnel.needed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># The connection timeout in ms when trying to connect to zk server</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.tunnel.connection.timeout.ms</span><span class="p p-Indicator">:</span>    <span class="l l-Scalar l-Scalar-Plain">1000</span>
+
+<span class="c1"># The count of retry to check whether has direct access on zk server</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.tunnel.connection.retry.count</span><span class="p p-Indicator">:</span>   <span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="c1"># The interval in ms between two retry checking whether has direct access on zk server</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.tunnel.retry.interval.ms</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">1000</span>
+
+<span class="c1"># The count of retry to verify whether seting up a tunnel process</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.tunnel.verify.count</span><span class="p p-Indicator">:</span>             <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="c1"># SSH tunnel host</span>
+<span class="l l-Scalar l-Scalar-Plain">heron.statemgr.tunnel.host</span><span class="p p-Indicator">:</span>              <span class="s">&quot;centos@&lt;host&gt;&quot;</span>
+</code></pre></div>
+
 <h2 id="working-with-topologies">Working with Topologies</h2>
 
 <p>After setting up ZooKeeper and generating a DCOS-accessible Heron core binary
