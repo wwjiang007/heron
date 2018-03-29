@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Implementing Python Spouts"><meta property="og:url" content="/docs/developers/python/spouts/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Implementing Python Spouts</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Implementing Python Spouts"><meta property="og:url" content="/docs/developers/python/spouts/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Implementing Python Spouts</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -11,14 +11,14 @@ function load() { if (window.location.hash) shiftWindow(); }
 </blockquote>
 
 <p>To create a spout for a Heron topology, you need to subclass the <a href="https://apache.github.io/incubator-heron/api/python/spout/spout.m.html#heronpy.spout.spout.Spout"><code>Spout</code></a> class, which has the following methods.</p>
-class Spout(BaseSpout):
-    def initialize(self, config, context)
-    def next_tuple(self)
-    def ack(self, tup_id)
-    def fail(self, tup_id)
-    def activate(self)
-    def deactivate(self)
-    def close(self)
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Spout</span><span class="p">(</span><span class="n">BaseSpout</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">next_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tup_id</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tup_id</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code></pre></div>
 <h2 id="spout-class-methods"><code>Spout</code> class methods</h2>
 
 <p>The <a href="https://apache.github.io/incubator-heron/api/python/spout/spout.m.html#heronpy.spout.spout.Spout"><code>Spout</code></a> class provides a number of methods that you should implement when subclassing.</p>
@@ -53,13 +53,13 @@ guarantee that this method is called due to how the instance is killed.</p></li>
 <h2 id="basespout-class-methods"><code>BaseSpout</code> class methods</h2>
 
 <p>The <code>Spout</code> class inherits from the <a href="https://apache.github.io/incubator-heron/api/python/spout/base_spout.m.html#heronpy.spout.base_spout.BaseSpout"><code>BaseSpout</code></a> class, which also provides you methods you can use in your spouts.</p>
-class BaseSpout:
-    def emit(self, tup, tup_id=None, stream="default", direct_task=None, need_task_ids=False)
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">BaseSpout</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tup</span><span class="p">,</span> <span class="n">tup_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;default&#34;</span><span class="p">,</span> <span class="n">direct_task</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">need_task_ids</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-    def log(self, message, level=None)
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 
-    @classmethod
-    def spec(cls, name=None, par=1, config=None)
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">par</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span></code></pre></div>
 <ul>
 <li><p>The <code>emit()</code> method is used to emit a given tuple, which can be a <code>list</code> or <code>tuple</code> of any Python objects. Unlike in the Java implementation, there is no <code>OutputCollector</code> in the Python implementation.</p></li>
 
@@ -82,19 +82,19 @@ For the usage of this method, refer to <a href="../topologies">this page</a>.</p
 <h2 id="example-spout">Example spout</h2>
 
 <p>The following is an example implementation of a spout in Python.</p>
-from itertools import cycle
-from heronpy import Spout
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
+<span class="kn">from</span> <span class="nn">heronpy</span> <span class="kn">import</span> <span class="n">Spout</span>
 
-class WordSpout(Spout):
-    outputs = ['word']
+<span class="k">class</span> <span class="nc">WordSpout</span><span class="p">(</span><span class="n">Spout</span><span class="p">):</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="sa"></span><span class="s1">&#39;word&#39;</span><span class="p">]</span>
 
-    def initialize(self, config, context):
-        self.words = cycle(["hello", "world", "heron", "storm"])
-        self.log("Initializing WordSpout...")
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">([</span><span class="sa"></span><span class="s2">&#34;hello&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;world&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;heron&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;storm&#34;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;Initializing WordSpout...&#34;</span><span class="p">)</span>
 
-    def next_tuple(self):
-        word = next(self.words)
-        self.emit([word])</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+    <span class="k">def</span> <span class="nf">next_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">([</span><span class="n">word</span><span class="p">])</span></code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

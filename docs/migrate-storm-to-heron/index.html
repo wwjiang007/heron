@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Migrate Storm Topologies to Heron"><meta property="og:url" content="/docs/migrate-storm-to-heron/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Migrate Storm Topologies to Heron</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Migrate Storm Topologies to Heron"><meta property="og:url" content="/docs/migrate-storm-to-heron/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Migrate Storm Topologies to Heron</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -15,48 +15,48 @@ file</a>.</p>
 <p>Copy the <a href="https://maven.apache.org/pom.html"><code>pom.xml</code></a> segments below and paste
 them into your existing Storm <code>pom.xml</code> file in the <a href="https://maven.apache.org/pom.html#Dependencies">dependencies
 block</a>.</p>
-<dependency>
-  <groupId>com.twitter.heron</groupId>
-  <artifactId>heron-api</artifactId>
-  <version>0.17.5</version>
-  <scope>compile</scope>
-</dependency>
-<dependency>
-  <groupId>com.twitter.heron</groupId>
-  <artifactId>heron-storm</artifactId>
-  <version>0.17.5</version>
-  <scope>compile</scope>
-</dependency>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.twitter.heron<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>heron-api<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.17.5<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>compile<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.twitter.heron<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>heron-storm<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.17.5<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>compile<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></div>
 <h2 id="step-2-remove-storm-dependencies-from-pom-xml">Step 2. Remove Storm dependencies from <code>pom.xml</code></h2>
 
 <p>Delete the Storm dependency, which looks like this:</p>
-<dependency>
-  <groupId>org.apache.storm</groupId>
-  <artifactId>storm-core</artifactId>
-  <version>storm-VERSION</version>
-  <scope>provided</scope>
-</dependency>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.storm<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>storm-core<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>storm-VERSION<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></div>
 <h2 id="step-3-if-needed-remove-the-clojure-plugin-from-pom-xml">Step 3 (if needed). Remove the Clojure plugin from <code>pom.xml</code></h2>
 
 <p>Delete the <a href="https://maven.apache.org/pom.html#Plugins">Clojure plugin</a>, which
 should look like this:</p>
-<plugin>
-  <groupId>com.theoryinpractise</groupId>
-  <artifactId>clojure-maven-plugin</artifactId>
-  <version>1.3.12</version>
-  <extensions>true</extensions>
-  <configuration>
-    <sourceDirectories>
-      <sourceDirectory>src/clj</sourceDirectory>
-    </sourceDirectories>
-  </configuration>
-</plugin>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.theoryinpractise<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>clojure-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.3.12<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+  <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;sourceDirectories&gt;</span>
+      <span class="nt">&lt;sourceDirectory&gt;</span>src/clj<span class="nt">&lt;/sourceDirectory&gt;</span>
+    <span class="nt">&lt;/sourceDirectories&gt;</span>
+  <span class="nt">&lt;/configuration&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span></code></pre></div>
 <h2 id="step-4-run-maven-commands">Step 4. Run Maven commands</h2>
 
 <p>Run the following <a href="https://maven.apache.org/run.html">Maven lifecycle</a> commands:</p>
-$ mvn clean
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ mvn clean
 $ mvn compile
-$ mvn package
+$ mvn package</code></pre></div>
 <blockquote>
 <p><a href="http://storm.apache.org/releases/0.10.0/Distributed-RPC.html">Storm Distribute RPC</a> is deprecated in Heron.</p>
 </blockquote>
@@ -70,16 +70,16 @@ cluster</a> using <code>heron submit</code>.</p>
 <code>{PATH-TO-PROJECT}.jar</code>, which is located in <code>${basedir}/target</code> by <a href="https://maven.apache.org/guides/getting-started/">Maven
 convention</a>. Then modify the
 <code>TOPOLOGY-FILE-NAME</code> and <code>TOPOLOGY-CLASS-NAME</code> for your project:</p>
-$ heron submit local \
-  ${basedir}/target/PATH-TO-PROJECT.jar \
-  TOPOLOGY-FILE-NAME \
-  TOPOLOGY-CLASS-NAME
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  <span class="si">${</span><span class="nv">basedir</span><span class="si">}</span>/target/PATH-TO-PROJECT.jar <span class="se">\
+</span><span class="se"></span>  TOPOLOGY-FILE-NAME <span class="se">\
+</span><span class="se"></span>  TOPOLOGY-CLASS-NAME</code></pre></div>
 <p>Here&rsquo;s an example submit command using the example topology from the <a href="../getting-started">Quick
 Start Guide</a> guide:</p>
-$ heron submit local \
-  ~/.heron/examples/heron-examples.jar \ # The path of the topology's jar file
-  com.twitter.heron.examples.ExclamationTopology \ # The topology's Java class
-  ExclamationTopology # The name of the topology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  ~/.heron/examples/heron-examples.jar <span class="se">\ </span><span class="c1"># The path of the topology&#39;s jar file
+</span><span class="c1"></span>  com.twitter.heron.examples.ExclamationTopology <span class="se">\ </span><span class="c1"># The topology&#39;s Java class
+</span><span class="c1"></span>  ExclamationTopology # The name of the topology</code></pre></div>
 <h3 id="next-steps">Next Steps</h3>
 
 <ul>
@@ -89,7 +89,7 @@ and
 <a href="../operators/deployment/schedulers/local">locally</a>)</li>
 <li><a href="../concepts/architecture">Develop topologies</a> for Heron</li>
 </ul>
-</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

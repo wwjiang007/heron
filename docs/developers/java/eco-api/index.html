@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="The Heron ECO API for Java"><meta property="og:url" content="/docs/developers/java/eco-api/"><meta property="og:description" content="Create Heron topologies in Java from reusable spouts and bolts"><meta name="twitter:description" content="Create Heron topologies in Java from reusable spouts and bolts"><title>Heron Documentation - The Heron ECO API for Java</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="The Heron ECO API for Java"><meta property="og:url" content="/docs/developers/java/eco-api/"><meta property="og:description" content="Create Heron topologies in Java from reusable spouts and bolts"><meta name="twitter:description" content="Create Heron topologies in Java from reusable spouts and bolts"><title>Heron Documentation - The Heron ECO API for Java</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -52,50 +52,50 @@ via <a href="http://search.maven.org/">Maven Central</a>.</p>
 
 <p>To install the <code>heron-api</code> library using Maven, add this to the <code>dependencies</code> block of your <code>pom.xml</code>
 configuration file:</p>
-<dependency>
-    <groupId>com.twitter.heron</groupId>
-    <artifactId>heron-api</artifactId>
-    <version>0.17.5</version>
-    <scope>compile</scope>
-</dependency>
-<dependency>
-    <groupId>com.twitter.heron</groupId>
-    <artifactId>heron-storm</artifactId>
-    <version>0.17.5</version>
-    <scope>compile</scope>
-</dependency>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.twitter.heron<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>heron-api<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.17.5<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>compile<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.twitter.heron<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>heron-storm<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.17.5<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>compile<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></div>
 <h4 id="compiling-a-jar-with-dependencies">Compiling a JAR with dependencies</h4>
 
 <p>In order to run a Java topology in a Heron cluster, you'll need to package your topology as a &quot;fat&quot; JAR with dependencies included. You can use the <a href="https://maven.apache.org/plugins/maven-assembly-plugin/usage.html">Maven Assembly Plugin</a> to generate JARs with dependencies. To install the plugin and add a Maven goal for a single JAR, add this to the <code>plugins</code> block in your <code>pom.xml</code>:</p>
-<plugin>
-    <artifactId>maven-assembly-plugin</artifactId>
-    <configuration>
-        <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-        <archive>
-            <manifest>
-                <mainClass></mainClass>
-            </manifest>
-        </archive>
-    </configuration>
-    <executions>
-        <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-                <goal>single</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>maven-assembly-plugin<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;configuration&gt;</span>
+        <span class="nt">&lt;descriptorRefs&gt;</span>
+            <span class="nt">&lt;descriptorRef&gt;</span>jar-with-dependencies<span class="nt">&lt;/descriptorRef&gt;</span>
+        <span class="nt">&lt;/descriptorRefs&gt;</span>
+        <span class="nt">&lt;archive&gt;</span>
+            <span class="nt">&lt;manifest&gt;</span>
+                <span class="nt">&lt;mainClass&gt;&lt;/mainClass&gt;</span>
+            <span class="nt">&lt;/manifest&gt;</span>
+        <span class="nt">&lt;/archive&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+    <span class="nt">&lt;executions&gt;</span>
+        <span class="nt">&lt;execution&gt;</span>
+            <span class="nt">&lt;id&gt;</span>make-assembly<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+            <span class="nt">&lt;goals&gt;</span>
+                <span class="nt">&lt;goal&gt;</span>single<span class="nt">&lt;/goal&gt;</span>
+            <span class="nt">&lt;/goals&gt;</span>
+        <span class="nt">&lt;/execution&gt;</span>
+    <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span></code></pre></div>
 <p>Once your <code>pom.xml</code> is properly set up, you can compile the JAR with dependencies using this command:</p>
-$ mvn assembly:assembly
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ mvn assembly:assembly</code></pre></div>
 <p>By default, this will add a JAR in your project's <code>target</code> folder with the name <code>PROJECT-NAME-VERSION-jar-with-dependencies.jar</code>. Here's an example ECO topology submission command using a compiled JAR:</p>
-$ heron submit local \
-  target/my-project-1.2.3-jar-with-dependencies.jar \
-  com.twitter.heron.eco.Eco \
-  --eco-config-file path/to/your/topology-definition.yaml
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  target/my-project-1.2.3-jar-with-dependencies.jar <span class="se">\
+</span><span class="se"></span>  com.twitter.heron.eco.Eco <span class="se">\
+</span><span class="se"></span>  --eco-config-file path/to/your/topology-definition.yaml</code></pre></div>
 <h3 id="reference-links">Reference Links</h3>
 
 <p><a href="#topology-name">Topology Name</a></p>
@@ -138,69 +138,69 @@ needs to stay the same.  Eco is the main class that will assemble your topology 
 </ul>
 
 <p>An example of a simple YAML DSL definition is below:</p>
-name: "fibonacci-topology"
-
-config:
-  topology.workers: 1
-
-components:
-  - id: "property-holder"
-    className: "com.twitter.heron.examples.eco.TestPropertyHolder"
-    constructorArgs:
-      - "some argument"
-    properties:
-      - name: "numberProperty"
-        value: 11
-      - name: "publicProperty"
-        value: "This is public property"
-
-spouts:
-  - id: "spout-1"
-    className: "com.twitter.heron.examples.eco.TestFibonacciSpout"
-    constructorArgs:
-      - ref: "property-holder"
-    parallelism: 1
-
-bolts:
-  - id: "even-and-odd-bolt"
-    className: "com.twitter.heron.examples.eco.EvenAndOddBolt"
-    parallelism: 1
-
-  - id: "ibasic-print-bolt"
-    className: "com.twitter.heron.examples.eco.TestIBasicPrintBolt"
-    parallelism: 1
-    configMethods:
-      - name: "sampleConfigurationMethod"
-        args:
-          - "${ecoPropertyOne}"
-          - MB
-
-  - id: "sys-out-bolt"
-    className: "com.twitter.heron.examples.eco.TestPrintBolt"
-    parallelism: 1
-
-streams:
-  - from: "spout-1"
-    to: "even-and-odd-bolt"
-    grouping:
-      type: SHUFFLE
-
-  - from: "even-and-odd-bolt"
-    to: "ibasic-print-bolt"
-    grouping:
-      type: SHUFFLE
-      streamId: "odds"
-
-  - from: "even-and-odd-bolt"
-    to: "sys-out-bolt"
-    grouping:
-      type: SHUFFLE
-      streamId: "evens"
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;fibonacci-topology&#34;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>config<span class="p">:</span><span class="w">
+</span><span class="w">  </span>topology.workers<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>components<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;property-holder&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestPropertyHolder&#34;</span><span class="w">
+</span><span class="w">    </span>constructorArgs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="s2">&#34;some argument&#34;</span><span class="w">
+</span><span class="w">    </span>properties<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;numberProperty&#34;</span><span class="w">
+</span><span class="w">        </span>value<span class="p">:</span><span class="w"> </span><span class="m">11</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;publicProperty&#34;</span><span class="w">
+</span><span class="w">        </span>value<span class="p">:</span><span class="w"> </span><span class="s2">&#34;This is public property&#34;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>spouts<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;spout-1&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestFibonacciSpout&#34;</span><span class="w">
+</span><span class="w">    </span>constructorArgs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>ref<span class="p">:</span><span class="w"> </span><span class="s2">&#34;property-holder&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>bolts<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.EvenAndOddBolt&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;ibasic-print-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestIBasicPrintBolt&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">    </span>configMethods<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;sampleConfigurationMethod&#34;</span><span class="w">
+</span><span class="w">        </span>args<span class="p">:</span><span class="w">
+</span><span class="w">          </span>-<span class="w"> </span><span class="s2">&#34;${ecoPropertyOne}&#34;</span><span class="w">
+</span><span class="w">          </span>-<span class="w"> </span>MB<span class="w">
+</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;sys-out-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestPrintBolt&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span>streams<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>from<span class="p">:</span><span class="w"> </span><span class="s2">&#34;spout-1&#34;</span><span class="w">
+</span><span class="w">    </span>to<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>grouping<span class="p">:</span><span class="w">
+</span><span class="w">      </span>type<span class="p">:</span><span class="w"> </span>SHUFFLE<span class="w">
+</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>from<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>to<span class="p">:</span><span class="w"> </span><span class="s2">&#34;ibasic-print-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>grouping<span class="p">:</span><span class="w">
+</span><span class="w">      </span>type<span class="p">:</span><span class="w"> </span>SHUFFLE<span class="w">
+</span><span class="w">      </span>streamId<span class="p">:</span><span class="w"> </span><span class="s2">&#34;odds&#34;</span><span class="w">
+</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>from<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>to<span class="p">:</span><span class="w"> </span><span class="s2">&#34;sys-out-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>grouping<span class="p">:</span><span class="w">
+</span><span class="w">      </span>type<span class="p">:</span><span class="w"> </span>SHUFFLE<span class="w">
+</span><span class="w">      </span>streamId<span class="p">:</span><span class="w"> </span><span class="s2">&#34;evens&#34;</span></code></pre></div>
 <p>If you want to stop here and try to deploy the above topology you can execute:</p>
-$ heron submit local \
-  ~/.heron/examples/heron-eco-examples.jar \
-  com.twitter.heron.eco.Eco \
-  --eco-config-file ~/.heron/examples/fibonacci.yaml
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  ~/.heron/examples/heron-eco-examples.jar <span class="se">\
+</span><span class="se"></span>  com.twitter.heron.eco.Eco <span class="se">\
+</span><span class="se"></span>  --eco-config-file ~/.heron/examples/fibonacci.yaml</code></pre></div>
 <p>This ECO topology does not do anything spectacular, but it's a good starting point to go through some of ECO's concepts.</p>
 
 <h2 id="taking-a-closer-look-at-the-yaml-definition-specs">Taking a closer look at the YAML definition specs</h2>
@@ -208,35 +208,35 @@ $ heron submit local \
 <h3 id="topology-name">Topology Name</h3>
 
 <p>Each ECO definition file will be required to have a <code>name</code> defined.</p>
-name: "simple-wordcount-topology"
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;simple-wordcount-topology&#34;</span></code></pre></div>
 <h3 id="configuration">Configuration</h3>
 
 <p><code>config</code> is the section where you will list your properties to be inserted into a <code>com.twitter.heron.api.Config</code> class. This section is optional.</p>
-config:
-  topology.workers: 1
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">config<span class="p">:</span><span class="w">
+</span><span class="w">  </span>topology.workers<span class="p">:</span><span class="w"> </span><span class="m">1</span></code></pre></div>
 <h4 id="specifying-component-level-resources">Specifying Component Level Resources</h4>
 
 <p>You can specify component level JVM resources by referencing the <code>id</code> of the component and its <code>ram</code>.
 You can choose between Bytes <code>B</code>, Megabytes <code>MB</code>, or Gigabytes <code>GB</code>.  Examples would be <code>256MB</code> or <code>2GB</code>.
 The unit of measurement must be appended at the end of the numerical value with no spaces.  There is plan to support
 component level <code>cpu</code> and <code>disk</code> configs in the future.</p>
- topology.component.resourcemap:
-
-    - id: "spout-1"
-      ram: 256MB # The minimum value for a component's specified ram is 256MB
-      
-
-    - id: "bolt-1"
-      ram: 256MB # The minimum value for a component's specified ram is 256MB
-      
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="w"> </span>topology.component.resourcemap<span class="p">:</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;spout-1&#34;</span><span class="w">
+</span><span class="w">      </span>ram<span class="p">:</span><span class="w"> </span>256MB<span class="w"> </span><span class="c"># The minimum value for a component&#39;s specified ram is 256MB</span><span class="w">
+</span><span class="w">      
+</span><span class="w">
+</span><span class="w">    </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;bolt-1&#34;</span><span class="w">
+</span><span class="w">      </span>ram<span class="p">:</span><span class="w"> </span>256MB<span class="w"> </span><span class="c"># The minimum value for a component&#39;s specified ram is 256MB</span><span class="w">
+</span><span class="w">      </span></code></pre></div>
 <h4 id="specifying-jvm-options">Specifying JVM Options</h4>
 
 <p>You can specify component level JVM resources by referencing the <code>id</code> of the component and a list
  of the JVM options</p>
-topology.component.jvmoptions:
-
-   - id: "spout-1"
-     options: ["-XX:NewSize=300m", "-Xms2g"]
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">topology.component.jvmoptions<span class="p">:</span><span class="w">
+</span><span class="w">
+</span><span class="w">   </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;spout-1&#34;</span><span class="w">
+</span><span class="w">     </span>options<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-XX:NewSize=300m&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-Xms2g&#34;</span><span class="p">]</span></code></pre></div>
 <h4 id="other-supported-configuration-parameters">Other Supported Configuration Parameters</h4>
 
 <ul>
@@ -295,34 +295,34 @@ underlying TopologyReliabilityMode value.</li>
 The properties that are required for each <code>component</code> instance are <code>id</code> and <code>className</code>.  <code>id</code> can be any name you choose, <code>className</code>  is the fully qualified className of the Java class. The <code>id</code> field is used to identify
 the component for injection in the coming spouts and bolts defined in the topology.  <code>constructorArgs</code> is only needed
 if a component has constructor that requires arguments.  We will get into constructor args the in the next section.  <code>components</code> are optional.</p>
-components:
-  - id: "property-holder"
-    className: "com.twitter.heron.examples.eco.TestPropertyHolder"
-    constructorArgs:
-      - "some argument"
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">components<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;property-holder&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestPropertyHolder&#34;</span><span class="w">
+</span><span class="w">    </span>constructorArgs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="s2">&#34;some argument&#34;</span></code></pre></div>
 <h3 id="property-injection">Property Injection</h3>
 
 <h4 id="constructor-injection">Constructor Injection</h4>
 
 <p><code>constructorArgs</code> can specify any object type.  Above you can see that the only constructor argument specified is a string
 that contained &quot;some argument&quot;.  If declaring a number, you may omit the parenthesis.</p>
- constructorArgs:
-      - "some argument"
-      - 123.45
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="w"> </span>constructorArgs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="s2">&#34;some argument&#34;</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span><span class="m">123.45</span></code></pre></div>
 <p>The is also a way to reference other components as arguments by using <code>ref</code>.  In the example
 below we are specifying an already defined component to be a constructor argument.  Any instance that is referenced by
 <code>ref</code> must have already been defined in the ECO definition file before it is to be used.</p>
-constructorArgs:
-      - ref: "property-holder"
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">constructorArgs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>ref<span class="p">:</span><span class="w"> </span><span class="s2">&#34;property-holder&#34;</span></code></pre></div>
 <h4 id="setter-and-public-field-injection">Setter and Public Field Injection</h4>
 
 <p>Besides constructor injection, you may also use setter methods. In the below example, ECO will take inspect the component
 for setters that match the names and values provided.  If no setter is defined, it will then look for a public field to set the property.</p>
-properties:
-      - name: "numberProperty"
-        value: 11
-      - name: "publicProperty"
-        value: "This is public property"
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">properties<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;numberProperty&#34;</span><span class="w">
+</span><span class="w">        </span>value<span class="p">:</span><span class="w"> </span><span class="m">11</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;publicProperty&#34;</span><span class="w">
+</span><span class="w">        </span>value<span class="p">:</span><span class="w"> </span><span class="s2">&#34;This is public property&#34;</span></code></pre></div>
 <h2 id="the-topology-definition">The Topology Definition</h2>
 
 <p>Spouts and Bolts each have their own sections for defining in the ECO file.  They are extensions of <code>components</code> so they will
@@ -330,17 +330,17 @@ be allowed the same property injection methods above.  One difference is the <co
 property for each bolt or spout once the topology has been deployed into Heron.</p>
 
 <h3 id="spouts">Spouts</h3>
-spouts:
-  - id: "spout-1"
-    className: "com.twitter.heron.examples.eco.TestFibonacciSpout"
-    constructorArgs:
-      - ref: "property-holder"
-    parallelism: 1
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">spouts<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;spout-1&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestFibonacciSpout&#34;</span><span class="w">
+</span><span class="w">    </span>constructorArgs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>ref<span class="p">:</span><span class="w"> </span><span class="s2">&#34;property-holder&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span></code></pre></div>
 <h3 id="bolts">Bolts</h3>
-bolts:
-  - id: "even-and-odd-bolt"
-    className: "com.twitter.heron.examples.eco.EvenAndOddBolt"
-    parallelism: 1
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">bolts<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.EvenAndOddBolt&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span></code></pre></div>
 <h3 id="streams-and-groupings">Streams and Groupings</h3>
 
 <p>Streams are what connect your bolts and spouts together.  Stream Groupings are the specific way you are to connect those streams to the spouts and bolts.</p>
@@ -371,55 +371,55 @@ bolts:
 </ul>
 
 <p>In the below example, you can see the first Stream Definition declares that data will flow from <code>spout-1</code> to <code>even-and-odd-bolt</code> with a grouping type of <code>SHUFFLE</code></p>
-streams:
-  - from: "spout-1"
-    to: "even-and-odd-bolt"
-    grouping:
-      type: SHUFFLE
-
-  - from: "even-and-odd-bolt"
-    to: "ibasic-print-bolt"
-    grouping:
-      type: SHUFFLE
-      streamId: "odds"
-
-  - from: "even-and-odd-bolt"
-    to: "sys-out-bolt"
-    grouping:
-      type: SHUFFLE
-      streamId: "evens"
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">streams<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>from<span class="p">:</span><span class="w"> </span><span class="s2">&#34;spout-1&#34;</span><span class="w">
+</span><span class="w">    </span>to<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>grouping<span class="p">:</span><span class="w">
+</span><span class="w">      </span>type<span class="p">:</span><span class="w"> </span>SHUFFLE<span class="w">
+</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>from<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>to<span class="p">:</span><span class="w"> </span><span class="s2">&#34;ibasic-print-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>grouping<span class="p">:</span><span class="w">
+</span><span class="w">      </span>type<span class="p">:</span><span class="w"> </span>SHUFFLE<span class="w">
+</span><span class="w">      </span>streamId<span class="p">:</span><span class="w"> </span><span class="s2">&#34;odds&#34;</span><span class="w">
+</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>from<span class="p">:</span><span class="w"> </span><span class="s2">&#34;even-and-odd-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>to<span class="p">:</span><span class="w"> </span><span class="s2">&#34;sys-out-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>grouping<span class="p">:</span><span class="w">
+</span><span class="w">      </span>type<span class="p">:</span><span class="w"> </span>SHUFFLE<span class="w">
+</span><span class="w">      </span>streamId<span class="p">:</span><span class="w"> </span><span class="s2">&#34;evens&#34;</span></code></pre></div>
 <h3 id="handling-enums">Handling Enums</h3>
 
 <p>The usage of Enums is supported in ECO.  You can use enums in constructor arguments, references,
 configuration methods, and properties  In the <code>fibonacci-topology</code> referenced above.  In the examples we reference the
 enum <code>TestUnits</code>.  The enum is shown below.</p>
-public enum TestUnits {
-  MB("MB"),
-  GB("GB"),
-  B("B");
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">enum</span> <span class="n">TestUnits</span> <span class="o">{</span>
+  <span class="n">MB</span><span class="o">(</span><span class="s">&#34;MB&#34;</span><span class="o">),</span>
+  <span class="n">GB</span><span class="o">(</span><span class="s">&#34;GB&#34;</span><span class="o">),</span>
+  <span class="n">B</span><span class="o">(</span><span class="s">&#34;B&#34;</span><span class="o">);</span>
 
-  String value;
+  <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
 
-  TestUnits(String value) {
-    this.value = value;
-  }
+  <span class="n">TestUnits</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
 
-  public String getValue() {
-    return value;
-  }
-}
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
 <p>In the <code>ibasic-print-bolt</code> a <code>configMethod</code> is specified with the name <code>sampleConfigurationMethod</code>.</p>
-  - id: "ibasic-print-bolt"
-    ... excluded for simplicity
-        args:
-          - "someStringArgument"
-          - MB
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="w">  </span>-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;ibasic-print-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>...<span class="w"> </span>excluded<span class="w"> </span>for<span class="w"> </span>simplicity<span class="w">
+</span><span class="w">        </span>args<span class="p">:</span><span class="w">
+</span><span class="w">          </span>-<span class="w"> </span><span class="s2">&#34;someStringArgument&#34;</span><span class="w">
+</span><span class="w">          </span>-<span class="w"> </span>MB</code></pre></div>
 <p>This is the same as calling the following java method</p>
-public void sampleConfigurationMethod(String someProperty, TestUnits TestUnits) {
-    this.someProperty += someProperty;
-    this.TestUnits = TestUnits;
-  }
-  
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sampleConfigurationMethod</span><span class="o">(</span><span class="n">String</span> <span class="n">someProperty</span><span class="o">,</span> <span class="n">TestUnits</span> <span class="n">TestUnits</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">someProperty</span> <span class="o">+=</span> <span class="n">someProperty</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">TestUnits</span> <span class="o">=</span> <span class="n">TestUnits</span><span class="o">;</span>
+  <span class="o">}</span>
+  </code></pre></div>
 <h3 id="property-substitution">Property Substitution</h3>
 
 <p>It's always nice to be able to define properties based on the environments you are in.  We haven't forgotten this with ECO.
@@ -427,21 +427,21 @@ You are able to substitute values into your ECO files by either environment vari
 To turn on property substitution add the flag <code>--props</code> and specify a path to a <code>.properties</code> file.</p>
 
 <p>To start over run</p>
-$ heron kill local fibonacci-topology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">kill</span> <span class="nb">local</span> fibonacci-topology</code></pre></div>
 <p>After the topology has been killed, execute:</p>
-$ heron submit local \
-  ~/.heron/examples/heron-eco-examples.jar \
-  com.twitter.heron.eco.Eco \
-  --eco-config-file ~/.heron/examples/fibonacci.yaml --props ~/.heron/examples/sample.properties
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  ~/.heron/examples/heron-eco-examples.jar <span class="se">\
+</span><span class="se"></span>  com.twitter.heron.eco.Eco <span class="se">\
+</span><span class="se"></span>  --eco-config-file ~/.heron/examples/fibonacci.yaml --props ~/.heron/examples/sample.properties</code></pre></div>
 <p>If you look above at the yaml file snippet at the beginning of the page you will see</p>
-- id: "ibasic-print-bolt"
-    className: "com.twitter.heron.examples.eco.TestIBasicPrintBolt"
-    parallelism: 1
-    configMethods:
-      - name: "sampleConfigurationMethod"
-        args:
-          - "${ecoPropertyOne}"
-          - MB
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">-<span class="w"> </span>id<span class="p">:</span><span class="w"> </span><span class="s2">&#34;ibasic-print-bolt&#34;</span><span class="w">
+</span><span class="w">    </span>className<span class="p">:</span><span class="w"> </span><span class="s2">&#34;com.twitter.heron.examples.eco.TestIBasicPrintBolt&#34;</span><span class="w">
+</span><span class="w">    </span>parallelism<span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">    </span>configMethods<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s2">&#34;sampleConfigurationMethod&#34;</span><span class="w">
+</span><span class="w">        </span>args<span class="p">:</span><span class="w">
+</span><span class="w">          </span>-<span class="w"> </span><span class="s2">&#34;${ecoPropertyOne}&#34;</span><span class="w">
+</span><span class="w">          </span>-<span class="w"> </span>MB</code></pre></div>
 <p>In the  <code>sample.properties</code> we have a key value set at <code>ecoPropertyOne=thisValueWasSetFromAPropertiesFile</code>.  You can check the logs
 for the <code>ibasic-print-bolt</code> and see the values are printing out.</p>
 
@@ -449,19 +449,19 @@ for the <code>ibasic-print-bolt</code> and see the values are printing out.</p>
 
 <p>ECO also allows you to do environment variable substitution.  To activate environment variable substitution pass the flag <code>--env-props</code> upon submitting a topology. If you have <code>SOME_VARIABLE</code> defined
 you can reference in your yaml file like below.</p>
-${ENV-SOME_VARIABLE}
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">${ENV-SOME_VARIABLE}</code></pre></div>
 <h3 id="other-eco-examples">Other ECO examples</h3>
 
 <p>Run the simple wordcount example</p>
-$ heron submit local \
-  ~/.heron/examples/heron-eco-examples.jar \
-   com.twitter.heron.eco.Eco \
-   --eco-config-file ~/.heron/examples/simple_wordcount.yaml 
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  ~/.heron/examples/heron-eco-examples.jar <span class="se">\
+</span><span class="se"></span>   com.twitter.heron.eco.Eco <span class="se">\
+</span><span class="se"></span>   --eco-config-file ~/.heron/examples/simple_wordcount.yaml </code></pre></div>
 <p>Run the simple windowing example</p>
-$ heron submit local \
-   ~/.heron/examples/heron-eco-examples.jar \
-   com.twitter.heron.eco.Eco \
-   --eco-config-file ~/.heron/examples/simple_windowing.yaml </article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>   ~/.heron/examples/heron-eco-examples.jar <span class="se">\
+</span><span class="se"></span>   com.twitter.heron.eco.Eco <span class="se">\
+</span><span class="se"></span>   --eco-config-file ~/.heron/examples/simple_windowing.yaml </code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

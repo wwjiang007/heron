@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron UI"><meta property="og:url" content="/docs/operators/heron-ui/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Heron UI</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Heron UI"><meta property="og:url" content="/docs/operators/heron-ui/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Heron UI</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -17,13 +17,13 @@ various elements that UI exposes.</p>
 <p>Heron uses <a href="http://bazel.io/">bazel</a> for compiling.
 <a href="../../developers/compiling/compiling">This page</a> describes how to setup bazel
 for heron.</p>
-# Build heron-ui
-$ bazel build heron/tools/ui/src/python:heron-ui
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Build heron-ui
+</span><span class="c1"></span>$ bazel build heron/tools/ui/src/python:heron-ui
 
-# The location of heron-ui pex executable is
-# bazel-bin/heron/tools/ui/src/python/heron-ui
-# To run using default options:
-$ ./bazel-bin/heron/tools/ui/src/python/heron-ui
+<span class="c1"># The location of heron-ui pex executable is
+</span><span class="c1"># bazel-bin/heron/tools/ui/src/python/heron-ui
+</span><span class="c1"># To run using default options:
+</span><span class="c1"></span>$ ./bazel-bin/heron/tools/ui/src/python/heron-ui</code></pre></div>
 <p><code>heron-ui</code> is a self executable
 <a href="https://pex.readthedocs.io/en/latest/whatispex.html">pex</a> archive.</p>
 
@@ -34,9 +34,9 @@ $ ./bazel-bin/heron/tools/ui/src/python/heron-ui
 <li><code>--tracker_url</code> - The base url for tracker. All the information about the
 topologies is fetched from tracker. Default url is <code>http://localhost:8888</code>.</li>
 </ul>
-$ heron-ui
-# is equivalent to
-$ heron-ui --port=8889 --tracker_url=http://localhost:8888</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-ui
+<span class="c1"># is equivalent to
+</span><span class="c1"></span>$ heron-ui --port<span class="o">=</span><span class="m">8889</span> --tracker_url<span class="o">=</span>http://localhost:8888</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

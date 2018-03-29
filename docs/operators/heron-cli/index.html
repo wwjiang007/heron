@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Managing Topologies with Heron CLI"><meta property="og:url" content="/docs/operators/heron-cli/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Managing Topologies with Heron CLI</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Managing Topologies with Heron CLI"><meta property="og:url" content="/docs/operators/heron-cli/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Managing Topologies with Heron CLI</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -13,7 +13,7 @@ function load() { if (window.location.hash) shiftWindow(); }
 <a href="https://github.com/twitter/heron/releases">release binaries</a> and  run the
 installation script. For example, if you have downloaded the version <code>0.13.5</code>,
 you invoke the installation script as follows:</p>
-$ chmod +x heron-client-install-0.13.5-darwin.sh
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ chmod +x heron-client-install-0.13.5-darwin.sh
 $ ./heron-client-install-0.13.5-darwin.sh --user
 Heron client installer
 ----------------------
@@ -22,11 +22,11 @@ Uncompressing......
 
 Heron is now installed!
 
-Make sure you have "/Users/$USER/bin" in your path.
+Make sure you have <span class="s2">&#34;/Users/</span><span class="nv">$USER</span><span class="s2">/bin&#34;</span> in your path.
 
 See http://heronstreaming.io/docs/getting-started.html on how to use Heron!
 
-....
+....</code></pre></div>
 <p>Alternatively, generate a full <a href="../../developers/compiling/compiling">Heron release</a> and
 distribute the resulting <code>heron</code> CLI to all machines used to manage topologies.</p>
 
@@ -71,7 +71,7 @@ that provide detailed information about the execution.</p></li>
 </ul>
 
 <p>Below is an example topology management command that uses one of these flags:</p>
-$ heron activate --config-path ~/heronclusters devcluster/ads/PROD AckingTopology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron activate --config-path ~/heronclusters devcluster/ads/PROD AckingTopology</code></pre></div>
 <h2 id="submitting-a-topology">Submitting a Topology</h2>
 
 <p>To run a topology in a Heron cluster, submit it using the <code>submit</code> command.
@@ -80,20 +80,20 @@ Topologies can be submitted in either an activated (default) or deactivated stat
 below).</p>
 
 <p>Below is the basic syntax:</p>
-$ heron help submit
-usage: heron submit [options] cluster/[role]/[env] topology-file-name topology-class-name [topology-args]
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">help</span> submit
+usage: heron submit <span class="o">[</span>options<span class="o">]</span> cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span> topology-file-name topology-class-name <span class="o">[</span>topology-args<span class="o">]</span>
 
 Required arguments:
-  cluster/[role]/[env]  Cluster, role, and env to run topology
+  cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span>  Cluster, role, and env to run topology
   topology-file-name    Topology jar/tar/zip file
   topology-class-name   Topology class name
 
 Optional arguments:
-  --config-path (a string; path to cluster config; default: "/Users/$USER/.heron/conf")
-  --config-property (key=value; a config key and its value; default: [])
-  --deploy-deactivated (a boolean; default: "false")
+  --config-path <span class="o">(</span>a string<span class="p">;</span> path to cluster config<span class="p">;</span> default: <span class="s2">&#34;/Users/</span><span class="nv">$USER</span><span class="s2">/.heron/conf&#34;</span><span class="o">)</span>
+  --config-property <span class="o">(</span><span class="nv">key</span><span class="o">=</span>value<span class="p">;</span> a config key and its value<span class="p">;</span> default: <span class="o">[])</span>
+  --deploy-deactivated <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span>
   --topology-main-jvm-property Define a system property to pass to java -D when running main.
-  --verbose (a boolean; default: "false")
+  --verbose <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span></code></pre></div>
 <p>Arguments of the <code>submit</code> command:</p>
 
 <ul>
@@ -118,8 +118,8 @@ topology requires them.</p></li>
 <p>Below is an example command that submits a topology to a cluster named <code>devcluster</code>
 with a main class named <code>com.example.topologies.MyTopology</code> packaged in <code>my-topology.jar</code>,
 along with the optional <code>--config-path</code> where the config for <code>devcluster</code> can be found:</p>
-$ heron submit --config-path ~/heronclusters devcluster /path/to/topology/my-topology.jar \
-    com.example.topologies.MyTopology my-topology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit --config-path ~/heronclusters devcluster /path/to/topology/my-topology.jar <span class="se">\
+</span><span class="se"></span>    com.example.topologies.MyTopology my-topology</code></pre></div>
 <h3 id="other-topology-submission-options">Other Topology Submission Options</h3>
 
 <table>
@@ -148,16 +148,16 @@ $ heron submit --config-path ~/heronclusters devcluster /path/to/topology/my-top
 <p>Topologies are submitted to the cluster in the activated state by default. To
 activate a deactivated topology use the <code>activate</code> command. Below is the basic
 syntax:</p>
-$ heron help activate
-usage: heron activate [options] cluster/[role]/[env] topology-name
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">help</span> activate
+usage: heron activate <span class="o">[</span>options<span class="o">]</span> cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span> topology-name
 
 Required arguments:
-  cluster/[role]/[env]  Cluster, role, and env to run topology
+  cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span>  Cluster, role, and env to run topology
   topology-name         Name of the topology
 
 Optional arguments:
-  --config-path (a string; path to cluster config; default: "/Users/$USER/.heron/conf")
-  --config-property (key=value; a config key and its value; default: [])
+  --config-path <span class="o">(</span>a string<span class="p">;</span> path to cluster config<span class="p">;</span> default: <span class="s2">&#34;/Users/</span><span class="nv">$USER</span><span class="s2">/.heron/conf&#34;</span><span class="o">)</span>
+  --config-property <span class="o">(</span><span class="nv">key</span><span class="o">=</span>value<span class="p">;</span> a config key and its value<span class="p">;</span> default: <span class="o">[])</span></code></pre></div>
 <p>Arguments of the <code>activate</code> command:</p>
 
 <ul>
@@ -169,22 +169,22 @@ like to activate.</p></li>
 </ul>
 
 <h3 id="example-topology-activation-command">Example Topology Activation Command</h3>
-$ heron activate local/ads/PROD my-topology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron activate local/ads/PROD my-topology</code></pre></div>
 <h2 id="deactivating-a-topology">Deactivating a Topology</h2>
 
 <p>You can deactivate a running topology at any time using the <code>deactivate</code>
 command. Here&rsquo;s the basic syntax:</p>
-$ heron help deactivate
-usage: heron deactivate [options] cluster/[role]/[env] topology-name
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">help</span> deactivate
+usage: heron deactivate <span class="o">[</span>options<span class="o">]</span> cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span> topology-name
 
 Required arguments:
-  cluster/[role]/[env]  Cluster, role, and env to run topology
+  cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span>  Cluster, role, and env to run topology
   topology-name         Name of the topology
 
 Optional arguments:
-  --config-path (a string; path to cluster config; default: "/Users/kramasamy/.heron/conf")
-  --config-property (key=value; a config key and its value; default: [])
-  --verbose (a boolean; default: "false")
+  --config-path <span class="o">(</span>a string<span class="p">;</span> path to cluster config<span class="p">;</span> default: <span class="s2">&#34;/Users/kramasamy/.heron/conf&#34;</span><span class="o">)</span>
+  --config-property <span class="o">(</span><span class="nv">key</span><span class="o">=</span>value<span class="p">;</span> a config key and its value<span class="p">;</span> default: <span class="o">[])</span>
+  --verbose <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span></code></pre></div>
 <p>Arguments of the <code>deactivate</code> command:</p>
 
 <ul>
@@ -198,18 +198,18 @@ optionally taking the role and environment. For example, <code>local/ads/PROD</c
 
 <p>You can restart a deactivated topology using the <code>restart</code> command (assuming
 that the topology has not yet been killed, i.e. removed from the cluster).</p>
-$ heron help restart
-usage: heron restart [options] cluster/[role]/[env] topology-name [container-id]
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">help</span> restart
+usage: heron restart <span class="o">[</span>options<span class="o">]</span> cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span> topology-name <span class="o">[</span>container-id<span class="o">]</span>
 
 Required arguments:
-  cluster/[role]/[env]  Cluster, role, and env to run topology
+  cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span>  Cluster, role, and env to run topology
   topology-name         Name of the topology
   container-id          Identifier of the container to be restarted
 
 Optional arguments:
-  --config-path (a string; path to cluster config; default: "/Users/kramasamy/.heron/conf")
-  --config-property (key=value; a config key and its value; default: [])
-  --verbose (a boolean; default: "false")
+  --config-path <span class="o">(</span>a string<span class="p">;</span> path to cluster config<span class="p">;</span> default: <span class="s2">&#34;/Users/kramasamy/.heron/conf&#34;</span><span class="o">)</span>
+  --config-property <span class="o">(</span><span class="nv">key</span><span class="o">=</span>value<span class="p">;</span> a config key and its value<span class="p">;</span> default: <span class="o">[])</span>
+  --verbose <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span></code></pre></div>
 <p>Arguments of the <code>restart</code> command:</p>
 
 <ul>
@@ -223,25 +223,25 @@ restarted if you want to restart only a specific container of the topology.</p><
 </ul>
 
 <h3 id="example-topology-restart-command">Example Topology Restart Command</h3>
-$ heron restart local/ads/PROD my-topology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron restart local/ads/PROD my-topology</code></pre></div>
 <h2 id="updating-a-topology">Updating a Topology</h2>
 
 <p>You can update the parallelism of any of the components of a deployed
 topology using the <code>update</code> command.</p>
-$ heron help update
-usage: heron update [options] cluster/[role]/[env] <topology-name> --component-parallelism <name:value>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">help</span> update
+usage: heron update <span class="o">[</span>options<span class="o">]</span> cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span> &lt;topology-name&gt; --component-parallelism &lt;name:value&gt;
 
 Required arguments:
-  cluster/[role]/[env]  Cluster, role, and environment to run topology
+  cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span>  Cluster, role, and environment to run topology
   topology-name         Name of the topology
 
 Optional arguments:
   --component-parallelism COMPONENT_PARALLELISM
                         Component name and the new parallelism value colon-
-                        delimited: [component_name]:[parallelism]
-  --config-path (a string; path to cluster config; default: "/Users/billg/.heron/conf")
-  --config-property (key=value; a config key and its value; default: [])
-  --verbose (a boolean; default: "false")
+                        delimited: <span class="o">[</span>component_name<span class="o">]</span>:<span class="o">[</span>parallelism<span class="o">]</span>
+  --config-path <span class="o">(</span>a string<span class="p">;</span> path to cluster config<span class="p">;</span> default: <span class="s2">&#34;/Users/billg/.heron/conf&#34;</span><span class="o">)</span>
+  --config-property <span class="o">(</span><span class="nv">key</span><span class="o">=</span>value<span class="p">;</span> a config key and its value<span class="p">;</span> default: <span class="o">[])</span>
+  --verbose <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span></code></pre></div>
 <p>Arguments of the <code>update</code> command include <strong>cluster/[role]/[env]</strong> and
 <strong>topology-name</strong> as well as:</p>
 
@@ -251,15 +251,15 @@ times to change the parallelism of components in the deployed topology.</li>
 </ul>
 
 <h3 id="example-topology-update-command">Example Topology Update Command</h3>
-$ heron update local/ads/PROD my-topology \
-  --component-parallelism=my-spout:2 \
-  --component-parallelism=my-bolt:4
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron update local/ads/PROD my-topology <span class="se">\
+</span><span class="se"></span>  --component-parallelism<span class="o">=</span>my-spout:2 <span class="se">\
+</span><span class="se"></span>  --component-parallelism<span class="o">=</span>my-bolt:4</code></pre></div>
 <h2 id="killing-a-topology">Killing a Topology</h2>
 
 <p>If you&rsquo;ve submitted a topology to your Heron cluster and would like to remove
 knowledge of the topology entirely, you can remove it using the <code>kill</code> command.
 Here&rsquo;s the basic syntax:</p>
-$ heron kill <killer-overrides> <topology>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">kill</span> &lt;killer-overrides&gt; &lt;topology&gt;</code></pre></div>
 <p>Arguments of the <code>kill</code> command:</p>
 
 <ul>
@@ -271,7 +271,7 @@ optionally taking the role and environment.  For example, <code>local/ads/PROD</
 </ul>
 
 <h3 id="example-topology-kill-command">Example Topology Kill Command</h3>
-$ heron kill local my-topology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">kill</span> <span class="nb">local</span> my-topology</code></pre></div>
 <h2 id="heron-cli-configuration">Heron CLI configuration</h2>
 
 <p>When using the Heron CLI tool to interact with Heron clusters, there are two ways to provide configuration for the tool:</p>
@@ -306,39 +306,39 @@ $ heron kill local my-topology
 <h3 id="set-configuration">Set configuration</h3>
 
 <p>You can set a config using the <code>set</code> command. Here&rsquo;s an example:</p>
-$ heron config us-west-staging set service_url http://us-west.staging.example.com:9000
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config us-west-staging <span class="nb">set</span> service_url http://us-west.staging.example.com:9000</code></pre></div>
 <h3 id="unset-configuration">Unset configuration</h3>
 
 <p>You can remove a parameter using the <code>unset</code> command. Here&rsquo;s an example:</p>
-$ heron config apac-australia unset service_url
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config apac-australia <span class="nb">unset</span> service_url</code></pre></div>
 <h3 id="list-configuration">List configuration</h3>
 
 <p>You can list all of the CLI configs for a Heron cluster using the <code>list</code> command. This will return the configs as a list of <code>parameter = value</code> pairs. Here&rsquo;s an example:</p>
-$ heron config local list
-service_url = http://localhost:9000
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config <span class="nb">local</span> list
+<span class="nv">service_url</span> <span class="o">=</span> http://localhost:9000</code></pre></div>
 <h3 id="configuration-example">Configuration example</h3>
 
 <p>Let&rsquo;s say that you need to interact with a Heron cluster called <code>apac-japan-staging</code> which has a service
 URL of <a href="http://apac-japan.staging.example.com:9000">http://apac-japan.staging.example.com:9000</a>. If you specified the service URL via CLI flags, you&rsquo;d need
 to set the flag every time you perform an operation involving that cluster:</p>
-$ heron deactivate apac-japan-staging MyTopology \
-  --service-url http://apac-japan.staging.example.com:9000
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron deactivate apac-japan-staging MyTopology <span class="se">\
+</span><span class="se"></span>  --service-url http://apac-japan.staging.example.com:9000</code></pre></div>
 <p>Using <code>heron config</code>, however, you could set the service URL for that cluster once and for all:</p>
-$ heron config apac-japan-staging set service_url http://apac-japan.staging.example.com:9000
-$ heron deactivate apac-japan-staging MyTopology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron config apac-japan-staging <span class="nb">set</span> service_url http://apac-japan.staging.example.com:9000
+$ heron deactivate apac-japan-staging MyTopology</code></pre></div>
 <h2 id="other-commands">Other Commands</h2>
 
 <h3 id="version">Version</h3>
 
 <p>Run the <code>version</code> command at any time to see which version of <code>heron</code> you&rsquo;re
 using:</p>
-$ heron version
-heron.build.version : 0.13.5
-heron.build.time : Wed May 11 23:49:00 PDT 2016
-heron.build.timestamp : 1463035740000
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron version
+heron.build.version : <span class="m">0</span>.13.5
+heron.build.time : Wed May <span class="m">11</span> <span class="m">23</span>:49:00 PDT <span class="m">2016</span>
+heron.build.timestamp : <span class="m">1463035740000</span>
 heron.build.host : mbp-machine
 heron.build.user : userwhobuilt
-INFO: Elapsed time: 0.000s.</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+INFO: Elapsed time: <span class="m">0</span>.000s.</code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

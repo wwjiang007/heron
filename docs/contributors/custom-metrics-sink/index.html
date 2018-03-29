@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Implementing a Custom Metrics Sink"><meta property="og:url" content="/docs/contributors/custom-metrics-sink/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Implementing a Custom Metrics Sink</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Implementing a Custom Metrics Sink"><meta property="og:url" content="/docs/contributors/custom-metrics-sink/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Implementing a Custom Metrics Sink</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -59,15 +59,15 @@ implementing your own.</p>
 library into your project.</p>
 
 <h4 id="maven">Maven</h4>
-<dependency>
-  <groupId>com.twitter.heron</groupId>
-  <artifactId>heron-spi</artifactId>
-  <version>0.17.5</version>
-</dependency>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.twitter.heron<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>heron-spi<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.17.5<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></div>
 <h4 id="gradle">Gradle</h4>
-dependencies {
-  compile group: "com.twitter.heron", name: "heron-spi", version: "0.17.5"
-}
+<div class="highlight"><pre class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">dependencies</span> <span class="o">{</span>
+  <span class="n">compile</span> <span class="nl">group:</span> <span class="s2">&#34;com.twitter.heron&#34;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s2">&#34;heron-spi&#34;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s2">&#34;0.17.5&#34;</span>
+<span class="o">}</span></code></pre></div>
 <h2 id="the-imetricssink-interface">The <code>IMetricsSink</code> Interface</h2>
 
 <p>Each metrics sink must implement the
@@ -113,41 +113,41 @@ release</a>.</p>
 
 <p>Below is an example implementation that simply prints the contents of each
 metrics record as it passes through:</p>
-import com.twitter.heron.metricsmgr.api.metrics.MetricsInfo;
-import com.twitter.heron.metricsmgr.api.metrics.MetricsRecord;
-import com.twitter.heron.metricsmgr.api.sink.IMetricsSink;
-import com.twitter.heron.metricsmgr.api.sink.SinkContext;
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.twitter.heron.metricsmgr.api.metrics.MetricsInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.twitter.heron.metricsmgr.api.metrics.MetricsRecord</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.twitter.heron.metricsmgr.api.sink.IMetricsSink</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.twitter.heron.metricsmgr.api.sink.SinkContext</span><span class="o">;</span>
 
-public class PrintSink implements IMetricsSink {
-    @Override
-    public void init(Map<String, Object> conf, SinkContext context) {
-        System.out.println("Sink configuration:");
-        // This will print out each config in the supplied configuration
-        for (Map.Entry<String, Object> config : conf.entrySet()) {
-            System.out.println(String.format("%s: %s", config.getKey(), config.getValue());
-        }
-        System.out.println(String.format("Topology name: %s", context.getTopologyName());
-        System.out.println(String.format("Sink ID: %s", context.getSinkId()));
-    }
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrintSink</span> <span class="kd">implements</span> <span class="n">IMetricsSink</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">conf</span><span class="o">,</span> <span class="n">SinkContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Sink configuration:&#34;</span><span class="o">);</span>
+        <span class="c1">// This will print out each config in the supplied configuration
+</span><span class="c1"></span>        <span class="k">for</span> <span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">config</span> <span class="o">:</span> <span class="n">conf</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;%s: %s&#34;</span><span class="o">,</span> <span class="n">config</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="n">config</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;Topology name: %s&#34;</span><span class="o">,</span> <span class="n">context</span><span class="o">.</span><span class="na">getTopologyName</span><span class="o">());</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;Sink ID: %s&#34;</span><span class="o">,</span> <span class="n">context</span><span class="o">.</span><span class="na">getSinkId</span><span class="o">()));</span>
+    <span class="o">}</span>
 
-    @Override
-    public void processRecord(MetricsRecord record) {
-        String recordString = String.format("Record received: %s", record.toString());
-        System.out.println(recordString);
-    }
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">processRecord</span><span class="o">(</span><span class="n">MetricsRecord</span> <span class="n">record</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">recordString</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;Record received: %s&#34;</span><span class="o">,</span> <span class="n">record</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">recordString</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    @Override
-    public void flush() {
-        // Since we're just printing to stdout in this sink, we don't need to
-        // specify any flush() behavior
-    }
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">flush</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Since we&#39;re just printing to stdout in this sink, we don&#39;t need to
+</span><span class="c1"></span>        <span class="c1">// specify any flush() behavior
+</span><span class="c1"></span>    <span class="o">}</span>
 
-    @Override
-    public void close() {
-        // Since we're just printing to stdout in this sink, we don't need to
-        // specify any close() behavior
-    }
-}
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Since we&#39;re just printing to stdout in this sink, we don&#39;t need to
+</span><span class="c1"></span>        <span class="c1">// specify any close() behavior
+</span><span class="c1"></span>    <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
 <h2 id="configuring-your-custom-sink">Configuring Your Custom Sink</h2>
 
 <p>The configuration for your sink needs to be provided in the
@@ -155,12 +155,12 @@ public class PrintSink implements IMetricsSink {
 
 <p>At the top of that file there&rsquo;s a <code>sinks</code> parameter that lists each available
 sink by name. You should add the sink you want to use to that list. Here&rsquo;s an example:</p>
-sinks:
-  - file-sink
-  - scribe-sink
-  - tmaster-sink
-  - print-sink
-  - prometheus-sink
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">sinks<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>file-sink<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>scribe-sink<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>tmaster-sink<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>print-sink<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>prometheus-sink</code></pre></div>
 <p>For each sink you are required to specify the following:</p>
 
 <table>
@@ -190,14 +190,14 @@ sinks:
 </table>
 
 <p>Here is an example <code>metrics_sinks.yaml</code> configuration:</p>
-sinks:
-  - custom-sink
-
-print-sink:
-  class: "biz.acme.heron.metrics.CustomSink"
-  flush-frequency-ms: 60000 # One minute
-  sink-restart-attempts: -1 # Attempt to restart forever
-  some-other-config: false
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">sinks<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>custom-sink<span class="w">
+</span><span class="w">
+</span><span class="w"></span>print-sink<span class="p">:</span><span class="w">
+</span><span class="w">  </span>class<span class="p">:</span><span class="w"> </span><span class="s2">&#34;biz.acme.heron.metrics.CustomSink&#34;</span><span class="w">
+</span><span class="w">  </span>flush-frequency-ms<span class="p">:</span><span class="w"> </span><span class="m">60000</span><span class="w"> </span><span class="c"># One minute</span><span class="w">
+</span><span class="w">  </span>sink-restart-attempts<span class="p">:</span><span class="w"> </span>-<span class="m">1</span><span class="w"> </span><span class="c"># Attempt to restart forever</span><span class="w">
+</span><span class="w">  </span>some-other-config<span class="p">:</span><span class="w"> </span><span class="kc">false</span></code></pre></div>
 <p>It is optional to add other configurations for the sink. All configurations will be constructed
 as an unmodifiable map <code>Map&lt;String, Object&gt; conf</code> and passed to the sink via the <code>init</code> function.</p>
 
@@ -209,7 +209,7 @@ as an unmodifiable map <code>Map&lt;String, Object&gt; conf</code> and passed to
 
 <p>You must <a href="../../developers/compiling">re-compile
 Heron</a> if you want to include the configuration in a new distribution of <a href="../../operators/heron-cli">Heron CLI</a>.</p>
-</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

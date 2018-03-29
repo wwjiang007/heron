@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Quick Start Guide"><meta property="og:url" content="/docs/getting-started/"><meta property="og:description" content="Run a single-node Heron cluster on your laptop"><meta name="twitter:description" content="Run a single-node Heron cluster on your laptop"><title>Heron Documentation - Quick Start Guide</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Quick Start Guide"><meta property="og:url" content="/docs/getting-started/"><meta property="og:description" content="Run a single-node Heron cluster on your laptop"><meta name="twitter:description" content="Run a single-node Heron cluster on your laptop"><title>Heron Documentation - Quick Start Guide</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -29,7 +29,7 @@ function load() { if (window.location.hash) shiftWindow(); }
 <h2 id="macos-homebrew">macOS/Homebrew</h2>
 
 <p>The easiest way to get started with Heron on macOS is using <a href="https://brew.sh">Homebrew</a>:</p>
-$ brew install heron
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ brew install heron</code></pre></div>
 <p>This will install a variety of executables and other resources by default in <code>/usr/local/opt/heron</code>.</p>
 
 <blockquote>
@@ -43,30 +43,30 @@ and see a full listing of Heron releases for each available platform. The instal
 <code>heron-install-0.17.5-darwin.sh</code>.</p>
 
 <p>Download the for your platform either from the releases page or using <a href="https://www.gnu.org/software/wget/"><code>wget</code></a>. Here&rsquo;s a <code>wget</code> example for Ubuntu:</p>
-$ wget https://github.com/twitter/heron/releases/download/0.17.5/heron-install-0.17.5-ubuntu.sh
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ wget https://github.com/twitter/heron/releases/download/0.17.5/heron-install-0.17.5-ubuntu.sh</code></pre></div>
 <p>Once you&rsquo;ve downloaded the script, make it executable using <a href="https://en.wikipedia.org/wiki/Chmod">chmod</a>:</p>
-$ chmod +x heron-*.sh
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ chmod +x heron-*.sh</code></pre></div>
 <blockquote>
 <p>The script will install executables in the <code>~/bin</code> folder. You should add that folder to your <code>PATH</code> using <code>export PATH=~/bin:$PATH</code>.</p>
 </blockquote>
 
 <p>Now run the <a href="../operators/heron-cli">Heron client</a> installation script with the <code>--user</code> flag set. Here&rsquo;s an example for Ubuntu:</p>
-$ ./heron-install-0.17.5-ubuntu.sh --user
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./heron-install-0.17.5-ubuntu.sh --user
 Heron installer
 ---------------
 
 Uncompressing...done
 ...
-Heron is now installed!
+Heron is now installed!</code></pre></div>
 <p>To check that Heron is successfully installed, run <code>heron version</code>:</p>
-$ heron version
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron version
 heron.build.git.revision : 26bb4096130a05f9799510bbce6c37a69a7342ef
 heron.build.git.status : Clean
 heron.build.host : ...
-heron.build.time : Sat Aug  6 12:35:47 PDT 2018
-heron.build.timestamp : 1470512147000
+heron.build.time : Sat Aug  <span class="m">6</span> <span class="m">12</span>:35:47 PDT 2018
+heron.build.timestamp : <span class="m">1470512147000</span>
 heron.build.user : ...
-heron.build.version : 0.17.5
+heron.build.version : 0.17.5</code></pre></div>
 <h2 id="step-2-launch-an-example-topology">Step 2 &mdash; Launch an example topology</h2>
 
 <blockquote>
@@ -82,18 +82,18 @@ running <code>hostname</code> in your shell.</p>
 topologies will be installed in your <code>~/.heron/examples</code> directory. You can
 launch an example <a href="../concepts/topologies">topology</a> locally (on your machine)
 using the <a href="../operators/heron-cli">Heron CLI tool</a>:</p>
-$ heron submit local \
-  ~/.heron/examples/heron-streamlet-examples.jar \
-  com.twitter.heron.examples.streamlet.WindowedWordCountTopology \
-  WindowedWordCountTopology \
-  --deploy-deactivated
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron submit <span class="nb">local</span> <span class="se">\
+</span><span class="se"></span>  ~/.heron/examples/heron-streamlet-examples.jar <span class="se">\
+</span><span class="se"></span>  com.twitter.heron.examples.streamlet.WindowedWordCountTopology <span class="se">\
+</span><span class="se"></span>  WindowedWordCountTopology <span class="se">\
+</span><span class="se"></span>  --deploy-deactivated</code></pre></div>
 <p>The output should look something like this:</p>
-INFO: Launching topology 'WindowedWordCountTopology'
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">INFO: Launching topology <span class="s1">&#39;WindowedWordCountTopology&#39;</span>
 
 ...
 
-INFO: Topology 'WindowedWordCountTopology' launched successfully
-INFO: Elapsed time: 3.409s.
+INFO: Topology <span class="s1">&#39;WindowedWordCountTopology&#39;</span> launched successfully
+INFO: Elapsed time: <span class="m">3</span>.409s.</code></pre></div>
 <p>This will <em>submit</em> the topology to your locally running Heron cluster but it
 won&rsquo;t <em>activate</em> the topology because the <code>--deploy-deactivated</code> flag was set.
 Activating the topology will be explored in <a href="#step-5-explore-topology-management-commands">step
@@ -103,26 +103,26 @@ Activating the topology will be explored in <a href="#step-5-explore-topology-ma
 the working directory for the topology.</p>
 
 <p>To check what&rsquo;s under the working directory, run:</p>
-$ ls -al ~/.herondata/topologies/local/${ROLE}/WindowedWordCountTopology
--rw-r--r--   1 username  staff     6141 Oct 12 09:58 WindowedWordCountTopology.defn
--rw-r--r--   1 username  staff        5 Oct 12 09:58 container_1_flatmap1_4.pid
--rw-r--r--   1 username  staff        5 Oct 12 09:58 container_1_logger1_3.pid
-# etc.
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ls -al ~/.herondata/topologies/local/<span class="si">${</span><span class="nv">ROLE</span><span class="si">}</span>/WindowedWordCountTopology
+-rw-r--r--   <span class="m">1</span> username  staff     <span class="m">6141</span> Oct <span class="m">12</span> <span class="m">09</span>:58 WindowedWordCountTopology.defn
+-rw-r--r--   <span class="m">1</span> username  staff        <span class="m">5</span> Oct <span class="m">12</span> <span class="m">09</span>:58 container_1_flatmap1_4.pid
+-rw-r--r--   <span class="m">1</span> username  staff        <span class="m">5</span> Oct <span class="m">12</span> <span class="m">09</span>:58 container_1_logger1_3.pid
+# etc.</code></pre></div>
 <p>All instances&rsquo; log files can be found in <code>log-files</code> under the working directory:</p>
-$ ls -al ~/.herondata/topologies/local/${ROLE}/WindowedWordCountTopology/log-files
-total 408
--rw-r--r--   1 username  staff   5055 Oct 12 09:58 container_1_flatmap1_4.log.0
--rw-r--r--   1 username  staff      0 Oct 12 09:58 container_1_flatmap1_4.log.0.lck
--rw-r--r--   1 username  staff   5052 Oct 12 09:58 container_1_logger1_3.log.0
-# etc.
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ls -al ~/.herondata/topologies/local/<span class="si">${</span><span class="nv">ROLE</span><span class="si">}</span>/WindowedWordCountTopology/log-files
+total <span class="m">408</span>
+-rw-r--r--   <span class="m">1</span> username  staff   <span class="m">5055</span> Oct <span class="m">12</span> <span class="m">09</span>:58 container_1_flatmap1_4.log.0
+-rw-r--r--   <span class="m">1</span> username  staff      <span class="m">0</span> Oct <span class="m">12</span> <span class="m">09</span>:58 container_1_flatmap1_4.log.0.lck
+-rw-r--r--   <span class="m">1</span> username  staff   <span class="m">5052</span> Oct <span class="m">12</span> <span class="m">09</span>:58 container_1_logger1_3.log.0
+# etc.</code></pre></div>
 <h2 id="step-3-start-heron-tracker">Step 3 &mdash; Start Heron Tracker</h2>
 
 <p>The <a href="../operators/heron-tracker">Heron Tracker</a> is a web service that
 continuously gathers information about your Heron cluster. You can launch the
 tracker by running the <code>heron-tracker</code> command (which is already installed):</p>
-$ heron-tracker
-... Running on port: 8888
-... Using config file: $HOME/.herontools/conf/heron_tracker.yaml
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-tracker
+... Running on port: <span class="m">8888</span>
+... Using config file: <span class="nv">$HOME</span>/.herontools/conf/heron_tracker.yaml</code></pre></div>
 <p>You can reach Heron Tracker in your browser at <a href="http://localhost:8888">http://localhost:8888</a>
 and see something like the following upon successful submission of the topology:
 <img src="https://apache.github.io/incubator-heron/img/heron-tracker.png" alt="Heron Tracker" /></p>
@@ -134,9 +134,9 @@ and see something like the following upon successful submission of the topology:
 <p><a href="../operators/heron-ui">Heron UI</a> is a user interface that uses Heron Tracker to
 provide detailed visual representations of your Heron topologies. To launch
 Heron UI:</p>
-$ heron-ui
-... Running on port: 8889
-... Using tracker url: http://localhost:8888
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron-ui
+... Running on port: <span class="m">8889</span>
+... Using tracker url: http://localhost:8888</code></pre></div>
 <p>You can open Heron UI in your browser at <a href="http://localhost:8889">http://localhost:8889</a>
 and see something like this upon successful submission of the topology:
 <img src="https://apache.github.io/incubator-heron/img/heron-ui.png" alt="Heron UI" /></p>
@@ -147,45 +147,45 @@ and see something like this upon successful submission of the topology:
 
 <p>In step 2 you submitted a topology to your local cluster. The <code>heron</code> CLI tool
 also enables you to activate, deactivate, and kill topologies and more.</p>
-$ heron activate local WindowedWordCountTopology
-$ heron deactivate local WindowedWordCountTopology
-$ heron kill local WindowedWordCountTopology
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron activate <span class="nb">local</span> WindowedWordCountTopology
+$ heron deactivate <span class="nb">local</span> WindowedWordCountTopology
+$ heron <span class="nb">kill</span> <span class="nb">local</span> WindowedWordCountTopology</code></pre></div>
 <p>Upon successful actions, a message similar to the following will appear:</p>
-INFO: Successfully activated topology 'WindowedWordCountTopology'
-INFO: Elapsed time: 1.980s.
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">INFO: Successfully activated topology <span class="s1">&#39;WindowedWordCountTopology&#39;</span>
+INFO: Elapsed time: <span class="m">1</span>.980s.</code></pre></div>
 <p>For more info on these commands, read about <a href="../concepts/topologies#topology-lifecycle">topology
 lifecycles</a>.</p>
 
 <p>To list the available CLI commands, run <code>heron</code> by itself:</p>
-usage: heron <command> <options> ...
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">usage: heron &lt;command&gt; &lt;options&gt; ...
 
 Available commands:
     activate           Activate a topology
     deactivate         Deactivate a topology
-    help               Prints help for commands
-    kill               Kill a topology
+    <span class="nb">help</span>               Prints <span class="nb">help</span> <span class="k">for</span> commands
+    <span class="nb">kill</span>               Kill a topology
     restart            Restart a topology
     submit             Submit a topology
     version            Print version of heron-cli
 
-For detailed documentation, go to http://heronstreaming.io
+For detailed documentation, go to http://heronstreaming.io</code></pre></div>
 <p>To invoke help output for a command, run <code>heron help COMMAND</code>. Here&rsquo;s an
 example:</p>
-$ heron help submit
-usage: heron submit [options] cluster/[role]/[environ] topology-file-name topology-class-name [topology-args]
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ heron <span class="nb">help</span> submit
+usage: heron submit <span class="o">[</span>options<span class="o">]</span> cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>environ<span class="o">]</span> topology-file-name topology-class-name <span class="o">[</span>topology-args<span class="o">]</span>
 
 Required arguments:
-  cluster/[role]/[env]  Cluster, role, and environ to run topology
+  cluster/<span class="o">[</span>role<span class="o">]</span>/<span class="o">[</span>env<span class="o">]</span>  Cluster, role, and environ to run topology
   topology-file-name    Topology jar/tar/zip file
   topology-class-name   Topology class name
 
 Optional arguments:
-  --config-path (a string; path to cluster config; default: "$HOME/.heron/conf")
-  --config-property (key=value; a config key and its value; default: [])
-  --deploy-deactivated (a boolean; default: "false")
+  --config-path <span class="o">(</span>a string<span class="p">;</span> path to cluster config<span class="p">;</span> default: <span class="s2">&#34;</span><span class="nv">$HOME</span><span class="s2">/.heron/conf&#34;</span><span class="o">)</span>
+  --config-property <span class="o">(</span><span class="nv">key</span><span class="o">=</span>value<span class="p">;</span> a config key and its value<span class="p">;</span> default: <span class="o">[])</span>
+  --deploy-deactivated <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span>
   -D DEFINE             Define a system property to pass to java -D when
                         running main.
-  --verbose (a boolean; default: "false")
+  --verbose <span class="o">(</span>a boolean<span class="p">;</span> default: <span class="s2">&#34;false&#34;</span><span class="o">)</span></code></pre></div>
 <h2 id="step-6-explore-other-example-topologies">Step 6 &mdash; Explore other example topologies</h2>
 
 <p>The source code for the example topologies can be found
@@ -221,7 +221,7 @@ environments (such as on <a href="../operators/deployment/schedulers/aurora">Aur
 and <a href="../operators/deployment/schedulers/local">locally</a>)</li>
 <li><a href="../concepts/architecture">Develop topologies</a> for Heron</li>
 </ul>
-</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

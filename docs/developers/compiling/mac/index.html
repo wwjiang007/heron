@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Building on Mac OS X"><meta property="og:url" content="/docs/developers/compiling/mac/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Building on Mac OS X</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Building on Mac OS X"><meta property="og:url" content="/docs/developers/compiling/mac/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Building on Mac OS X</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -11,30 +11,30 @@ function load() { if (window.location.hash) shiftWindow(); }
 
 <p>If <a href="http://brew.sh/">Homebrew</a> isn&rsquo;t yet installed on your system, you can
 install it using this one-liner:</p>
-$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ /usr/bin/ruby -e <span class="s2">&#34;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&#34;</span></code></pre></div>
 <h3 id="step-2-install-bazel-and-other-required-libraries">Step 2 &mdash; Install bazel and other required libraries</h3>
-brew install bazel
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">brew install bazel
 brew install automake
 brew install cmake
-brew install libtool
+brew install libtool</code></pre></div>
 <h3 id="step-3-set-the-following-environment-variables">Step 3 &mdash; Set the following environment variables</h3>
-$ export CC=/usr/bin/clang
-$ export CXX=/usr/bin/clang++
-$ echo $CC $CXX
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>/usr/bin/clang
+$ <span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>/usr/bin/clang++
+$ <span class="nb">echo</span> <span class="nv">$CC</span> <span class="nv">$CXX</span></code></pre></div>
 <h3 id="step-4-fetch-the-latest-version-of-heron-s-source-code">Step 4 &mdash; Fetch the latest version of Heron&rsquo;s source code</h3>
-$ git clone https://github.com/twitter/heron.git && cd heron
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ git clone https://github.com/twitter/heron.git <span class="o">&amp;&amp;</span> <span class="nb">cd</span> heron</code></pre></div>
 <h3 id="step-5-configure-heron-for-building-with-bazel">Step 5 &mdash; Configure Heron for building with Bazel</h3>
-$ ./bazel_configure.py
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./bazel_configure.py</code></pre></div>
 <p>If this configure script fails with missing dependencies, Homebrew can be used
 to install those dependencies.</p>
 
 <h3 id="step-6-build-the-project">Step 6 &mdash; Build the project</h3>
-$ bazel build --config=darwin heron/...
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build --config<span class="o">=</span>darwin heron/...</code></pre></div>
 <h3 id="step-7-build-the-packages">Step 7 &mdash; Build the packages</h3>
-$ bazel build --config=darwin scripts/packages:binpkgs
-$ bazel build --config=darwin scripts/packages:tarpkgs
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ bazel build --config<span class="o">=</span>darwin scripts/packages:binpkgs
+$ bazel build --config<span class="o">=</span>darwin scripts/packages:tarpkgs</code></pre></div>
 <p>This will install Heron packages in the <code>bazel-bin/scripts/packages/</code> directory.</p>
-</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {

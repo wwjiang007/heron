@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.30.2" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Compiling With Docker"><meta property="og:url" content="/docs/developers/compiling/docker/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Compiling With Docker</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style.css"><script type="text/javascript">
+<!DOCTYPE html><html lang="en-us"><head><link rel="shortcut icon" type="image/png" sizes="16x16" href="https://apache.github.io/incubator-heron/img/favicon-16x16.png"><link rel="shortcut icon" type="image/png" sizes="32x32" href="https://apache.github.io/incubator-heron/img/favicon-32x32.png"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Hugo 0.37.1" /><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Heron"><meta property="og:image" content="/img/logo54x54.png"><meta property="og:url" content="https://apache.github.io/incubator-heron"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@heronstreaming"><meta name="twitter:title" content="Heron"><meta name="twitter:image" content="/img/HeronTextLogo.png"><meta property="og:site_name" content="Compiling With Docker"><meta property="og:url" content="/docs/developers/compiling/docker/"><meta property="og:description" content=""><meta name="twitter:description" content=""><title>Heron Documentation - Compiling With Docker</title><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/font-awesome.min.css"><link rel="stylesheet" href="https://apache.github.io/incubator-heron/css/style-e433a44a.css"><script type="text/javascript">
 var shiftWindow = function() { scrollBy(0, -100) };
 window.addEventListener("hashchange", shiftWindow);
 function load() { if (window.location.hash) shiftWindow(); }
@@ -35,8 +35,8 @@ create the VM), click on the VM, and then click on <strong>Settings</strong>.</p
 
 <p>Heron provides a <code>build-arfifacts.sh</code> script for Docker located in the
 <code>docker</code> folder. To run that script:</p>
-$ cd /path/to/heron/repo
-$ docker/build-artifacts.sh
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">cd</span> /path/to/heron/repo
+$ docker/build-artifacts.sh</code></pre></div>
 <p>Running the script by itself will display usage information:</p>
 
 <pre><code>Usage: docker/build-artifacts.sh &lt;platform&gt; &lt;version_string&gt; [source-tarball] &lt;output-directory&gt;
@@ -63,7 +63,7 @@ built.</li>
 </ul>
 
 <p>Here&rsquo;s an example usage:</p>
-$ docker/build-artifacts.sh ubuntu14.04 0.12.0 ~/heron-release
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ docker/build-artifacts.sh ubuntu14.04 <span class="m">0</span>.12.0 ~/heron-release</code></pre></div>
 <p>This will build a Docker container specific to Ubuntu 14.04, create a source
 tarball of the Heron repository, run a full release build of Heron, and then
 copy the artifacts into the <code>~/heron-release</code> directory.</p>
@@ -81,14 +81,14 @@ automatically linked in to the VM and can be accessed normally.</p>
 
 <p>After the build has completed, you can go to your output directory and see all
 of the generated artifacts:</p>
-$ ls ~/heron-release
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ls ~/heron-release
 heron-api-0.12.0-ubuntu14.04.tar.gz
 heron-client-0.12.0-ubuntu14.04.tar.gz
 heron-tools-0.12.0-ubuntu14.04.tar.gz
 heron-client-install-0.12.0-ubuntu.sh  
 heron-tools-install-0.12.0-ubuntu.sh
 heron-api-install-0.12.0-ubuntu.sh     
-heron-core-0.12.0-ubuntu.tar.gz
+heron-core-0.12.0-ubuntu.tar.gz</code></pre></div>
 <h2 id="contributing-new-environments">Contributing New Environments</h2>
 
 <p>You&rsquo;ll notice that there are multiple
@@ -108,52 +108,52 @@ following:</p>
 <h3 id="step-1-the-os-being-used-in-a-from-https-docs-docker-com-engine-reference-builder-from-statement">Step 1 &mdash; The OS being used in a <a href="https://docs.docker.com/engine/reference/builder/#from"><code>FROM</code></a> statement.</h3>
 
 <p>Here&rsquo;s an example:</p>
-FROM centos:centos7
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> centos:centos7</span></code></pre></div>
 <h3 id="step-2-a-target-platform-environment-variable-using-the-env-https-docs-docker-com-engine-reference-builder-env-instruction">Step 2 &mdash; A <code>TARGET_PLATFORM</code> environment variable using the <a href="https://docs.docker.com/engine/reference/builder/#env"><code>ENV</code></a> instruction.</h3>
 
 <p>Here&rsquo;s an example:</p>
-ENV TARGET_PLATFORM centos
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">ENV</span><span class="s"> TARGET_PLATFORM centos</span></code></pre></div>
 <h3 id="step-3-a-general-dependency-installation-script-using-a-run-https-docs-docker-com-engine-reference-builder-run-instruction">Step 3 &mdash; A general dependency installation script using a <a href="https://docs.docker.com/engine/reference/builder/#run"><code>RUN</code></a> instruction.</h3>
 
 <p>Here&rsquo;s an example:</p>
-RUN apt-get update && apt-get -y install \
-         automake \
-         build-essential \
-         cmake \
-         curl \
-         libssl-dev \
-         git \
-         libtool \
-         libunwind8 \
-         libunwind-setjmp0-dev \
-         python \
-         python2.7-dev \
-         python-software-properties \
-         software-properties-common \
-         python-setuptools \
-         unzip \
-         wget
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get -y install <span class="se">\
+</span><span class="se"></span>         automake <span class="se">\
+</span><span class="se"></span>         build-essential <span class="se">\
+</span><span class="se"></span>         cmake <span class="se">\
+</span><span class="se"></span>         curl <span class="se">\
+</span><span class="se"></span>         libssl-dev <span class="se">\
+</span><span class="se"></span>         git <span class="se">\
+</span><span class="se"></span>         libtool <span class="se">\
+</span><span class="se"></span>         libunwind8 <span class="se">\
+</span><span class="se"></span>         libunwind-setjmp0-dev <span class="se">\
+</span><span class="se"></span>         python <span class="se">\
+</span><span class="se"></span>         python2.7-dev <span class="se">\
+</span><span class="se"></span>         python-software-properties <span class="se">\
+</span><span class="se"></span>         software-properties-common <span class="se">\
+</span><span class="se"></span>         python-setuptools <span class="se">\
+</span><span class="se"></span>         unzip <span class="se">\
+</span><span class="se"></span>         wget</code></pre></div>
 <h3 id="step-4-an-installation-script-for-java-8-and-a-java-home-environment-variable">Step 4 &mdash; An installation script for Java 8 and a <code>JAVA_HOME</code> environment variable</h3>
 
 <p>Here&rsquo;s an example:</p>
-RUN \
-     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-     add-apt-repository -y ppa:webupd8team/java && \
-     apt-get update && \
-     apt-get install -y oracle-java8-installer && \
-     rm -rf /var/lib/apt/lists/* && \
-     rm -rf /var/cache/oracle-jdk8-installer
-
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">RUN</span> <span class="se">\
+</span><span class="se"></span>     <span class="nb">echo</span> oracle-java8-installer shared/accepted-oracle-license-v1-1 <span class="k">select</span> <span class="nb">true</span> <span class="p">|</span> debconf-set-selections <span class="o">&amp;&amp;</span> <span class="se">\
+</span><span class="se"></span>     add-apt-repository -y ppa:webupd8team/java <span class="o">&amp;&amp;</span> <span class="se">\
+</span><span class="se"></span>     apt-get update <span class="o">&amp;&amp;</span> <span class="se">\
+</span><span class="se"></span>     apt-get install -y oracle-java8-installer <span class="o">&amp;&amp;</span> <span class="se">\
+</span><span class="se"></span>     rm -rf /var/lib/apt/lists/* <span class="o">&amp;&amp;</span> <span class="se">\
+</span><span class="se"></span>     rm -rf /var/cache/oracle-jdk8-installer<span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">ENV</span><span class="s"> JAVA_HOME /usr/lib/jvm/java-8-oracle</span></code></pre></div>
 <h4 id="step-5-an-installation-script-for-bazel-http-bazel-io-version-hahahugoshortcode-1hbhb-or-above">Step 5 - An installation script for <a href="http://bazel.io/">Bazel</a> version 0.5.4 or above.</h4>
 
 <p>Here&rsquo;s an example:</p>
-RUN wget -O /tmp/bazel.sh https://github.com/bazelbuild/bazel/releases/download/0.5.4/bazel-0.5.4-installer-linux-x86_64.sh \
-         && chmod +x /tmp/bazel.sh \
-         && /tmp/bazel.sh
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">RUN</span> wget -O /tmp/bazel.sh https://github.com/bazelbuild/bazel/releases/download/0.5.4/bazel-0.5.4-installer-linux-x86_64.sh <span class="se">\
+</span><span class="se"></span>         <span class="o">&amp;&amp;</span> chmod +x /tmp/bazel.sh <span class="se">\
+</span><span class="se"></span>         <span class="o">&amp;&amp;</span> /tmp/bazel.sh</code></pre></div>
 <h3 id="step-6-add-the-bazelrc-configuration-file-for-bazel-and-the-compile-sh-script-from-the-docker-folder-that-compiles-heron">Step 6 &mdash; Add the <code>bazelrc</code> configuration file for Bazel and the <code>compile.sh</code> script (from the <code>docker</code> folder) that compiles Heron</h3>
-ADD bazelrc /root/.bazelrc
-ADD compile.sh /compile.sh</article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app.min.js"></script><script type="text/javascript">
+<div class="highlight"><pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="k">ADD</span><span class="s"> bazelrc /root/.bazelrc</span><span class="err">
+</span><span class="err"></span><span class="k">ADD</span><span class="s"> compile.sh /compile.sh</span></code></pre></div></article></section></div></div></div></main><script src="https://code.jquery.com/jquery-2.2.1.min.js"></script><script src="https://apache.github.io/incubator-heron/js/bootstrap.js"></script><script src="https://apache.github.io/incubator-heron/js/jquery.scrollTo.js"></script><script src="https://apache.github.io/incubator-heron/js/app-fc63367d.js"></script><script type="text/javascript">
 $('pre code').each(function() {
   console.log(this);
   this.innerHTML = this.innerHTML.replace(/\$\s/g, function(matched) {
