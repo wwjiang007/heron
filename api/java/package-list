@@ -104,6 +104,7 @@ com.twitter.heron.metricsmgr
 com.twitter.heron.metricsmgr.executor
 com.twitter.heron.metricsmgr.sink
 com.twitter.heron.metricsmgr.sink.metricscache
+com.twitter.heron.metricsmgr.sink.scribe
 com.twitter.heron.metricsmgr.sink.tmaster
 com.twitter.heron.network
 com.twitter.heron.packing

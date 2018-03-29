@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Heron</title>
-    <link>https://twitter.github.io/heron/</link>
+    <link>https://apache.github.io/incubator-heron/</link>
     <description>Recent content on Heron</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="https://twitter.github.io/heron/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://apache.github.io/incubator-heron/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title></title>
-      <link>https://twitter.github.io/heron/snippets/heron-eco-api/</link>
+      <link>https://apache.github.io/incubator-heron/snippets/heron-eco-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/snippets/heron-eco-api/</guid>
+      <guid>https://apache.github.io/incubator-heron/snippets/heron-eco-api/</guid>
       <description>Heron processing topologies can be written using an API called the Heron ECO API. The ECO API is currently available to work with spouts and bolts from the following packages:
  org.apache.storm  We will expand compatibility based on feedback we get from the community.
  Although this document focuses on the ECO API, both the Streamlet API and Topology API topologies you have built can still be used with Heron</description>
@@ -23,20 +23,20 @@
     
     <item>
       <title></title>
-      <link>https://twitter.github.io/heron/snippets/heron-on-kubernetes-config/</link>
+      <link>https://apache.github.io/incubator-heron/snippets/heron-on-kubernetes-config/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/snippets/heron-on-kubernetes-config/</guid>
+      <guid>https://apache.github.io/incubator-heron/snippets/heron-on-kubernetes-config/</guid>
       <description>Heron on Kubernetes configuration Current Limitations Only the submit and kill commands are currently supported. Other CLI commands (activate, deactivate, restart, update) are currently in development and will be released soon.
 Zookeeper To run Heron on k8s, you will need a Zookeeper cluster. You can choose to use a zookeeper cluster outside of k8s if you&amp;rsquo;d like (only if it&amp;rsquo;s accessible from the k8s cluster nodes), but most often you will probably want to deploy your own Zookeeper cluster inside of k8s.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://twitter.github.io/heron/snippets/heron-streamlet-api/</link>
+      <link>https://apache.github.io/incubator-heron/snippets/heron-streamlet-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/snippets/heron-streamlet-api/</guid>
+      <guid>https://apache.github.io/incubator-heron/snippets/heron-streamlet-api/</guid>
       <description>Heron processing topologies can be written using an API called the Heron Streamlet API. The Heron Streamlet API is currently available for the following languages:
  Java    Although this document covers the new Heron Streamlet API, topologies created using the original topology API can still be used with Heron (which means that all of your older topologies will still run).
  For a more in-depth conceptual guide to the new API, see The Heron Streamlet API.</description>
@@ -44,10 +44,10 @@ Zookeeper To run Heron on k8s, you will need a Zookeeper cluster. You can choose
     
     <item>
       <title>Apache Hadoop YARN Cluster (Experimental)</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/yarn/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/yarn/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/yarn/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/yarn/</guid>
       <description>In addition to out-of-the-box schedulers for Aurora, Heron can also be deployed on a YARN cluster with the YARN scheduler. The YARN scheduler is implemented using the Apache REEF framework.
 Key features of the YARN scheduler:
  Heterogeneous container allocation: The YARN scheduler will request heterogeneous containers from the YARN ResourceManager RM. In other words the topology will not request more resources than what is really needed.
@@ -56,42 +56,42 @@ Key features of the YARN scheduler:
     
     <item>
       <title>Aurora Cluster</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/aurora/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/aurora/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/aurora/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/aurora/</guid>
       <description>Heron supports deployment on Apache Aurora out of the box. A step by step guide on how to setup Heron with Apache Aurora locally can be found in Setting up Heron with Aurora Cluster Locally on Linux. You can also run Heron on a local scheduler.
 How Heron on Aurora Works Aurora doesn&amp;rsquo;t have a Heron scheduler per se. Instead, when a topology is submitted to Heron, heron cli interacts with Aurora to automatically deploy all the components necessary to manage topologies.</description>
     </item>
     
     <item>
       <title>Building on Linux Platforms</title>
-      <link>https://twitter.github.io/heron/docs/developers/compiling/linux/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/compiling/linux/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/compiling/linux/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/compiling/linux/</guid>
       <description>Heron can currently be built on the following Linux platforms:
  Ubuntu 14.04 CentOS 7  Building on Ubuntu 14.04 To build Heron on a fresh Ubuntu 14.04 installation:
-Step 1 &amp;mdash; Update Ubuntu $ sudo apt-get update -y $ sudo apt-get upgrade -y  Step 2 &amp;mdash; Install required libraries $ sudo apt-get install git build-essential automake cmake libtool-bin zip \ libunwind-setjmp0-dev zlib1g-dev unzip pkg-config python-setuptools -y  Step 3 &amp;mdash; Set the following environment variables export CC=/usr/bin/gcc export CCX=/usr/bin/g++  Step 4 &amp;mdash; Install JDK 8 and set JAVA_HOME $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update -y $ sudo apt-get install oracle-java8-installer -y $ export JAVA_HOME=&amp;quot;/usr/lib/jvm/java-8-oracle&amp;quot;  Step 5 - Install Bazel 0.</description>
+Step 1 &amp;mdash; Update Ubuntu $ sudo apt-get update -y $ sudo apt-get upgrade -y Step 2 &amp;mdash; Install required libraries $ sudo apt-get install git build-essential automake cmake libtool-bin zip \ libunwind-setjmp0-dev zlib1g-dev unzip pkg-config python-setuptools -y Step 3 &amp;mdash; Set the following environment variables export CC=/usr/bin/gcc export CCX=/usr/bin/g++ Step 4 &amp;mdash; Install JDK 8 and set JAVA_HOME $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update -y $ sudo apt-get install oracle-java8-installer -y $ export JAVA_HOME=&#34;</description>
     </item>
     
     <item>
       <title>Building on Mac OS X</title>
-      <link>https://twitter.github.io/heron/docs/developers/compiling/mac/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/compiling/mac/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/compiling/mac/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/compiling/mac/</guid>
       <description>This is a step-by-step guide to building Heron on Mac OS X (versions 10.10 and 10.11).
 Step 1 &amp;mdash; Install Homebrew If Homebrew isn&amp;rsquo;t yet installed on your system, you can install it using this one-liner:
-$ /usr/bin/ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;  Step 2 &amp;mdash; Install bazel and other required libraries brew install bazel brew install automake brew install cmake brew install libtool  Step 3 &amp;mdash; Set the following environment variables $ export CC=/usr/bin/clang $ export CXX=/usr/bin/clang++ $ echo $CC $CXX  Step 4 &amp;mdash; Fetch the latest version of Heron&amp;rsquo;s source code $ git clone https://github.</description>
+$ /usr/bin/ruby -e &#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&#34; Step 2 &amp;mdash; Install bazel and other required libraries brew install bazel brew install automake brew install cmake brew install libtool Step 3 &amp;mdash; Set the following environment variables $ export CC=/usr/bin/clang $ export CXX=/usr/bin/clang++ $ echo $CC $CXX Step 4 &amp;mdash; Fetch the latest version of Heron&amp;rsquo;s source code $ git clone https://github.</description>
     </item>
     
     <item>
       <title>Community</title>
-      <link>https://twitter.github.io/heron/docs/contributors/community/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/community/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/community/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/community/</guid>
       <description>Contributing to Heron Discussion about Heron happens on GitHub and over mailing list.
  GitHub: twitter/heron Heron User Google Group: heron-users@googlegroups.com Heron on Twitter: @heronstreaming  Community is critical to Heron. Contributions are welcomed!
 How Can I Contribute to Heron? You can first read the following pages to have a basic understanding of Heron:
@@ -100,10 +100,10 @@ How Can I Contribute to Heron? You can first read the following pages to have a 
     
     <item>
       <title>Compiling Heron</title>
-      <link>https://twitter.github.io/heron/docs/developers/compiling/compiling/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/compiling/compiling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/compiling/compiling/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/compiling/compiling/</guid>
       <description>Heron is currently available for Mac OS X 10.10, Ubuntu 14.04, and CentOS 7. This guide describes the basics of the Heron build system. For step-by-step build instructions for a specific platform, the following guides are available:
  Building on Linux Platforms Building on Mac OS X  Heron can be built either in its entirety, as individual components, or as a release package.
 Instructions on running unit tests for Heron can also be found in Testing Heron.</description>
@@ -111,10 +111,10 @@ Instructions on running unit tests for Heron can also be found in Testing Heron.
     
     <item>
       <title>Compiling With Docker</title>
-      <link>https://twitter.github.io/heron/docs/developers/compiling/docker/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/compiling/docker/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/compiling/docker/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/compiling/docker/</guid>
       <description>For developing Heron, you will need to compile it for the environment that you want to use it in. If you&amp;rsquo;d like to use Docker to create that build environment, Heron provides a convenient script to make that process easier.
 Currently, only Ubuntu 14.04, Ubuntu 15.10, and CentOS 7 are supported, but if you need another platform there are instructions for adding new ones below.
 Requirements  Docker  Running Docker in a Virtual Machine If you are running Docker in a virtual machine (VM), it is recommended that you adjust your settings to help speed up the build.</description>
@@ -122,10 +122,10 @@ Requirements  Docker  Running Docker in a Virtual Machine If you are running Doc
     
     <item>
       <title>Configuring a Cluster</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/configuration/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/configuration/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/configuration/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/configuration/</guid>
       <description>To setup a Heron cluster, you need to configure a few files. Each file configures a component of the Heron streaming framework.
  scheduler.yaml &amp;mdash; This file specifies the required classes for launcher, scheduler, and for managing the topology at runtime. Any other specific parameters for the scheduler go into this file.
  statemgr.yaml &amp;mdash; This file contains the classes and the configuration for state manager. The state manager maintains the running state of the topology as logical plan, physical plan, scheduler state, and execution state.</description>
@@ -133,10 +133,10 @@ Requirements  Docker  Running Docker in a Virtual Machine If you are running Doc
     
     <item>
       <title>DC/OS Deployments</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/dcos/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/dcos/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/dcos/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/dcos/</guid>
       <description>Heron supports deployment on DC/OS. Deployments on DC/OS are done via Marathon and Docker. Further command-line support for DC/OS is forthcoming.
 How Heron on DC/OS Works Heron with DC/OS works by creating its topology deployments in Marathon under a single group. Note that only the submit and kill Heron CLI commands are currently supported with DC/OS and Marathon.
 ZooKeeper To run Heron on DC/OS, you&amp;rsquo;ll need a Zookeeper cluster. In non-production environments you can use the same ZK cluster as the Mesos masters, but this is not recommended for production environments.</description>
@@ -144,10 +144,10 @@ ZooKeeper To run Heron on DC/OS, you&amp;rsquo;ll need a Zookeeper cluster. In n
     
     <item>
       <title>Deploying Heron</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/</guid>
       <description>Heron is designed to be run in clustered, scheduler-driven environments. It can be run in a multi-tenant or dedicated clusters. Furthermore, Heron supports multiple clusters and a user can submit topologies to any of these clusters. Each of the cluster can use different scheduler. A typical Heron deployment is shown in the following figure.
 
 
@@ -156,19 +156,19 @@ A Heron deployment requires several components working together. The following m
     
     <item>
       <title>Effectively-once Java topologies</title>
-      <link>https://twitter.github.io/heron/docs/developers/java/effectively-once/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/java/effectively-once/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/java/effectively-once/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/java/effectively-once/</guid>
       <description>&amp;times; This document pertains to the older, Storm-based, Heron Topology APIHeron now offers two separate APIs for building topologies: the original, Storm-based Topology API, and the newer Streamlet API. Topologies created using the Topology API can still run on Heron and there are currently no plans to deprecate this API. We would, however, recommend that you use the Streamlet API for future work.  You can create Heron topologies that have effectively-once semantics by doing two things:</description>
     </item>
     
     <item>
       <title>Feature Roadmap</title>
-      <link>https://twitter.github.io/heron/docs/contributors/roadmap/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/roadmap/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/roadmap/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/roadmap/</guid>
       <description>This document describes the Heron core contributors’ plans for introducing features that will be incorporated into version 1.0. Note that this roadmap only includes features that the Heron core contributors team itself intends to support. We anticipate that a number of other features will be added by community contributors.
 For beta releases, the Heron team will maintain two code repositories:
  A non-public Twitter-internal repository, containing both the mirror of the public Heron Github repository and small proprietary Twitter-specific extensions and features.</description>
@@ -176,20 +176,20 @@ For beta releases, the Heron team will maintain two code repositories:
     
     <item>
       <title>Governance</title>
-      <link>https://twitter.github.io/heron/docs/contributors/governance/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/governance/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/governance/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/governance/</guid>
       <description>The Heron project was initially developed at Twitter and is now led by a group of self-managing core contributors with additional contributions by the community. Core contributors expect that candidate core contributors will successfully submit a number of patches or new functionality, demonstrate an understanding of project codebase, and express a willingness to be active group members before they become core contributors.
 Core contributors are added by two supporting votes from core contributors on the mailing list and no core contributor veto within four business days.</description>
     </item>
     
     <item>
       <title>Heron Code Organization</title>
-      <link>https://twitter.github.io/heron/docs/contributors/codebase/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/codebase/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/codebase/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/codebase/</guid>
       <description>This document contains information about the Heron codebase intended primarily for developers who want to contribute to Heron. The Heron codebase lives on github.
 If you&amp;rsquo;re looking for documentation about developing topologies for a Heron cluster, see Building Topologies instead.
 Languages The primary programming languages for Heron are C++, Java, and Python.
@@ -198,10 +198,10 @@ Languages The primary programming languages for Heron are C++, Java, and Python.
     
     <item>
       <title>Heron Data Model</title>
-      <link>https://twitter.github.io/heron/docs/developers/data-model/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/data-model/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/data-model/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/data-model/</guid>
       <description>Tuple is Heron&amp;rsquo;s core data type. All data that is fed into a Heron topology via spouts and then processed by bolts consists of tuples.
 Heron has a Tuple interface for working with tuples. Heron Tuples can hold values of any type; values are accessible either by providing an index or a field name.
 Using Tuples Heron&amp;rsquo;s Tuple interface contains the methods listed in the Javadoc definition.
@@ -210,10 +210,10 @@ Accessing Primitive Types By Index Heron Tuples support a wide variety of primit
     
     <item>
       <title>Heron Delivery Semantics</title>
-      <link>https://twitter.github.io/heron/docs/concepts/delivery-semantics/</link>
+      <link>https://apache.github.io/incubator-heron/docs/concepts/delivery-semantics/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/concepts/delivery-semantics/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/concepts/delivery-semantics/</guid>
       <description>Heron provides support for multiple delivery semantics, and you can select delivery semantics on a topology-by-topology basis. Thus, if you have topologies for which at-most-once semantics are perfectly acceptable, for example, you can run them alongside topologies with more stringent semantics (such as effectively once).
 Available semantics Heron supports three delivery semantics:
    Semantics Description When to use?     At most once Heron processes tuples using a best-effort strategy.</description>
@@ -221,20 +221,20 @@ Available semantics Heron supports three delivery semantics:
     
     <item>
       <title>Heron Explorer</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-explorer/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-explorer/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-explorer/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-explorer/</guid>
       <description>The Heron Explorer is a CLI tool that you can use to gain insight into a Heron installation, including:
  which clusters are currently running in the installation information about a given topology&amp;rsquo;s components (spouts and bolts) metrics for a topology the containers in which a topology is running the topologies running in a given cluster, role, or environment   The Heron Explorer vs. Heron CLI There are two important differences between the Heron Explorer and Heron CLI.</description>
     </item>
     
     <item>
       <title>Heron Instance</title>
-      <link>https://twitter.github.io/heron/docs/operators/configuration/instance/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/instance/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/configuration/instance/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/instance/</guid>
       <description>You can configure the behavior of the Heron Instances (HIs) in a topology using the parameters below.
 Internal Configuration These parameters deal with the TCP write and read queue for each instance.
    Parameter Meaning Default     heron.instance.internal.bolt.read.queue.capacity The queue capacity (number of items) in bolt for buffer packets to read from stream manager 128   heron.instance.internal.bolt.write.queue.capacity The queue capacity (number of items) in bolt for buffer packets to write to stream manager 128   heron.</description>
@@ -242,30 +242,30 @@ Internal Configuration These parameters deal with the TCP write and read queue f
     
     <item>
       <title>Heron Resources</title>
-      <link>https://twitter.github.io/heron/docs/resources/</link>
+      <link>https://apache.github.io/incubator-heron/docs/resources/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/resources/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/resources/</guid>
       <description> Heron Resources outside this documentation:
 Conference &amp;amp; Journal Papers  Streaming@Twitter - Bulletin of the IEEE Computer Society Technical Committee on Data Engineering (Jul, 2016) Twitter Heron: Stream Processing at Scale - SIGMOD’15 (May, 2015) Storm@Twitter - SIGMOD&amp;rsquo;14 (Jun, 2014)  Videos  Twitter Heron on Apache Aurora - #compute event @Twitter (Apr, 2016) Flying Faster with Heron - InfoQ (Apr, 2016) Twitter Heron: Stream Processing at Scale - @Scale (Sep, 2015) Stream Processing and Anomaly Detection - Velocity O&amp;rsquo;Reilly - Note: requires O&amp;rsquo;Reilly login (Jun, 2015)  Official Blog Posts  Open Sourcing Twitter Heron (May, 2016) Flying Faster with Twitter Heron (June, 2015)  Community Blog Posts  Deploying Heron on a Cluster of Machines with Apache Aurora (Supun Kamburugamuve, Jun, 2016) Setting up Heron Locally with Apache Aurora (Pulasthi Supun, Jun, 2016)  Slides  Real-Time Analytics: Algorithms and Systems - Twitter University  (May, 2016) Stream Processing and Anomaly Detection - Velocity O&amp;rsquo;Reilly (Jun, 2015)  Press  Heron, Twitter&amp;rsquo;s Data Streaming Platform, Has Been Open Sourced (BenZinga, Jun, 2016) Twitter Open Sources Heron &amp;ndash; Data Streaming For Dummies (Forbes, Jun, 2016) Getting Started with Heron on Apache Mesos and Apache Kafka (All Things Hadoop, May, 2016) Twitter open-sources Heron, its real-time stream-processing engine (VentureBeat, May, 2016) Twitter&amp;rsquo;s Heron Will Start a New Chapter in Real-Time Streaming (Forbes, Jun, 2015) Twitter Has Replaced Storm with Heron (InfoQ, Jun, 2015)  </description>
     </item>
     
     <item>
       <title>Heron Shell</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-shell/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-shell/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-shell/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-shell/</guid>
       <description>Heron shell helps debugging a heron topology. It is an HTTP server that runs as a separate process in every container. It exposes many utilities through REST APIs. These utilities are described below in more details.
 The port to connect to heron shell for each container is stored in the physical plan. Heron tracker picks up this port and connects to shell. See the next section for more details.</description>
     </item>
     
     <item>
       <title>Heron Topologies</title>
-      <link>https://twitter.github.io/heron/docs/concepts/topologies/</link>
+      <link>https://apache.github.io/incubator-heron/docs/concepts/topologies/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/concepts/topologies/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/concepts/topologies/</guid>
       <description>&amp;times; New Streamlet API for HeronAs of version 0.16.0, Heron offers a new Streamlet API that you can use to write topologies in a more declarative, functional manner, without needing to specify spout and bolt logic directly. The Streamlet API is currently in beta and available for Java. The Streamlet API for Python will be available soon.
 More information on the Streamlet API can be found below.
  A Heron topology is a directed acyclic graph (DAG) used to process streams of data.</description>
@@ -273,10 +273,10 @@ More information on the Streamlet API can be found below.
     
     <item>
       <title>Heron Tracker</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-tracker/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-tracker/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-tracker/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-tracker/</guid>
       <description>Heron Tracker is a web service that continuously gathers a wide variety of information about Heron topologies and exposes that information through a JSON REST API. More on the role of the Tracker can be found here.
 Building Heron Tracker Heron uses bazel for compiling. Compiling describes how to setup bazel for heron.
 # Build heron-tracker $ bazel build heron/tools/tracker/src/python:heron-tracker # The location of heron-tracker pex executable is # bazel-bin/heron/tools/tracker/src/python/heron-tracker # To run using default options: $ .</description>
@@ -284,20 +284,20 @@ Building Heron Tracker Heron uses bazel for compiling. Compiling describes how t
     
     <item>
       <title>Heron Tracker REST API</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-tracker-api/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-tracker-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-tracker-api/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-tracker-api/</guid>
       <description>JSON Interface All Heron Tracker endpoints return a JSON object with the following information:
  status &amp;mdash; One of the following: success, failure. executiontime &amp;mdash; The time taken to return the HTTP result, in seconds. message &amp;mdash; Some endpoints return special messages in this field for certain requests. Often, this field will be an empty string. A failure status will always have a message. result &amp;mdash; The result payload of the request.</description>
     </item>
     
     <item>
       <title>Heron UI</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-ui/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-ui/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-ui/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-ui/</guid>
       <description>Heron UI is a user interface that uses the Heron Tracker to display detailed, colorful visual representations of topologies, including the logical and physical plan for each topology. Check out Heron UI Usage Guide for more information about various elements that UI exposes.
 Building Heron UI Heron uses bazel for compiling. This page describes how to setup bazel for heron.
 # Build heron-ui $ bazel build heron/tools/ui/src/python:heron-ui # The location of heron-ui pex executable is # bazel-bin/heron/tools/ui/src/python/heron-ui # To run using default options: $ .</description>
@@ -305,10 +305,10 @@ Building Heron UI Heron uses bazel for compiling. This page describes how to set
     
     <item>
       <title>Heron UI Usage Guide</title>
-      <link>https://twitter.github.io/heron/docs/developers/ui-guide/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/ui-guide/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/ui-guide/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/ui-guide/</guid>
       <description>Overview This guide describes how to make best use of Heron UI for monitoring and debugging topologies.
 The UI provides a lot of information about a topology or a part of it quickly, thus reducing debugging time considerably. Some of these features are listed below. A complete set of features can be found in following sections.
  See logical plan of a topology See physical plan of a topology Configs of a topology See some basic metrics for each of the instances and components Links to get logs, memory histogram, jstack, heapdump and exceptions of a particular instance  Topologies Page Below is the home page of Heron UI.</description>
@@ -316,19 +316,19 @@ The UI provides a lot of information about a topology or a part of it quickly, t
     
     <item>
       <title>Heron metrics overview</title>
-      <link>https://twitter.github.io/heron/docs/operators/observability/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/observability/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/observability/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/observability/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Heron observability with Graphite</title>
-      <link>https://twitter.github.io/heron/docs/operators/observability/graphite/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/observability/graphite/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/observability/graphite/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/observability/graphite/</guid>
       <description>To observe Heron&amp;rsquo;s runtime metrics, you can integrate Heron and the Heron UI with Graphite and Grafana.
 To accomplish this, you need to do the following:
  Export topology metrics from Heron Gather Aurora and Linux metrics with Diamond Set up a scripted dashboard with Grafana Configure the Heron UI to link to Grafana  Exporting Topology Metrics From Heron Heron supports custom metric exporters from the Metrics Manager. You can either build your own Graphite metrics sink or use the provided Graphite sink.</description>
@@ -336,10 +336,10 @@ To accomplish this, you need to do the following:
     
     <item>
       <title>Heron observability with Scribe</title>
-      <link>https://twitter.github.io/heron/docs/operators/observability/scribe/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/observability/scribe/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/observability/scribe/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/observability/scribe/</guid>
       <description>You can integrate Heron with Scribe to monitor and gather runtime metrics exported by Heron topologies.
 Exporting topology metrics from Heron to Scribe Heron supports custom metric exporters from the Metrics Manager. You can either build your own Scribe metrics sink or use the provided Scribe sink.
 To set up your Heron cluster to export to Scribe, you need to make two changes to the metrics_sinks.yaml configuration file:
@@ -348,30 +348,30 @@ To set up your Heron cluster to export to Scribe, you need to make two changes t
     
     <item>
       <title>Heron on Kubernetes by hand</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/kubernetes/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/kubernetes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/kubernetes/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/kubernetes/</guid>
       <description>This document shows you how to install Heron on Kubernetes in a step-by-step, &amp;ldquo;by hand&amp;rdquo; fashion. An easier way to install Heron on Kubernetes is to use the Helm package manager. For instructions on doing so, see Heron on Kubernetes with Helm).
  Heron supports deployment on Kubernetes (sometimes called k8s). Heron deployments on Kubernetes use Docker as the containerization format for Heron topologies and use the Kubernetes API for scheduling.</description>
     </item>
     
     <item>
       <title>Heron on Kubernetes with Helm</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/kubernetes-helm/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/kubernetes-helm/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/kubernetes-helm/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/kubernetes-helm/</guid>
       <description>If you&amp;rsquo;d prefer to install Heron on Kubernetes without using the Helm package manager, see the Heron on Kubernetes by hand document.
  Helm is an open source package manager for Kubernetes that enables you to quickly and easily install even the most complex software systems on Kubernetes. Heron has a Helm chart that you can use to install Heron on Kubernetes using just a few commands. The chart can be used to install Heron on the following platforms:</description>
     </item>
     
     <item>
       <title>Heron standalone</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/standalone/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/standalone/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/standalone/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/standalone/</guid>
       <description>Heron enables you to easily run a multi-node cluster in standalone mode. The difference between standalone mode and local mode for Heron is that standalone mode involves running multiple compute nodes&amp;mdash;using Hashicorp&amp;rsquo;s Nomad as a scheduler&amp;mdash;rather than just one.
 Installation You can use Heron in standalone mode using the heron-admin CLI tool, which can be installed using the instructions here.
 Requirements In order to run Heron in standalone mode, you&amp;rsquo;ll need to run a ZooKeeper cluster.</description>
@@ -379,20 +379,20 @@ Requirements In order to run Heron in standalone mode, you&amp;rsquo;ll need to 
     
     <item>
       <title>Heron uploaders</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/uploaders/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/uploaders/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/</guid>
       <description>Heron currently supports a variety of storage systems via configurable uploaders:
  Amazon S3 SCP The Hadoop Filesystem (HDFS) The local filesystem  </description>
     </item>
     
     <item>
       <title>Heron&#39;s Architecture</title>
-      <link>https://twitter.github.io/heron/docs/concepts/architecture/</link>
+      <link>https://apache.github.io/incubator-heron/docs/concepts/architecture/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/concepts/architecture/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/concepts/architecture/</guid>
       <description>Heron is a general-purpose stream processing engine designed for speedy performance, low latency, isolation, reliability, and ease of use for developers and administrators alike. Heron was open sourced by Twitter in May 2016.
  We recommend reading Heron&amp;rsquo;s Design Goals and Heron Topologies in conjunction with this guide.
  The sections below:
@@ -401,52 +401,52 @@ Requirements In order to run Heron in standalone mode, you&amp;rsquo;ll need to 
     
     <item>
       <title>Heron&#39;s Design Goals</title>
-      <link>https://twitter.github.io/heron/docs/concepts/design-goals/</link>
+      <link>https://apache.github.io/incubator-heron/docs/concepts/design-goals/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/concepts/design-goals/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/concepts/design-goals/</guid>
       <description>From the beginning, Heron was envisioned as a new kind of stream processing system, built to meet the most demanding of technological requirements, to handle even the most massive of workloads, and to meet the needs of organizations of all sizes and degrees of complexity. Amongst these requirements:
  The ability to process billions of events per minute Extremely low end-to-end latency Predictable behavior regardless of scale and in the face of issue like extreme traffic spikes and pipeline congestion Simple administration, including:  The ability to deploy on shared infrastructure Powerful monitoring capabilities Fine-grained configurability  Easy debuggability  To meet these requirements, a few core design goals have guided&amp;mdash;and continue to guide&amp;mdash;Heron&amp;rsquo;s development:</description>
     </item>
     
     <item>
       <title>Implementing Python Spouts</title>
-      <link>https://twitter.github.io/heron/docs/developers/python/spouts/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/python/spouts/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/python/spouts/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/python/spouts/</guid>
       <description>Python API docs You can find API docs for the heronpy library here.
  To create a spout for a Heron topology, you need to subclass the Spout class, which has the following methods.
-class Spout(BaseSpout): def initialize(self, config, context) def next_tuple(self) def ack(self, tup_id) def fail(self, tup_id) def activate(self) def deactivate(self) def close(self)  Spout class methods The Spout class provides a number of methods that you should implement when subclassing.</description>
+class Spout(BaseSpout): def initialize(self, config, context) def next_tuple(self) def ack(self, tup_id) def fail(self, tup_id) def activate(self) def deactivate(self) def close(self) Spout class methods The Spout class provides a number of methods that you should implement when subclassing.</description>
     </item>
     
     <item>
       <title>Implementing Python bolts</title>
-      <link>https://twitter.github.io/heron/docs/developers/python/bolts/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/python/bolts/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/python/bolts/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/python/bolts/</guid>
       <description>Python API docs You can find API docs for the heronpy library here.
  Bolts must implement the Bolt interface, which has the following methods.
-class Bolt(BaseBolt): def initialize(self, config, context) def process(self, tup)   The initialize() method is called when the bolt is first initialized and provides the bolt with the executing environment. It is equivalent to prepare() method of the IBolt interface in Java. Note that you should not override __init__() constructor of Bolt class for initialization of custom variables, since it is used internally by HeronInstance; instead, initialize() should be used to initialize any custom variables or connections to databases.</description>
+class Bolt(BaseBolt): def initialize(self, config, context) def process(self, tup)  The initialize() method is called when the bolt is first initialized and provides the bolt with the executing environment. It is equivalent to prepare() method of the IBolt interface in Java. Note that you should not override __init__() constructor of Bolt class for initialization of custom variables, since it is used internally by HeronInstance; instead, initialize() should be used to initialize any custom variables or connections to databases.</description>
     </item>
     
     <item>
       <title>Implementing a Bolt</title>
-      <link>https://twitter.github.io/heron/docs/developers/java/bolts/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/java/bolts/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/java/bolts/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/java/bolts/</guid>
       <description>&amp;times; Don&amp;#39;t want to manually create spouts and bolts? Try the Heron Streamlet APIIf you find manually creating and connecting spouts and bolts to be overly cumbersome, we recommend trying out the Heron Streamlet API for Java, which enables you to create your topology logic using a highly streamlined logic inspired by functional programming concepts.  Bolts must implement the IBolt interface.
-public interface IBolt extends Serializable { void prepare(Map&amp;lt;String, Object&amp;gt; heronConf, TopologyContext context, OutputCollector collector); void execute(Tuple input); void cleanup(); }   The prepare method is called when the bolt is first initialized and provides the bolt with the executing environment.</description>
+public interface IBolt extends Serializable { void prepare(MapheronConf, TopologyContext context, OutputCollector collector); void execute(Tuple input); void cleanup(); }  The prepare method is called when the bolt is first initialized and provides the bolt with the executing environment.</description>
     </item>
     
     <item>
       <title>Implementing a Custom Metrics Sink</title>
-      <link>https://twitter.github.io/heron/docs/contributors/custom-metrics-sink/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/custom-metrics-sink/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/custom-metrics-sink/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/custom-metrics-sink/</guid>
       <description>Each Heron container has its own centralized Metrics Manager (MM), which collects metrics from all Heron Instances in the container. You can define how the MM processes metrics by implementing a metrics sink, which specifies how the MM handles incoming MetricsRecord objects.
  Java is currently the only supported language for custom metrics sinks. This may change in the future.
  Currently supported Sinks Heron comes equipped out of the box with three metrics sinks that you can apply for a specific topology.</description>
@@ -454,40 +454,40 @@ public interface IBolt extends Serializable { void prepare(Map&amp;lt;String, Ob
     
     <item>
       <title>Implementing a Custom Scheduler</title>
-      <link>https://twitter.github.io/heron/docs/contributors/custom-scheduler/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/custom-scheduler/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/custom-scheduler/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/custom-scheduler/</guid>
       <description>To run a Heron topology, you’ll need to set up a scheduler that is responsible for topology management. Note: one scheduler is managing only one topology, for the purpose of better isolation. Heron currently supports the following schedulers out of the box:
  Aurora Local scheduler Slurm scheduler  If you&amp;rsquo;d like to run Heron on a not-yet-supported system, such as Amazon ECS, you can create your own scheduler using Heron&amp;rsquo;s spi, as detailed in the sections below.</description>
     </item>
     
     <item>
       <title>Implementing a Spout</title>
-      <link>https://twitter.github.io/heron/docs/developers/java/spouts/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/java/spouts/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/java/spouts/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/java/spouts/</guid>
       <description>&amp;times; Don&amp;#39;t want to manually create spouts and bolts? Try the Heron Streamlet APIIf you find manually creating and connecting spouts and bolts to be overly cumbersome, we recommend trying out the Heron Streamlet API for Java, which enables you to create your topology logic using a highly streamlined logic inspired by functional programming concepts.  Spouts must implement the ISpout interface.
-public interface ISpout extends Serializable { void open(Map&amp;lt;String, Object&amp;gt; conf, TopologyContext context, SpoutOutputCollector collector); void close(); void activate(); void deactivate(); void nextTuple(); void ack(Object msgId); void fail(Object msgId); }   The open method is called when the spout is initialized and provides the spout with the executing environment.</description>
+public interface ISpout extends Serializable { void open(Mapconf, TopologyContext context, SpoutOutputCollector collector); void close(); void activate(); void deactivate(); void nextTuple(); void ack(Object msgId); void fail(Object msgId); }  The open method is called when the spout is initialized and provides the spout with the executing environment.</description>
     </item>
     
     <item>
       <title>Intro to Heron Cluster Configuration</title>
-      <link>https://twitter.github.io/heron/docs/operators/configuration/config-intro/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/config-intro/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/configuration/config-intro/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/config-intro/</guid>
       <description>Heron clusters can be configured at two levels:
  The system level &amp;mdash; System-level configurations apply to the whole Heron cluster rather than to any specific component (e.g. logging configurations). The component level &amp;mdash; Component-level configurations enable you to establish default configurations for different components. These configurations are fixed at any stage of the topology&amp;rsquo;s lifecycle, once the topology is deployed.  Neither system- nor component-level configurations can be overridden by topology developers.</description>
     </item>
     
     <item>
       <title>Local Cluster</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/local/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/local/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/local/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/local/</guid>
       <description>In addition to out-of-the-box schedulers for Aurora, Heron can also be deployed in a local environment, which stands up a mock Heron cluster on a single machine. This can be useful for experimenting with Heron&amp;rsquo;s features, testing a wide variety of possible cluster events, and so on.
 One of two state managers can be used for coordination when deploying locally:
  ZooKeeper Local File System  Note: Deploying a Heron cluster locally is not to be confused with Heron&amp;rsquo;s simulator mode.</description>
@@ -495,21 +495,21 @@ One of two state managers can be used for coordination when deploying locally:
     
     <item>
       <title>Managing Topologies with Heron CLI</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-cli/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-cli/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-cli/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-cli/</guid>
       <description>The Heron CLI us used to to manage every aspect of the topology lifecycle.
 Deploying the heron CLI Executable To use heron CLI, download the heron-client-install for your platfrom from release binaries and run the installation script. For example, if you have downloaded the version 0.13.5, you invoke the installation script as follows:
-$ chmod +x heron-client-install-0.13.5-darwin.sh $ ./heron-client-install-0.13.5-darwin.sh --user Heron client installer ---------------------- Uncompressing...... Heron is now installed! Make sure you have &amp;quot;/Users/$USER/bin&amp;quot; in your path.</description>
+$ chmod +x heron-client-install-0.13.5-darwin.sh $ ./heron-client-install-0.13.5-darwin.sh --user Heron client installer ---------------------- Uncompressing...... Heron is now installed! Make sure you have &#34;</description>
     </item>
     
     <item>
       <title>Mesos (Work in Progress)</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/mesos/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/mesos/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/mesos/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/mesos/</guid>
       <description>Heron supports deployment on Apache Mesos. Heron can also run on Mesos using Apache Aurora as a scheduler or using a local scheduler.
 How Heron on Mesos Works Heron&amp;rsquo;s Mesos scheduler interacts with Mesos to stand up all of the components necessary to manage topologies.
 ZooKeeper To run Heron on Mesos, you&amp;rsquo;ll need to set up a ZooKeeper cluster and configure Heron to communicate with it. Instructions can be found in Setting up ZooKeeper.</description>
@@ -517,31 +517,31 @@ ZooKeeper To run Heron on Mesos, you&amp;rsquo;ll need to set up a ZooKeeper clu
     
     <item>
       <title>Metrics Manager</title>
-      <link>https://twitter.github.io/heron/docs/operators/configuration/metrics-manager/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/metrics-manager/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/configuration/metrics-manager/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/metrics-manager/</guid>
       <description>You can configure all of the Metrics Managers (MMs) in a topology using the parameters below.
 Network Configuration You can configure how the MM collects and transmits data in one (but only one) of two ways: time based or size based. If you choose time based, you can specify the maximum batch time (in milliseconds) for reading from and writing to the MM&amp;rsquo;s socket; if you choose size based, you can specify maximum batch sizes (in bytes) instead.</description>
     </item>
     
     <item>
       <title>Migrate Storm Topologies to Heron</title>
-      <link>https://twitter.github.io/heron/docs/migrate-storm-to-heron/</link>
+      <link>https://apache.github.io/incubator-heron/docs/migrate-storm-to-heron/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/migrate-storm-to-heron/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/migrate-storm-to-heron/</guid>
       <description>Heron is designed to be fully backwards compatible with existing Apache Storm projects, which means that you can migrate an existing Storm topology to Heron by making just a few adjustments to the topology&amp;rsquo;s pom.xml Maven configuration file.
 Step 1. Add Heron dependencies to pom.xml Copy the pom.xml segments below and paste them into your existing Storm pom.xml file in the dependencies block.
-&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.twitter.heron&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;heron-api&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;0.17.5&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;compile&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.</description>
+ com.twitter.heron heron-api 0.17.5 compile   com.</description>
     </item>
     
     <item>
       <title>Nomad</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/nomad/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/nomad/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/nomad/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/nomad/</guid>
       <description>Heron supports Hashicorp&amp;rsquo;s Nomad as a scheduler. You can use Nomad for either small- or large-scale Heron deployments or to run Heron locally in standalone mode.
 Nomad setup Setting up a nomad cluster will not be covered here. See the official Nomad docs for instructions.
  Heron currently only supports the raw exec driver for Nomad.
@@ -551,10 +551,10 @@ Nomad setup Setting up a nomad cluster will not be covered here. See the officia
     
     <item>
       <title>Observability with Prometheus</title>
-      <link>https://twitter.github.io/heron/docs/operators/observability/prometheus/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/observability/prometheus/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/observability/prometheus/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/observability/prometheus/</guid>
       <description>You can integrate Heron with Prometheus to monitor and gather runtime metrics exported by Heron topologies.
 Exporting topology metrics from Heron to Prometheus Heron supports custom metric exporters from the Metrics Manager. You can either build your own Prometheus metrics sink or use the provided Prometheus sink.
 To set up your Heron cluster to export to Prometheus, you need to make two changes to the metrics_sinks.yaml configuration file:
@@ -563,23 +563,23 @@ To set up your Heron cluster to export to Prometheus, you need to make two chang
     
     <item>
       <title>Python Topologies</title>
-      <link>https://twitter.github.io/heron/docs/developers/python/topologies/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/python/topologies/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/python/topologies/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/python/topologies/</guid>
       <description>The current version of py_heron is 0.17.5.
  Support for developing Heron topologies in Python is provided by a Python library called heronpy.
  Python API docs You can find API docs for the heronpy library here.
  Setup First, you need to install the heronpy library using pip, EasyInstall, or an analogous tool:
-$ pip install heronpy $ easy_install heronpy  Then you can include heronpy in your project files.</description>
+$ pip install heronpy $ easy_install heronpy Then you can include heronpy in your project files.</description>
     </item>
     
     <item>
       <title>Quick Start Guide</title>
-      <link>https://twitter.github.io/heron/docs/getting-started/</link>
+      <link>https://apache.github.io/incubator-heron/docs/getting-started/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/getting-started/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/getting-started/</guid>
       <description>The current version of Heron is 0.17.5
  The easiest way to get started learning Heron is to install the Heron client tools, which are currently available for:
  MacOS Ubuntu &amp;gt;= 14.04 CentOS  For other platforms, you need to build from source. Please refer to the guide to compiling Heron.
@@ -588,41 +588,41 @@ Step 1 &amp;mdash; Download the Heron tools Heron tools can be installed on macO
     
     <item>
       <title>Quick Start Troubleshooting</title>
-      <link>https://twitter.github.io/heron/docs/getting-started-troubleshooting/</link>
+      <link>https://apache.github.io/incubator-heron/docs/getting-started-troubleshooting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/getting-started-troubleshooting/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/getting-started-troubleshooting/</guid>
       <description>This guide provides basic help for issues frequently encountered when deploying topologies.
 1. How can I get more debugging information? Enable the --verbose flag to see more debugging information, for example
-heron submit ... ExclamationTopology --verbose  2. Why does the topology launch successfully but fail to start? Even if the topology is submitted successfully, it could still fail to start some component. For example, TMaster may fail to start due to unfulfilled dependencies.</description>
+heron submit ... ExclamationTopology --verbose 2. Why does the topology launch successfully but fail to start? Even if the topology is submitted successfully, it could still fail to start some component. For example, TMaster may fail to start due to unfulfilled dependencies.</description>
     </item>
     
     <item>
       <title>Setting Up Http Uploader</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/uploaders/http/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/http/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/uploaders/http/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/http/</guid>
       <description>When a topology is submitted to Heron, the topology jars will be uploaded to a stable location. The submitter will provide this location to the scheduler and it will pass it to the each container. Heron can use a Http uploader to upload topology jar distribution to a stable Http location.
 Http Uploader Configuration You can make Heron aware of the Http uploader by modifying the uploader.yaml config file specific for the Heron cluster.</description>
     </item>
     
     <item>
       <title>Setting Up Local File System State Manager</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/statemanagers/localfs/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/statemanagers/localfs/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/statemanagers/localfs/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/statemanagers/localfs/</guid>
       <description>Heron can use the local file system as a state manager for storing various book keeping information. Use of local file system is recommended mainly for single node server and laptop. This configuration is ideal for deploying in edge devices. Heron developers can use this setting for developing and debugging various heron components in their laptop or server.
 Local File System State Manager Configuration You can make Heron aware of the ZooKeeper cluster by modifying the statemgr.</description>
     </item>
     
     <item>
       <title>Setting Up Local File System Uploader</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/uploaders/localfs/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/localfs/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/uploaders/localfs/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/localfs/</guid>
       <description>When you submit a topology to Heron, the topology jars will be uploaded to a stable location. The submitter will provide this location to the scheduler and it will pass it to the executor each container. Heron can use a local file system as a stable storage for topology jar distribution.
 There are a few things you should be aware of local file system uploader:
  Local file system uploader is mainly used in conjunction with local scheduler.</description>
@@ -630,29 +630,29 @@ There are a few things you should be aware of local file system uploader:
     
     <item>
       <title>Setting Up S3 Uploader</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/uploaders/s3/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/s3/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/uploaders/s3/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/s3/</guid>
       <description>If you are running in Amazon AWS, Heron provides out of the box uploader for S3, the object storage. S3 uploader is useful when the topologies run in a distributed cluster of Amazon EC2 compute instances. Since S3 replicates the data, it provides a scalable mechanism for distributing the user topology jars.
 S3 Uploader Configuration You can make Heron use S3 uploader by modifying the uploader.yaml config file specific for the Heron cluster.</description>
     </item>
     
     <item>
       <title>Setting Up SCP Uploader</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/uploaders/scp/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/scp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/uploaders/scp/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/scp/</guid>
       <description>For small clusters with simple setups that doesn&amp;rsquo;t have a HDFS like file system, the SCP uploader can be used to manage the package files. This uploader uses the scp linux command to upload the files to a node accessible by all the worker nodes in the cluster. Then a scheduler like Aurora can use the scp command again to download the content to each of the worker machines.</description>
     </item>
     
     <item>
       <title>Setting Up ZooKeeper State Manager</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/statemanagers/zookeeper/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/statemanagers/zookeeper/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/statemanagers/zookeeper/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/statemanagers/zookeeper/</guid>
       <description>Heron relies on ZooKeeper for a wide variety of cluster coordination tasks. You can use either a shared or dedicated ZooKeeper cluster.
 There are a few things you should be aware of regarding Heron and ZooKeeper:
  Heron uses ZooKeeper only for coordination, not for message passing, which means that ZooKeeper load should generally be fairly low. A single-node and/or shared ZooKeeper may suffice for your Heron cluster, depending on usage.</description>
@@ -660,10 +660,10 @@ There are a few things you should be aware of regarding Heron and ZooKeeper:
     
     <item>
       <title>Setting up Heron with Aurora Cluster Locally on Linux</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/aurora-local-setup/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/aurora-local-setup/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/aurora-local-setup/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/aurora-local-setup/</guid>
       <description>It is possible to setup Heron with a locally running Apache Aurora cluster. This is a step by step guide on how to configure and setup all the necessary components.
 Setting Up Apache Aurora Cluster locally You first need to setup Apache Aurora locally. More detailed description of the following steps can be found in A local Cluster with Vagrant
 Step 1: Install VirtualBox and Vagrant Download and install VirtualBox and Vagrant on your machine.</description>
@@ -671,10 +671,10 @@ Step 1: Install VirtualBox and Vagrant Download and install VirtualBox and Vagra
     
     <item>
       <title>Setting up Heron with Mesos Cluster Locally on Mac</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/mesos-local-mac/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/mesos-local-mac/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/mesos-local-mac/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/mesos-local-mac/</guid>
       <description>This is a step by step guide to run Heron on a Mesos cluster locally.
 Install Heron Follow Quick Start Guide to install Heron.
 Setting up an Apache Mesos Cluster Locally Follow Installing Mesos on your Mac with Homebrew to install and run Mesos. To confirm Mesos cluster is ready for accepting Heron topologies, access the Mesos management console http://localhost:5050 and confirm there is activated slaves.
@@ -683,10 +683,10 @@ Configure Heron State Manager By default, Heron uses Local File System State Man
     
     <item>
       <title>Setting up the HDFS uploader</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/uploaders/hdfs/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/hdfs/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/uploaders/hdfs/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/hdfs/</guid>
       <description>With Heron, you have the option to use HDFS as stable storage for user submitted topology jars. Since HDFS replicates the data, it provides a scalable mechanism for distributing the user topology jars. This is desirable when the job runs in a distributed cluster and requires several hundred containers to run.
 There are a few things you should be aware of HDFS uploader:
  It requires hadoop client be installed in the machine where the topology is being submitted  HDFS Uploader Configuration You can make Heron use HDFS uploader by modifying the uploader.</description>
@@ -694,10 +694,10 @@ There are a few things you should be aware of HDFS uploader:
     
     <item>
       <title>Simulator Mode</title>
-      <link>https://twitter.github.io/heron/docs/developers/simulator-mode/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/simulator-mode/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/simulator-mode/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/simulator-mode/</guid>
       <description>Simulator mode is specifically designed for topology developers to easily debug or optimize their topologies.
 Simulator mode simulates a heron cluster in a single JVM process, which is useful for developing and testing topologies. Running topologies under simulator mode is similar to running topologies on a cluster.
 Develop a topology using simulator mode To run in simulator mode, use the SimulatorMode class, which is in storm-compatibility-unshaded_deploy.jar (under bazel-bin/storm-compatibility/src/java).
@@ -706,72 +706,73 @@ For example:</description>
     
     <item>
       <title>Slurm Cluster (Experimental)</title>
-      <link>https://twitter.github.io/heron/docs/operators/deployment/schedulers/slurm/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/slurm/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/deployment/schedulers/slurm/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/schedulers/slurm/</guid>
       <description>In addition to out-of-the-box scheduler for Aurora, Heron can also be deployed in a HPC cluster with the Slurm Scheduler. This allows a researcher to deploy Heron and execute streaming scientific work-flows.
 How Slurm Deployment Works Using the Slurm scheduler is similar to deploying Heron on other systems. The Heron (../../heron-cli) cli is used to deploy and manage topologies similar to other schedulers. The main difference is in the configuration.</description>
     </item>
     
     <item>
       <title>Stream Manager</title>
-      <link>https://twitter.github.io/heron/docs/operators/configuration/stmgr/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/stmgr/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/configuration/stmgr/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/stmgr/</guid>
       <description>You can configure the Stream Manager (SM) in a topology using the parameters below, including how the SM handles back pressure.
 Back Pressure Parameters    Parameter Meaning Default     heron.streammgr.network.backpressure.threshold The number of times the SM should wait to see a buffer full while enqueueing data before declaring the start of backpressure 3   heron.streammgr.network.backpressure.highwatermark.mb The high water mark on the number of megabytes that can be left outstanding on a connection 50   heron.</description>
     </item>
     
     <item>
       <title>Support Policy</title>
-      <link>https://twitter.github.io/heron/docs/contributors/support/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/support/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/support/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/support/</guid>
       <description>Core contributors generally avoid making backwards-incompatible changes and are dedicated to remain backwards-compatible with the Apache Storm API whenever possible. Substantial unit and integration tests are performed before every release to reasonably ensure reliability at scale.
 However, occasionally backwards-incompatible changes are required in order to fix bugs, to make further improvements to the system, such as improving performance or usability, or to lock down APIs that are known to be brittle.</description>
     </item>
     
     <item>
       <title>System-level Configuration</title>
-      <link>https://twitter.github.io/heron/docs/operators/configuration/system/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/system/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/configuration/system/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/system/</guid>
       <description>The parameters in the sections below are set at the system level and thus do not apply to any specific component.
 General    Config Meaning Default     heron.check.tmaster.location.interval.sec The interval, in seconds, after which to check if the topology master location has been fetched or not 120   heron.metrics.export.interval The interval, in seconds, at which components export metrics to the topology&amp;rsquo;s Metrics Manager     Logging    Config Meaning Default     heron.</description>
     </item>
     
     <item>
       <title>Testing Heron</title>
-      <link>https://twitter.github.io/heron/docs/contributors/testing/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/testing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/testing/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/testing/</guid>
       <description>Heron uses Bazel for building and running unit tests. Before running tests, first set up your build environment as described in Compiling Heron.
 Running Unit Tests The following command will run all tests:
-$ bazel test --config=darwin heron/...  To run a specific test target, pass the test target name.
-$ bazel test --config=darwin heron/statemgrs/tests/java:localfs-statemgr_unittest  Discovering Unit Test Targets To see a full listing of all Bazel test targets:</description>
+$ bazel test --config=darwin heron/... To run a specific test target, pass the test target name.
+$ bazel test --config=darwin heron/statemgrs/tests/java:localfs-statemgr_unittest Discovering Unit Test Targets To see a full listing of all Bazel test targets:
+$ bazel query &#39;kind(&#34;</description>
     </item>
     
     <item>
       <title>The First Fit Decreasing Packing Algorithm</title>
-      <link>https://twitter.github.io/heron/docs/developers/packing/ffdpacking/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/packing/ffdpacking/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/packing/ffdpacking/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/packing/ffdpacking/</guid>
       <description>Overview This guide provides basic steps at using and tuning the First Fit Decreasing packing algorithm in order to utilize the resources efficiently. This packing algorithm aims at utilizing as few containers as possible, thus limiting the overall resources used. The algorithm is based on the First Fit Decreasing heuristic for the Binpacking problem. The algorithm is useful in the following scenarios:
  The user does not know how many containers to use.</description>
     </item>
     
     <item>
       <title>The Heron API server</title>
-      <link>https://twitter.github.io/heron/docs/operators/heron-api-server/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/heron-api-server/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/heron-api-server/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-api-server/</guid>
       <description>The Heron API server is a necessary component
  If you&amp;rsquo;re running Heron locally on your laptop, you won&amp;rsquo;t need to run the Heron API server separately; its functions will be handled automatically.
  Installation The Heron API server executable (heron-apiserver) is installed automatically when you install the Heron tools.
@@ -780,48 +781,48 @@ Running the Heron API server You can start up the Heron API server using the her
     
     <item>
       <title>The Heron ECO API for Java</title>
-      <link>https://twitter.github.io/heron/docs/developers/java/eco-api/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/java/eco-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/java/eco-api/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/java/eco-api/</guid>
       <description>&amp;times; The Heron ECO API is in betaThe Heron ECO API can be used to build and test topologies on your local or on a cluster. The API still needs some testing and feedback from the community to understand how we should continue to develop ECO.  Heron processing topologies can be written using an API called the Heron ECO API. The ECO API is currently available to work with spouts and bolts from the following packages:</description>
     </item>
     
     <item>
       <title>The Heron Streamlet API</title>
-      <link>https://twitter.github.io/heron/docs/concepts/streamlet-api/</link>
+      <link>https://apache.github.io/incubator-heron/docs/concepts/streamlet-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/concepts/streamlet-api/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/concepts/streamlet-api/</guid>
       <description>&amp;times; The Heron Streamlet API is in betaThe Heron Streamlet API is well tested and can be used to build and test topologies locally. The API is not yet fully stable, however, and breaking changes are likely in the coming weeks.  When it was first released, Heron offered a Topology API&amp;mdash;heavily indebted to the Storm API&amp;mdash;for developing topology logic. In the original Topology API, developers creating topologies were required to explicitly:</description>
     </item>
     
     <item>
       <title>The Heron Streamlet API for Java</title>
-      <link>https://twitter.github.io/heron/docs/developers/java/streamlet-api/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/java/streamlet-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/java/streamlet-api/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/java/streamlet-api/</guid>
       <description>&amp;times; The Heron Streamlet API is in betaThe Heron Streamlet API is well tested and can be used to build and test topologies locally. The API is not yet fully stable, however, and breaking changes are likely in the coming weeks.  Heron processing topologies can be written using an API called the Heron Streamlet API. The Heron Streamlet API is currently available for the following languages:
  Java    Although this document covers the new Heron Streamlet API, topologies created using the original topology API can still be used with Heron (which means that all of your older topologies will still run).</description>
     </item>
     
     <item>
       <title>Topology Master</title>
-      <link>https://twitter.github.io/heron/docs/operators/configuration/tmaster/</link>
+      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/tmaster/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/operators/configuration/tmaster/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/tmaster/</guid>
       <description>You can configure the Topology Master &amp;trade; for a topology using the parameters below.
    Parameter Meaning Default     heron.tmaster.metrics.collector.maximum.interval.min The maximum interval, in minutes, for metrics to be kept in the Topology Master 180   heron.tmaster.establish.retry.times The maximum time to retry to establish the Topology Master 30   heron.tmaster.establish.retry.interval.sec The interval to retry to establish the Topology Master 1   heron.tmaster.network.master.options.maximum.packet.mb The maximum packet size, in megabytes, of the Topology Master&amp;rsquo;s network options for Stream Managers to connect to 16   heron.</description>
     </item>
     
     <item>
       <title>Topology Troubleshooting Guide</title>
-      <link>https://twitter.github.io/heron/docs/developers/troubleshooting/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/troubleshooting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/troubleshooting/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/troubleshooting/</guid>
       <description>Overview This guide provides basic steps to troubleshoot a topology. These are starting steps to troubleshoot potential issues and identify root causes easily.
 This guide is organized into following broad sections:
  Determine topology running status and health Identify topology problems Frequently seen issues  This guide is useful for topology developers. Issues related to Heron configuration setup or its internal architecture, like schedulers, etc, are discussed in Configuration and Heron Developers respectively, and not discussed here.</description>
@@ -829,39 +830,39 @@ This guide is organized into following broad sections:
     
     <item>
       <title>Topology Tuning Guide</title>
-      <link>https://twitter.github.io/heron/docs/developers/tuning/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/tuning/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/tuning/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/tuning/</guid>
       <description>Overview This guide provides basic steps at tuning a topology to utilize resources efficiently. Currently, resources are primarily measured in terms of CPU cores and RAM. In Heron, some of the basic parameters that are available to tune a topology are, but not limited to, the following:
  Container RAM Container CPU Component RAMs Component Parallelisms Number of Containers  Note that tuning a topology may be difficult and may take multiple iterations.</description>
     </item>
     
     <item>
       <title>Tuple Serialization</title>
-      <link>https://twitter.github.io/heron/docs/developers/serialization/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/serialization/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/serialization/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/serialization/</guid>
       <description>The tuple is Heron&amp;rsquo;s core data type. Heron&amp;rsquo;s native Tuple interface supports a broad range of basic data types, such as strings, integers, and booleans, out of the box, but tuples can contain values of any type. You can use data types beyond the core types by providing a custom serializer using the instructions below.
 Kryo Heron uses Kryo for tuple serialization and deserialization. You can create a custom tuple serializer by extending Kryo&amp;rsquo;s abstract Serializer class.</description>
     </item>
     
     <item>
       <title>Twitter License Agreement (CLA)</title>
-      <link>https://twitter.github.io/heron/docs/contributors/license/</link>
+      <link>https://apache.github.io/incubator-heron/docs/contributors/license/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/contributors/license/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/contributors/license/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Writing and Launching Topologies in Java</title>
-      <link>https://twitter.github.io/heron/docs/developers/java/topologies/</link>
+      <link>https://apache.github.io/incubator-heron/docs/developers/java/topologies/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://twitter.github.io/heron/docs/developers/java/topologies/</guid>
+      <guid>https://apache.github.io/incubator-heron/docs/developers/java/topologies/</guid>
       <description>&amp;times; This document pertains to the older, Storm-based, Heron Topology APIHeron now offers two separate APIs for building topologies: the original, Storm-based Topology API, and the newer Streamlet API. Topologies created using the Topology API can still run on Heron and there are currently no plans to deprecate this API. We would, however, recommend that you use the Streamlet API for future work.  A topology specifies components like spouts and bolts, as well as the relation between components and proper configurations.</description>
     </item>
     
