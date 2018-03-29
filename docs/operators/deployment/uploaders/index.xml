@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Heron uploaders on Heron</title>
+    <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/</link>
+    <description>Recent content in Heron uploaders on Heron</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Setting Up Http Uploader</title>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/http/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/http/</guid>
+      <description>When a topology is submitted to Heron, the topology jars will be uploaded to a stable location. The submitter will provide this location to the scheduler and it will pass it to the each container. Heron can use a Http uploader to upload topology jar distribution to a stable Http location.
+Http Uploader Configuration You can make Heron aware of the Http uploader by modifying the uploader.yaml config file specific for the Heron cluster.</description>
+    </item>
+    
+    <item>
+      <title>Setting Up Local File System Uploader</title>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/localfs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/localfs/</guid>
+      <description>When you submit a topology to Heron, the topology jars will be uploaded to a stable location. The submitter will provide this location to the scheduler and it will pass it to the executor each container. Heron can use a local file system as a stable storage for topology jar distribution.
+There are a few things you should be aware of local file system uploader:
+ Local file system uploader is mainly used in conjunction with local scheduler.</description>
+    </item>
+    
+    <item>
+      <title>Setting Up S3 Uploader</title>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/s3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/s3/</guid>
+      <description>If you are running in Amazon AWS, Heron provides out of the box uploader for S3, the object storage. S3 uploader is useful when the topologies run in a distributed cluster of Amazon EC2 compute instances. Since S3 replicates the data, it provides a scalable mechanism for distributing the user topology jars.
+S3 Uploader Configuration You can make Heron use S3 uploader by modifying the uploader.yaml config file specific for the Heron cluster.</description>
+    </item>
+    
+    <item>
+      <title>Setting Up SCP Uploader</title>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/scp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/scp/</guid>
+      <description>For small clusters with simple setups that doesn&amp;rsquo;t have a HDFS like file system, the SCP uploader can be used to manage the package files. This uploader uses the scp linux command to upload the files to a node accessible by all the worker nodes in the cluster. Then a scheduler like Aurora can use the scp command again to download the content to each of the worker machines.</description>
+    </item>
+    
+    <item>
+      <title>Setting up the HDFS uploader</title>
+      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/hdfs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/uploaders/hdfs/</guid>
+      <description>With Heron, you have the option to use HDFS as stable storage for user submitted topology jars. Since HDFS replicates the data, it provides a scalable mechanism for distributing the user topology jars. This is desirable when the job runs in a distributed cluster and requires several hundred containers to run.
+There are a few things you should be aware of HDFS uploader:
+ It requires hadoop client be installed in the machine where the topology is being submitted  HDFS Uploader Configuration You can make Heron use HDFS uploader by modifying the uploader.</description>
+    </item>
+    
+  </channel>
+</rss>
