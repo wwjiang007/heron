@@ -67,18 +67,6 @@ Requirements  Docker  Running Docker in a Virtual Machine If you are running Doc
     </item>
     
     <item>
-      <title>Deploying Heron</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/deployment/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/deployment/</guid>
-      <description>Heron is designed to be run in clustered, scheduler-driven environments. It can be run in a multi-tenant or dedicated clusters. Furthermore, Heron supports multiple clusters and a user can submit topologies to any of these clusters. Each of the cluster can use different scheduler. A typical Heron deployment is shown in the following figure.
-
-
-A Heron deployment requires several components working together. The following must be deployed to run Heron topologies in a cluster:</description>
-    </item>
-    
-    <item>
       <title>Effectively-once Java topologies</title>
       <link>https://apache.github.io/incubator-heron/docs/developers/java/effectively-once/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -144,27 +132,6 @@ Available semantics Heron supports three delivery semantics:
     </item>
     
     <item>
-      <title>Heron Explorer</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-explorer/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-explorer/</guid>
-      <description>The Heron Explorer is a CLI tool that you can use to gain insight into a Heron installation, including:
- which clusters are currently running in the installation information about a given topology&amp;rsquo;s components (spouts and bolts) metrics for a topology the containers in which a topology is running the topologies running in a given cluster, role, or environment   The Heron Explorer vs. Heron CLI There are two important differences between the Heron Explorer and Heron CLI.</description>
-    </item>
-    
-    <item>
-      <title>Heron Instance</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/instance/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/instance/</guid>
-      <description>You can configure the behavior of the Heron Instances (HIs) in a topology using the parameters below.
-Internal Configuration These parameters deal with the TCP write and read queue for each instance.
-   Parameter Meaning Default     heron.instance.internal.bolt.read.queue.capacity The queue capacity (number of items) in bolt for buffer packets to read from stream manager 128   heron.instance.internal.bolt.write.queue.capacity The queue capacity (number of items) in bolt for buffer packets to write to stream manager 128   heron.</description>
-    </item>
-    
-    <item>
       <title>Heron Resources</title>
       <link>https://apache.github.io/incubator-heron/docs/resources/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -172,16 +139,6 @@ Internal Configuration These parameters deal with the TCP write and read queue f
       <guid>https://apache.github.io/incubator-heron/docs/resources/</guid>
       <description> Heron Resources outside this documentation:
 Conference &amp;amp; Journal Papers  Streaming@Twitter - Bulletin of the IEEE Computer Society Technical Committee on Data Engineering (Jul, 2016) Twitter Heron: Stream Processing at Scale - SIGMOD’15 (May, 2015) Storm@Twitter - SIGMOD&amp;rsquo;14 (Jun, 2014)  Videos  Twitter Heron on Apache Aurora - #compute event @Twitter (Apr, 2016) Flying Faster with Heron - InfoQ (Apr, 2016) Twitter Heron: Stream Processing at Scale - @Scale (Sep, 2015) Stream Processing and Anomaly Detection - Velocity O&amp;rsquo;Reilly - Note: requires O&amp;rsquo;Reilly login (Jun, 2015)  Official Blog Posts  Open Sourcing Twitter Heron (May, 2016) Flying Faster with Twitter Heron (June, 2015)  Community Blog Posts  Deploying Heron on a Cluster of Machines with Apache Aurora (Supun Kamburugamuve, Jun, 2016) Setting up Heron Locally with Apache Aurora (Pulasthi Supun, Jun, 2016)  Slides  Real-Time Analytics: Algorithms and Systems - Twitter University  (May, 2016) Stream Processing and Anomaly Detection - Velocity O&amp;rsquo;Reilly (Jun, 2015)  Press  Heron, Twitter&amp;rsquo;s Data Streaming Platform, Has Been Open Sourced (BenZinga, Jun, 2016) Twitter Open Sources Heron &amp;ndash; Data Streaming For Dummies (Forbes, Jun, 2016) Getting Started with Heron on Apache Mesos and Apache Kafka (All Things Hadoop, May, 2016) Twitter open-sources Heron, its real-time stream-processing engine (VentureBeat, May, 2016) Twitter&amp;rsquo;s Heron Will Start a New Chapter in Real-Time Streaming (Forbes, Jun, 2015) Twitter Has Replaced Storm with Heron (InfoQ, Jun, 2015)  </description>
-    </item>
-    
-    <item>
-      <title>Heron Shell</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-shell/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-shell/</guid>
-      <description>Heron shell helps debugging a heron topology. It is an HTTP server that runs as a separate process in every container. It exposes many utilities through REST APIs. These utilities are described below in more details.
-The port to connect to heron shell for each container is stored in the physical plan. Heron tracker picks up this port and connects to shell. See the next section for more details.</description>
     </item>
     
     <item>
@@ -196,38 +153,6 @@ More information on the Streamlet API can be found below.
     </item>
     
     <item>
-      <title>Heron Tracker</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-tracker/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-tracker/</guid>
-      <description>Heron Tracker is a web service that continuously gathers a wide variety of information about Heron topologies and exposes that information through a JSON REST API. More on the role of the Tracker can be found here.
-Building Heron Tracker Heron uses bazel for compiling. Compiling describes how to setup bazel for heron.
-# Build heron-tracker $ bazel build heron/tools/tracker/src/python:heron-tracker # The location of heron-tracker pex executable is # bazel-bin/heron/tools/tracker/src/python/heron-tracker # To run using default options: $ .</description>
-    </item>
-    
-    <item>
-      <title>Heron Tracker REST API</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-tracker-api/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-tracker-api/</guid>
-      <description>JSON Interface All Heron Tracker endpoints return a JSON object with the following information:
- status &amp;mdash; One of the following: success, failure. executiontime &amp;mdash; The time taken to return the HTTP result, in seconds. message &amp;mdash; Some endpoints return special messages in this field for certain requests. Often, this field will be an empty string. A failure status will always have a message. result &amp;mdash; The result payload of the request.</description>
-    </item>
-    
-    <item>
-      <title>Heron UI</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-ui/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-ui/</guid>
-      <description>Heron UI is a user interface that uses the Heron Tracker to display detailed, colorful visual representations of topologies, including the logical and physical plan for each topology. Check out Heron UI Usage Guide for more information about various elements that UI exposes.
-Building Heron UI Heron uses bazel for compiling. This page describes how to setup bazel for heron.
-# Build heron-ui $ bazel build heron/tools/ui/src/python:heron-ui # The location of heron-ui pex executable is # bazel-bin/heron/tools/ui/src/python/heron-ui # To run using default options: $ .</description>
-    </item>
-    
-    <item>
       <title>Heron UI Usage Guide</title>
       <link>https://apache.github.io/incubator-heron/docs/developers/ui-guide/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -236,15 +161,6 @@ Building Heron UI Heron uses bazel for compiling. This page describes how to set
       <description>Overview This guide describes how to make best use of Heron UI for monitoring and debugging topologies.
 The UI provides a lot of information about a topology or a part of it quickly, thus reducing debugging time considerably. Some of these features are listed below. A complete set of features can be found in following sections.
  See logical plan of a topology See physical plan of a topology Configs of a topology See some basic metrics for each of the instances and components Links to get logs, memory histogram, jstack, heapdump and exceptions of a particular instance  Topologies Page Below is the home page of Heron UI.</description>
-    </item>
-    
-    <item>
-      <title>Heron metrics overview</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/observability/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/observability/</guid>
-      <description></description>
     </item>
     
     <item>
@@ -333,37 +249,6 @@ public interface ISpout extends Serializable { void open(Map&amp;lt;String, Obje
     </item>
     
     <item>
-      <title>Intro to Heron Cluster Configuration</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/config-intro/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/config-intro/</guid>
-      <description>Heron clusters can be configured at two levels:
- The system level &amp;mdash; System-level configurations apply to the whole Heron cluster rather than to any specific component (e.g. logging configurations). The component level &amp;mdash; Component-level configurations enable you to establish default configurations for different components. These configurations are fixed at any stage of the topology&amp;rsquo;s lifecycle, once the topology is deployed.  Neither system- nor component-level configurations can be overridden by topology developers.</description>
-    </item>
-    
-    <item>
-      <title>Managing Topologies with Heron CLI</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-cli/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-cli/</guid>
-      <description>The Heron CLI us used to to manage every aspect of the topology lifecycle.
-Deploying the heron CLI Executable To use heron CLI, download the heron-client-install for your platfrom from release binaries and run the installation script. For example, if you have downloaded the version 0.13.5, you invoke the installation script as follows:
-$ chmod +x heron-client-install-0.13.5-darwin.sh $ ./heron-client-install-0.13.5-darwin.sh --user Heron client installer ---------------------- Uncompressing...... Heron is now installed! Make sure you have &amp;#34;/Users/$USER/bin&amp;#34; in your path.</description>
-    </item>
-    
-    <item>
-      <title>Metrics Manager</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/metrics-manager/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/metrics-manager/</guid>
-      <description>You can configure all of the Metrics Managers (MMs) in a topology using the parameters below.
-Network Configuration You can configure how the MM collects and transmits data in one (but only one) of two ways: time based or size based. If you choose time based, you can specify the maximum batch time (in milliseconds) for reading from and writing to the MM&amp;rsquo;s socket; if you choose size based, you can specify maximum batch sizes (in bytes) instead.</description>
-    </item>
-    
-    <item>
       <title>Migrate Storm Topologies to Heron</title>
       <link>https://apache.github.io/incubator-heron/docs/migrate-storm-to-heron/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -423,16 +308,6 @@ For example:</description>
     </item>
     
     <item>
-      <title>Stream Manager</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/stmgr/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/stmgr/</guid>
-      <description>You can configure the Stream Manager (SM) in a topology using the parameters below, including how the SM handles back pressure.
-Back Pressure Parameters    Parameter Meaning Default     heron.streammgr.network.backpressure.threshold The number of times the SM should wait to see a buffer full while enqueueing data before declaring the start of backpressure 3   heron.streammgr.network.backpressure.highwatermark.mb The high water mark on the number of megabytes that can be left outstanding on a connection 50   heron.</description>
-    </item>
-    
-    <item>
       <title>Support Policy</title>
       <link>https://apache.github.io/incubator-heron/docs/contributors/support/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -440,16 +315,6 @@ Back Pressure Parameters    Parameter Meaning Default     heron.streammgr.networ
       <guid>https://apache.github.io/incubator-heron/docs/contributors/support/</guid>
       <description>Core contributors generally avoid making backwards-incompatible changes and are dedicated to remain backwards-compatible with the Apache Storm API whenever possible. Substantial unit and integration tests are performed before every release to reasonably ensure reliability at scale.
 However, occasionally backwards-incompatible changes are required in order to fix bugs, to make further improvements to the system, such as improving performance or usability, or to lock down APIs that are known to be brittle.</description>
-    </item>
-    
-    <item>
-      <title>System-level Configuration</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/system/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/system/</guid>
-      <description>The parameters in the sections below are set at the system level and thus do not apply to any specific component.
-General    Config Meaning Default     heron.check.tmaster.location.interval.sec The interval, in seconds, after which to check if the topology master location has been fetched or not 120   heron.metrics.export.interval The interval, in seconds, at which components export metrics to the topology&amp;rsquo;s Metrics Manager     Logging    Config Meaning Default     heron.</description>
     </item>
     
     <item>
@@ -473,18 +338,6 @@ $ bazel query &amp;#39;kind(&amp;#34;.</description>
       <guid>https://apache.github.io/incubator-heron/docs/developers/packing/ffdpacking/</guid>
       <description>Overview This guide provides basic steps at using and tuning the First Fit Decreasing packing algorithm in order to utilize the resources efficiently. This packing algorithm aims at utilizing as few containers as possible, thus limiting the overall resources used. The algorithm is based on the First Fit Decreasing heuristic for the Binpacking problem. The algorithm is useful in the following scenarios:
  The user does not know how many containers to use.</description>
-    </item>
-    
-    <item>
-      <title>The Heron API server</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/heron-api-server/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/heron-api-server/</guid>
-      <description>The Heron API server is a necessary component
- If you&amp;rsquo;re running Heron locally on your laptop, you won&amp;rsquo;t need to run the Heron API server separately; its functions will be handled automatically.
- Installation The Heron API server executable (heron-apiserver) is installed automatically when you install the Heron tools.
-Running the Heron API server You can start up the Heron API server using the heron-apiserver command. When you do so you&amp;rsquo;ll need to specify two things:</description>
     </item>
     
     <item>
@@ -513,16 +366,6 @@ Running the Heron API server You can start up the Heron API server using the her
       <guid>https://apache.github.io/incubator-heron/docs/developers/java/streamlet-api/</guid>
       <description>&amp;times; The Heron Streamlet API is in betaThe Heron Streamlet API is well tested and can be used to build and test topologies locally. The API is not yet fully stable, however, and breaking changes are likely in the coming weeks.  Heron processing topologies can be written using an API called the Heron Streamlet API. The Heron Streamlet API is currently available for the following languages:
  Java    Although this document covers the new Heron Streamlet API, topologies created using the original topology API can still be used with Heron (which means that all of your older topologies will still run).</description>
-    </item>
-    
-    <item>
-      <title>Topology Master</title>
-      <link>https://apache.github.io/incubator-heron/docs/operators/configuration/tmaster/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://apache.github.io/incubator-heron/docs/operators/configuration/tmaster/</guid>
-      <description>You can configure the Topology Master &amp;trade; for a topology using the parameters below.
-   Parameter Meaning Default     heron.tmaster.metrics.collector.maximum.interval.min The maximum interval, in minutes, for metrics to be kept in the Topology Master 180   heron.tmaster.establish.retry.times The maximum time to retry to establish the Topology Master 30   heron.tmaster.establish.retry.interval.sec The interval to retry to establish the Topology Master 1   heron.tmaster.network.master.options.maximum.packet.mb The maximum packet size, in megabytes, of the Topology Master&amp;rsquo;s network options for Stream Managers to connect to 16   heron.</description>
     </item>
     
     <item>
