@@ -1,17 +1,20 @@
-/*
- * Copyright 2015 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 #include "manager/tcontroller.h"
@@ -23,6 +26,8 @@
 #include <vector>
 #include "basics/basics.h"
 #include "basics/strutils.h"
+#include "cereal/external/base64.hpp"
+#include "config/topology-config-helper.h"
 #include "errors/errors.h"
 #include "manager/tmaster.h"
 #include "network/network.h"
@@ -37,7 +42,7 @@ namespace tmaster {
  */
 TController::TController(EventLoop* eventLoop, const NetworkOptions& options, TMaster* tmaster)
     : tmaster_(tmaster) {
-  http_server_ = new HTTPServer(eventLoop, options);
+  http_server_ = make_unique<HTTPServer>(eventLoop, options);
   /*
    * Install the handlers
    */
@@ -61,9 +66,15 @@ TController::TController(EventLoop* eventLoop, const NetworkOptions& options, TM
     this->HandleUpdateRuntimeConfigRequest(request);
   };
   http_server_->InstallCallBack("/runtime_config/update", std::move(cbUpdateRuntimeConfg));
+
+  // Get current physical plan
+  auto cbGetCurPPlan = [this](IncomingHTTPRequest* request) {
+    this->HandleGetCurPPlanRequest(request);
+  };
+  http_server_->InstallCallBack("/get_current_physical_plan", std::move(cbGetCurPPlan));
 }
 
-TController::~TController() { delete http_server_; }
+TController::~TController() {}
 
 sp_int32 TController::Start() { return http_server_->Start(); }
 
@@ -100,9 +111,9 @@ void TController::HandleActivateRequestDone(IncomingHTTPRequest* request,
   } else {
     std::string s = "Topology successfully activated";
     LOG(INFO) << s;
-    OutgoingHTTPResponse* response = new OutgoingHTTPResponse(request);
+    auto response = make_unique<OutgoingHTTPResponse>(request);
     response->AddResponse(s);
-    http_server_->SendReply(request, 200, response);
+    http_server_->SendReply(request, 200, std::move(response));
   }
   delete request;
 }
@@ -139,9 +150,9 @@ void TController::HandleDeActivateRequestDone(IncomingHTTPRequest* request,
   } else {
     std::string s = "Topology successfully deactivated";
     LOG(INFO) << s;
-    OutgoingHTTPResponse* response = new OutgoingHTTPResponse(request);
+    auto response = make_unique<OutgoingHTTPResponse>(request);
     response->AddResponse(s);
-    http_server_->SendReply(request, 200, response);
+    http_server_->SendReply(request, 200, std::move(response));
   }
   delete request;
 }
@@ -186,9 +197,9 @@ void TController::HandleCleanStatefulCheckpointRequestDone(IncomingHTTPRequest* 
   } else {
     std::string msg = "Checkpoints successfully cleaned";
     LOG(INFO) << msg;
-    OutgoingHTTPResponse* response = new OutgoingHTTPResponse(request);
+    auto response = make_unique<OutgoingHTTPResponse>(request);
     response->AddResponse(msg);
-    http_server_->SendReply(request, 200, response);
+    http_server_->SendReply(request, 200, std::move(response));
   }
   delete request;
 }
@@ -251,9 +262,40 @@ void TController::HandleUpdateRuntimeConfigRequestDone(IncomingHTTPRequest* requ
   } else {
     const std::string message("Runtime config updated");
     LOG(INFO) << message;
-    OutgoingHTTPResponse* response = new OutgoingHTTPResponse(request);
+    auto response = make_unique<OutgoingHTTPResponse>(request);
     response->AddResponse(message);
-    http_server_->SendReply(request, 200, response);
+    http_server_->SendReply(request, 200, std::move(response));
+  }
+  delete request;
+}
+
+void TController::HandleGetCurPPlanRequest(IncomingHTTPRequest* request) {
+  LOG(INFO) << "Got a GetCurPPlan request from " << request->GetRemoteHost() << ":"
+              << request->GetRemotePort();
+
+  // make sure all the stream managers are alive, in case that when container is fail,
+  // physical plan is still available at TMaster but not a valid one.
+  if (tmaster_->GetStmgrsRegSummary()->absent_stmgrs_size() != 0) {
+      http_server_->SendErrorReply(request, 400);
+      delete request;
+      return;
+  }
+
+  if (tmaster_->getPhysicalPlan() == NULL) {
+    http_server_->SendErrorReply(request, 400);
+  } else {
+    std::string pplanString;
+    tmaster_->getPhysicalPlan()->SerializeToString(&pplanString);
+
+    // SerializeToString() returns object in binary format which needs to be encoded
+    const unsigned char * encodeString = (unsigned char *)pplanString.c_str();
+    std::string pplanStringFixed = cereal::base64::encode(encodeString, pplanString.size());
+
+    const std::string message("Get current physical plan");
+    LOG(INFO) << message;
+    auto response = make_unique<OutgoingHTTPResponse>(request);
+    response->AddResponse(pplanStringFixed);
+    http_server_->SendReply(request, 200, std::move(response));
   }
   delete request;
 }
@@ -298,7 +340,8 @@ bool TController::ParseRuntimeConfig(const std::vector<std::string>& paramters,
     std::vector<std::string> segments = StrUtils::split(*iter, ":");
     if (segments.size() == 2) {
       // Topology level config
-      retval[TOPOLOGY_CONFIG_KEY][segments[0]] = segments[1];
+      const char* topology_key = config::TopologyConfigHelper::GetReservedTopologyConfigKey();
+      retval[topology_key][segments[0]] = segments[1];
     } else if (segments.size() == 3) {
       // Component level config
       retval[segments[0]][segments[1]] = segments[2];

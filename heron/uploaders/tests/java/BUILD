@@ -22,6 +22,7 @@ dlog_deps_files = \
     common_deps_files + \
     spi_deps_files + [
         "@org_apache_distributedlog_core//jar",
+        "@io_netty_netty_all//jar",
         "//heron/uploaders/src/java:dlog-uploader-java",
     ]
 
@@ -46,9 +47,9 @@ java_library(
 
 java_tests(
   test_classes = [
-    "com.twitter.heron.uploader.localfs.LocalFileSystemConfigTest",
-    "com.twitter.heron.uploader.localfs.LocalFileSystemContextTest",
-    "com.twitter.heron.uploader.localfs.LocalFileSystemUploaderTest",
+    "org.apache.heron.uploader.localfs.LocalFileSystemConfigTest",
+    "org.apache.heron.uploader.localfs.LocalFileSystemContextTest",
+    "org.apache.heron.uploader.localfs.LocalFileSystemUploaderTest",
   ],
   runtime_deps = [ ":localfs-tests" ],
   data = glob(["**/localfs/testdata/*.tar"]),
