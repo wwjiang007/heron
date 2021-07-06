@@ -7,27 +7,31 @@ pex_library(
         exclude = ["main.py"],
     ),
     reqs = [
-        "pycrypto==2.6.1",
         "requests==2.12.3",
-        "tornado==4.0.2",
+        "click==7.1.2",
+        "fastapi==0.60.1",
+        "jinja2==2.11.2",
+        "aiofiles==0.5.0",
+        "uvicorn==0.11.7",
+        "uvloop==0.14.0",
     ],
     deps = [
         "//heron/common/src/python:common-py",
         "//heron/tools/common/src/python:common-py",
         "//heron/tools/common/src/python:tracker-py",
-    ]
+    ],
 )
 
 pex_binary(
     name = "heron-ui",
     srcs = ["main.py"],
-    deps = [
-        ":heron-ui-lib",
-    ],
     resources = [
-        "//heron/tools/ui/resources:templates",
         "//heron/tools/ui/resources:static",
+        "//heron/tools/ui/resources:templates",
         "//scripts/packages:release_files",
     ],
     zip_safe = False,
+    deps = [
+        ":heron-ui-lib",
+    ],
 )

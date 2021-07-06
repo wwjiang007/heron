@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -59,7 +59,7 @@ class IntegrationTestBolt(Bolt):
 
     upstream_components = set()
     self.terminal_to_receive = 0
-    for streamId in context.get_this_sources().keys():
+    for streamId in list(context.get_this_sources().keys()):
       # streamId is topology_pb2.StreamId protobuf message
       upstream_components.add(streamId.component_name)
     for comp_name in upstream_components:

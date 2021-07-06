@@ -37,12 +37,12 @@ Gateway::Gateway(const std::string& topologyName,
                  const std::string& topologyId, const std::string& instanceId,
                  const std::string& componentName, int taskId, int componentIndex,
                  const std::string& stmgrId, int stmgrPort, int metricsMgrPort,
-                 EventLoop* eventLoop)
+                 std::shared_ptr<EventLoop> eventLoop)
   : topologyName_(topologyName), topologyId_(topologyId), stmgrPort_(stmgrPort),
-    metricsMgrPort_(metricsMgrPort), dataToSlave_(NULL), dataFromSlave_(NULL),
-    metricsFromSlave_(NULL), eventLoop_(eventLoop),
+    metricsMgrPort_(metricsMgrPort), dataToExecutor_(NULL), dataFromExecutor_(NULL),
+    metricsFromExecutor_(NULL), eventLoop_(eventLoop),
     maxReadBufferSize_(128), maxWriteBufferSize_(128),
-    readingFromSlave_(true) {
+    readingFromExecutor_(true) {
   maxPacketSize_ = config::HeronInternalsConfigReader::Instance()
                            ->GetHeronStreammgrNetworkOptionsMaximumPacketMb() * 1_MB;
   instanceProto_.set_instance_id(instanceId);
@@ -83,15 +83,15 @@ void Gateway::Start() {
                                                std::placeholders::_1)));
   stmgrClient_->Start();
 
-  // Setup timer to periodically check for resumption of slave consumption
+  // Setup timer to periodically check for resumption of executor consumption
   CHECK_GT(
       eventLoop_->registerTimer(
-          [this](EventLoop::Status status) { this->ResumeConsumingFromSlaveTimer(); }, true,
+          [this](EventLoop::Status status) { this->ResumeConsumingFromExecutorTimer(); }, true,
           10 * 1000), 0);
   eventLoop_->loop();
 }
 
-void Gateway::HandleNewPhysicalPlan(proto::system::PhysicalPlan* pplan) {
+void Gateway::HandleNewPhysicalPlan(pool_unique_ptr<proto::system::PhysicalPlan> pplan) {
   LOG(INFO) << "Received a new physical plan from Stmgr";
   if (config::TopologyConfigHelper::IsComponentSpout(pplan->topology(),
                                                      instanceProto_.info().component_name())) {
@@ -105,47 +105,48 @@ void Gateway::HandleNewPhysicalPlan(proto::system::PhysicalPlan* pplan) {
     maxWriteBufferSize_ = config::HeronInternalsConfigReader::Instance()
                                 ->GetHeronInstanceInternalBoltWriteQueueCapacity();
   }
-  dataToSlave_->enqueue(pplan);
+
+  dataToExecutor_->enqueue(std::move(pplan));
 }
 
-void Gateway::HandleStMgrTuples(proto::system::HeronTupleSet2* msg) {
-  dataToSlave_->enqueue(msg);
-  if (dataToSlave_->size() > maxReadBufferSize_) {
+void Gateway::HandleStMgrTuples(pool_unique_ptr<proto::system::HeronTupleSet2> msg) {
+  dataToExecutor_->enqueue(std::move(msg));
+  if (dataToExecutor_->size() > maxReadBufferSize_) {
     stmgrClient_->putBackPressure();
   }
 }
 
-void Gateway::HandleSlaveDataConsumed() {
-  if (dataToSlave_->size() < maxReadBufferSize_) {
+void Gateway::HandleExecutorDataConsumed() {
+  if (dataToExecutor_->size() < maxReadBufferSize_) {
     stmgrClient_->removeBackPressure();
   }
 }
 
-void Gateway::HandleSlaveData(google::protobuf::Message* msg) {
+void Gateway::HandleExecutorData(google::protobuf::Message* msg) {
   auto tupleSet = static_cast<proto::system::HeronTupleSet*>(msg);
   stmgrClient_->SendTupleMessage(*tupleSet);
   delete tupleSet;
   if (stmgrClient_->getOutstandingBytes() > (maxWriteBufferSize_ * maxPacketSize_) &&
-      readingFromSlave_) {
+      readingFromExecutor_) {
     LOG(INFO) << "Gateway buffered too much data to be written to stmgr; "
-              << "Clamping down on consumption from slave";
-    dataFromSlave_->stopConsumption();
-    readingFromSlave_ = false;
+              << "Clamping down on consumption from executor";
+    dataFromExecutor_->stopConsumption();
+    readingFromExecutor_ = false;
   }
 }
 
-void Gateway::HandleSlaveMetrics(google::protobuf::Message* msg) {
+void Gateway::HandleExecutorMetrics(google::protobuf::Message* msg) {
   auto metrics = static_cast<proto::system::MetricPublisherPublishMessage*>(msg);
   metricsMgrClient_->SendMetrics(metrics);
 }
 
-void Gateway::ResumeConsumingFromSlaveTimer() {
+void Gateway::ResumeConsumingFromExecutorTimer() {
   if (stmgrClient_->getOutstandingBytes() < (maxWriteBufferSize_ * maxPacketSize_) &&
-      !readingFromSlave_) {
+      !readingFromExecutor_) {
     LOG(INFO) << "Gateway buffer now under max limit; "
-              << "Resuming consumption from slave";
-    dataFromSlave_->resumeConsumption();
-    readingFromSlave_ = true;
+              << "Resuming consumption from executor";
+    dataFromExecutor_->resumeConsumption();
+    readingFromExecutor_ = true;
   }
 }
 

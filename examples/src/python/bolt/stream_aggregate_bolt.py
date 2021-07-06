@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -20,6 +20,7 @@
 
 '''stream aggregator'''
 from collections import Counter
+
 from heronpy.api.bolt.bolt import Bolt
 
 # pylint: disable=unused-argument

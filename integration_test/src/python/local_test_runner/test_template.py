@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -23,10 +23,11 @@ import json
 import logging
 import os
 import time
-import urllib
+import shutil
 import signal
 import subprocess
 from collections import namedtuple
+from urllib.request import urlopen
 
 from ..common import status
 
@@ -39,7 +40,7 @@ TEST_INPUT = ["1\n", "2\n", "3\n", "4\n", "5\n", "6\n", "7\n", "8\n",
 RETRY_COUNT = 5
 RETRY_INTERVAL = 10
 # Topology shard definitions
-NON_TMASTER_SHARD = 1
+NON_TMANAGER_SHARD = 1
 # Topology process name definitions
 STMGR = 'stmgr'
 HERON_BIN = "bin"
@@ -50,7 +51,7 @@ HERON_STMGR = "heron-stmgr"
 HERON_STMGR_CMD = os.path.join(HERON_SANDBOX_HOME, HERON_CORE, HERON_BIN, HERON_STMGR)
 ProcessTuple = namedtuple('ProcessTuple', 'pid cmd')
 
-class TestTemplate(object):
+class TestTemplate:
   """ Class that encapsulates the template used for integration tests. Intended to be abstract and
   subclassed for specific tests. """
 
@@ -88,9 +89,9 @@ class TestTemplate(object):
       return result
 
     except status.TestFailure as e:
-      raise e
+      raise
     except Exception as e:
-      raise status.TestFailure("Exception thrown during test", e)
+      raise status.TestFailure("Exception thrown during test", e) from e
     finally:
       if topology_submitted:
         self.cleanup_test()
@@ -149,7 +150,7 @@ class TestTemplate(object):
     # move to read file. This guarantees contents will be put into the file the
     # spout is reading from atomically
     # which increases the determinism
-    os.rename('temp.txt', self.params['readFile'])
+    shutil.move('temp.txt', self.params['readFile'])
 
   def _check_results(self):
     """ get actual and expected result.
@@ -211,7 +212,7 @@ class TestTemplate(object):
     try:
       with open(process_pid_file, 'r') as f:
         pid = f.readline()
-        return pid
+        return int(pid)
     except Exception:
       logging.error("Unable to open file %s", process_pid_file)
       return -1
@@ -226,7 +227,7 @@ class TestTemplate(object):
     logging.info("Killing process number %s", process_number)
 
     try:
-      os.kill(int(process_number), signal.SIGTERM)
+      os.kill(process_number, signal.SIGTERM)
     except OSError as ex:
       if "No such process" in str(ex): # killing a non-existing process condsidered as success
         logging.info(str(ex))
@@ -239,20 +240,20 @@ class TestTemplate(object):
 
   def kill_strmgr(self):
     logging.info("Executing kill stream manager")
-    stmgr_pid = self.get_pid('%s-%d' % (STMGR, NON_TMASTER_SHARD), self.params['workingDirectory'])
+    stmgr_pid = self.get_pid('%s-%d' % (STMGR, NON_TMANAGER_SHARD), self.params['workingDirectory'])
     self.kill_process(stmgr_pid)
 
   def kill_metricsmgr(self):
     logging.info("Executing kill metrics manager")
     metricsmgr_pid = self.get_pid(
-        '%s-%d' % (HERON_METRICSMGR, NON_TMASTER_SHARD), self.params['workingDirectory'])
+        '%s-%d' % (HERON_METRICSMGR, NON_TMANAGER_SHARD), self.params['workingDirectory'])
     self.kill_process(metricsmgr_pid)
 
   def _get_tracker_pplan(self):
     url = 'http://localhost:%s/topologies/physicalplan?' % self.params['trackerPort']\
           + 'cluster=local&environ=default&topology=IntegrationTest_LocalReadWriteTopology'
     logging.debug("Fetching physical plan from %s", url)
-    response = urllib.urlopen(url)
+    response = urlopen(url)
     physical_plan_json = json.loads(response.read())
 
     if 'result' not in physical_plan_json:
@@ -325,7 +326,7 @@ def _get_processes():
   """
   # pylint: disable=fixme
   # TODO: if the submit fails before we get here (e.g., Topology already exists), this hangs
-  processes = subprocess.check_output(['ps', '-o', 'pid,args'])
+  processes = subprocess.check_output(['ps', '-o', 'pid,args'], universal_newlines=True)
   processes = processes.split('\n')
   processes = processes[1:] # remove first line, which is name of columns
   process_list = []

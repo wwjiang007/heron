@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -24,6 +24,7 @@ import sys
 import heronpy.api.api_constants as constants
 from heronpy.api.topology import TopologyBuilder
 from heronpy.api.stream import Grouping
+
 from examples.src.python.spout import WordSpout
 from examples.src.python.bolt import CountBolt
 

@@ -92,11 +92,13 @@ function print_timer_summary {
 
 # Discover the platform that we are running on
 function discover_platform {
-  discover=`python -mplatform`
+  discover="${PLATFORM-$(python3 -mplatform)}"
   if [[ $discover =~ ^.*centos.*$ ]]; then
     echo "centos"
   elif [[ $discover =~ ^.*Ubuntu.*$ ]]; then
     echo "ubuntu"
+  elif [[ $discover =~ ^.*debian.*$ ]]; then
+    echo "debian"
   elif [[ $discover =~ ^Darwin.*$ ]]; then
     echo "darwin"
   else
@@ -116,6 +118,12 @@ function ci_environ {
   else
     echo "$environ ci not supported"
     exit 1
+  fi
+}
+
+function pathadd {
+  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$1"
   fi
 }
 

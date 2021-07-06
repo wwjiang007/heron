@@ -67,13 +67,16 @@ const sp_string METRIC_FAIL_TUPLES_TO_INSTANCES_LOST = "__fail_tuples_to_workers
 // Num bytes lost since instances is not connected
 const sp_string METRIC_BYTES_TO_INSTANCES_LOST = "__bytes_to_workers_lost";
 
+// Time spent in back pressure caused by instances managed by this stmgr.
+const sp_string METRIC_TIME_SPENT_BACK_PRESSURE_CAUSED_BY_LOCAL_INSTANCE =
+    "__time_spent_back_pressure_by_local_instance";
 // Time spent in back pressure aggregated - back pressure initiated by us +
 // others
 const sp_string METRIC_TIME_SPENT_BACK_PRESSURE_AGGR = "__server/__time_spent_back_pressure_aggr";
 // Time spent in back pressure because of a component id. The comp id will be
-// appended
-// to the string below
+// appended to the string below
 const sp_string METRIC_TIME_SPENT_BACK_PRESSURE_COMPID = "__time_spent_back_pressure_by_compid/";
+
 // Prefix for connection buffer's metrics
 const sp_string CONNECTION_BUFFER_BY_INSTANCEID = "__connection_buffer_by_instanceid/";
 // Prefix for connection buffer's length metrics. This is different
@@ -87,13 +90,16 @@ const sp_string CONNECTION_BUFFER_LENGTH_BY_INSTANCEID =
 const sp_int64 SYSTEM_METRICS_SAMPLE_INTERVAL_MICROSECOND = 10_s;
 
 
-InstanceServer::InstanceServer(EventLoop* eventLoop, const NetworkOptions& _options,
-                               const sp_string& _topology_name, const sp_string& _topology_id,
-                               const sp_string& _stmgr_id,
-                               const std::vector<sp_string>& _expected_instances, StMgr* _stmgr,
-                               heron::common::MetricsMgrSt* _metrics_manager_client,
-                               NeighbourCalculator* _neighbour_calculator,
-                               bool _droptuples_upon_backpressure)
+InstanceServer::InstanceServer(
+    shared_ptr<EventLoop> eventLoop,
+    const NetworkOptions& _options,
+    const sp_string& _topology_name, const sp_string& _topology_id,
+    const sp_string& _stmgr_id,
+    const std::vector<sp_string>& _expected_instances,
+    StMgr* _stmgr,
+    shared_ptr<heron::common::MetricsMgrSt> const& _metrics_manager_client,
+    shared_ptr<NeighbourCalculator> _neighbour_calculator,
+    bool _droptuples_upon_backpressure)
     : Server(eventLoop, _options),
       topology_name_(_topology_name),
       topology_id_(_topology_id),
@@ -114,6 +120,9 @@ InstanceServer::InstanceServer(EventLoop* eventLoop, const NetworkOptions& _opti
   metrics_manager_client_->register_metric("__server", instance_server_metrics_);
   metrics_manager_client_->register_metric(METRIC_TIME_SPENT_BACK_PRESSURE_AGGR,
                                            back_pressure_metric_aggr_);
+  back_pressure_metric_caused_by_local_instances_ = make_shared<heron::common::TimeSpentMetric>();
+  metrics_manager_client_->register_metric(METRIC_TIME_SPENT_BACK_PRESSURE_CAUSED_BY_LOCAL_INSTANCE,
+                                           back_pressure_metric_caused_by_local_instances_);
   spouts_under_back_pressure_ = false;
 
   // Update queue related metrics every 10 seconds
@@ -123,7 +132,7 @@ InstanceServer::InstanceServer(EventLoop* eventLoop, const NetworkOptions& _opti
 
   sp_uint64 drain_threshold_bytes =
     config::HeronInternalsConfigReader::Instance()->GetHeronStreammgrStatefulBufferSizeMb() * 1_MB;
-  stateful_gateway_ = new CheckpointGateway(drain_threshold_bytes, neighbour_calculator_,
+  stateful_gateway_ = make_shared<CheckpointGateway>(drain_threshold_bytes, neighbour_calculator_,
                                             metrics_manager_client_,
     std::bind(&InstanceServer::DrainTupleSet, this, std::placeholders::_1, std::placeholders::_2),
     std::bind(&InstanceServer::DrainTupleStream, this, std::placeholders::_1),
@@ -177,13 +186,13 @@ InstanceServer::~InstanceServer() {
 
   metrics_manager_client_->unregister_metric("__server");
   metrics_manager_client_->unregister_metric(METRIC_TIME_SPENT_BACK_PRESSURE_AGGR);
+  metrics_manager_client_->unregister_metric(
+      METRIC_TIME_SPENT_BACK_PRESSURE_CAUSED_BY_LOCAL_INSTANCE);
 
   // cleanup the instance info
   for (auto iter = instance_info_.begin(); iter != instance_info_.end(); ++iter) {
     delete iter->second;
   }
-
-  delete stateful_gateway_;
 }
 
 void InstanceServer::GetInstanceInfo(std::vector<proto::system::Instance*>& _return) {
@@ -286,7 +295,7 @@ void InstanceServer::HandleConnectionClose(Connection* _conn, NetworkErrorCode) 
 }
 
 void InstanceServer::HandleRegisterInstanceRequest(REQID _reqid, Connection* _conn,
-    proto::stmgr::RegisterInstanceRequest* _request) {
+                                  pool_unique_ptr<proto::stmgr::RegisterInstanceRequest> _request) {
   LOG(INFO) << "Got HandleRegisterInstanceRequest from connection " << _conn << " and instance "
             << _request->instance().instance_id();
   // Do some basic checks
@@ -356,7 +365,7 @@ void InstanceServer::HandleRegisterInstanceRequest(REQID _reqid, Connection* _co
 
     proto::stmgr::RegisterInstanceResponse response;
     response.mutable_status()->set_status(proto::system::OK);
-    const proto::system::PhysicalPlan* pplan = stmgr_->GetPhysicalPlan();
+    const shared_ptr<proto::system::PhysicalPlan> pplan = stmgr_->GetPhysicalPlan();
     if (pplan) {
       response.mutable_pplan()->CopyFrom(*pplan);
     }
@@ -369,21 +378,20 @@ void InstanceServer::HandleRegisterInstanceRequest(REQID _reqid, Connection* _co
 
     // Have all the instances connected to us?
     if (HaveAllInstancesConnectedToUs()) {
-      // Notify to stmgr so that it might want to connect to tmaster
+      // Notify to stmgr so that it might want to connect to tmanager
       stmgr_->HandleAllInstancesConnected();
     }
   }
-  delete _request;
 }
 
 void InstanceServer::HandleTupleSetMessage(Connection* _conn,
-                                        proto::system::HeronTupleSet* _message) {
+                                           pool_unique_ptr<proto::system::HeronTupleSet> _message) {
   auto iter = active_instances_.find(_conn);
   if (iter == active_instances_.end()) {
     LOG(ERROR) << "Received TupleSet from unknown instance connection. Dropping..";
-    __global_protobuf_pool_release__(_message);
     return;
   }
+
   if (_message->has_data()) {
     instance_server_metrics_->scope(METRIC_DATA_TUPLES_FROM_INSTANCES)
         ->incr_by(_message->data().tuples_size());
@@ -393,11 +401,12 @@ void InstanceServer::HandleTupleSetMessage(Connection* _conn,
     instance_server_metrics_->scope(METRIC_FAIL_TUPLES_FROM_INSTANCES)
         ->incr_by(_message->control().fails_size());
   }
-  stmgr_->HandleInstanceData(iter->second, instance_info_[iter->second]->local_spout_, _message);
-  __global_protobuf_pool_release__(_message);
+
+  stmgr_->HandleInstanceData(iter->second, instance_info_[iter->second]->local_spout_,
+                             std::move(_message));
 }
 
-void InstanceServer::SendToInstance2(proto::stmgr::TupleStreamMessage* _message) {
+void InstanceServer::SendToInstance2(pool_unique_ptr<proto::stmgr::TupleStreamMessage> _message) {
   sp_string instance_id = task_id_to_name[_message->task_id()];
   ConnectionBufferLengthMetricMap::const_iterator it =
     connection_buffer_length_metric_map_.find(instance_id);
@@ -405,7 +414,7 @@ void InstanceServer::SendToInstance2(proto::stmgr::TupleStreamMessage* _message)
     connection_buffer_length_metric_map_
       [instance_id]->scope("packets")->incr_by(_message->num_tuples());
 
-  stateful_gateway_->SendToInstance(_message);
+  stateful_gateway_->SendToInstance(std::move(_message));
 }
 
 void InstanceServer::DrainTupleStream(proto::stmgr::TupleStreamMessage* _message) {
@@ -468,7 +477,7 @@ void InstanceServer::DrainTupleSet(sp_int32 _task_id,
 }
 
 void InstanceServer::DrainCheckpoint(sp_int32 _task_id,
-                                  proto::ckptmgr::InitiateStatefulCheckpoint* _message) {
+                             pool_unique_ptr<proto::ckptmgr::InitiateStatefulCheckpoint> _message) {
   TaskIdInstanceDataMap::iterator iter = instance_info_.find(_task_id);
   if (iter == instance_info_.end() || iter->second->conn_ == NULL) {
     LOG(ERROR) << "task_id " << _task_id << " has not yet connected to us. Dropping...";
@@ -476,7 +485,6 @@ void InstanceServer::DrainCheckpoint(sp_int32 _task_id,
     LOG(INFO) << "Sending Initiate Checkpoint Message to local task " << _task_id;
     SendMessage(iter->second->conn_, *_message);
   }
-  __global_protobuf_pool_release__(_message);
 }
 
 void InstanceServer::BroadcastNewPhysicalPlan(const proto::system::PhysicalPlan& _pplan) {
@@ -495,6 +503,15 @@ void InstanceServer::BroadcastNewPhysicalPlan(const proto::system::PhysicalPlan&
     sp_int32 id = iter->second;
     const std::string component = instance_info_[id]->instance_->info().component_name();
     SetRateLimit(_pplan, component, conn);
+  }
+}
+
+void InstanceServer::BroadcastStatefulCheckpointSaved(
+    const proto::ckptmgr::StatefulConsistentCheckpointSaved& _msg) {
+  for (auto & iter : active_instances_) {
+    LOG(INFO) << "Sending checkpoint: " << _msg.consistent_checkpoint().checkpoint_id()
+              << " saved message to instance with task_id: " << iter.second;
+    SendMessage(iter.first, _msg);
   }
 }
 
@@ -540,6 +557,8 @@ sp_string InstanceServer::GetInstanceName(Connection* _connection) {
   return "";
 }
 
+// This function is called when the buffer in the connection is full (the instance is not consuming
+// tuples fast enough).
 void InstanceServer::StartBackPressureConnectionCb(Connection* _connection) {
   // The connection will notify us when we can stop the back pressure
   _connection->setCausedBackPressure();
@@ -559,6 +578,8 @@ void InstanceServer::StartBackPressureConnectionCb(Connection* _connection) {
 
   if (!stmgr_->DidAnnounceBackPressure()) {
     stmgr_->SendStartBackPressureToOtherStMgrs();
+    // Start backpressure from local instances metric
+    back_pressure_metric_caused_by_local_instances_->Start();
   }
 
   // Indicate which instance component had back pressure
@@ -569,6 +590,7 @@ void InstanceServer::StartBackPressureConnectionCb(Connection* _connection) {
   StartBackPressureOnSpouts();
 }
 
+// This function is called when the buffer in the connection is empty (the tuples are drained).
 void InstanceServer::StopBackPressureConnectionCb(Connection* _connection) {
   _connection->unsetCausedBackPressure();
 
@@ -596,6 +618,8 @@ void InstanceServer::StopBackPressureConnectionCb(Connection* _connection) {
 
   if (!stmgr_->DidAnnounceBackPressure()) {
     stmgr_->SendStopBackPressureToOtherStMgrs();
+    // Stop backpressure from local instances metric
+    back_pressure_metric_caused_by_local_instances_->Stop();
   }
   AttemptStopBackPressureFromSpouts();
 }
@@ -639,58 +663,52 @@ void InstanceServer::InitiateStatefulCheckpoint(const sp_string& _checkpoint_tag
                 << _checkpoint_tag << " to local spout "
                 << iter->second->instance_->info().component_name()
                 << " with task_id " << iter->second->instance_->info().task_id();
-      proto::ckptmgr::InitiateStatefulCheckpoint* message = nullptr;
-      message = __global_protobuf_pool_acquire__(message);
+      auto message = make_unique<proto::ckptmgr::InitiateStatefulCheckpoint>();
       message->set_checkpoint_id(_checkpoint_tag);
       SendMessage(iter->second->conn_, *message);
-      __global_protobuf_pool_release__(message);
     }
   }
 }
 
 void InstanceServer::HandleStoreInstanceStateCheckpointMessage(Connection* _conn,
-                               proto::ckptmgr::StoreInstanceStateCheckpoint* _message) {
+                          pool_unique_ptr<proto::ckptmgr::StoreInstanceStateCheckpoint> _message) {
   ConnectionTaskIdMap::iterator iter = active_instances_.find(_conn);
   if (iter == active_instances_.end()) {
     LOG(ERROR) << "Hmm.. Got InstaceStateCheckpoint Message from an unknown connection";
-    __global_protobuf_pool_release__(_message);
     return;
   }
+
   sp_int32 task_id = iter->second;
   TaskIdInstanceDataMap::iterator it = instance_info_.find(task_id);
   if (it == instance_info_.end()) {
     LOG(ERROR) << "Hmm.. Got InstaceStateCheckpoint Message from unknown task_id "
                << task_id;
-    __global_protobuf_pool_release__(_message);
     return;
   }
 
   // send the checkpoint message to all downstream task ids
   stmgr_->HandleStoreInstanceStateCheckpoint(_message->state(), *(it->second->instance_));
-  __global_protobuf_pool_release__(_message);
 }
 
 void InstanceServer::HandleRestoreInstanceStateResponse(Connection* _conn,
-                               proto::ckptmgr::RestoreInstanceStateResponse* _message) {
+                          pool_unique_ptr<proto::ckptmgr::RestoreInstanceStateResponse> _message) {
   ConnectionTaskIdMap::iterator iter = active_instances_.find(_conn);
   if (iter == active_instances_.end()) {
     LOG(ERROR) << "Hmm.. Got RestoreInstanceStateResponse Message from an unknown connection";
-    __global_protobuf_pool_release__(_message);
     return;
   }
+
   sp_int32 task_id = iter->second;
   TaskIdInstanceDataMap::iterator it = instance_info_.find(task_id);
   if (it == instance_info_.end()) {
     LOG(ERROR) << "Hmm.. Got RestoreInstanceStateResponse Message from unknown task_id "
                << task_id;
-    __global_protobuf_pool_release__(_message);
     return;
   }
 
   // send the checkpoint message to all downstream task ids
   stmgr_->HandleRestoreInstanceStateResponse(task_id, _message->status(),
                                              _message->checkpoint_id());
-  __global_protobuf_pool_release__(_message);
 }
 
 void InstanceServer::HandleCheckpointMarker(sp_int32 _src_task_id, sp_int32 _destination_task_id,
@@ -709,11 +727,9 @@ bool InstanceServer::SendRestoreInstanceStateRequest(sp_int32 _task_id,
   }
   Connection* conn = instance_info_[_task_id]->conn_;
   if (conn) {
-    proto::ckptmgr::RestoreInstanceStateRequest* message = nullptr;
-    message = __global_protobuf_pool_acquire__(message);
+    auto message = make_unique<proto::ckptmgr::RestoreInstanceStateRequest>();
     message->mutable_state()->CopyFrom(_state);
     SendMessage(conn, *message);
-    __global_protobuf_pool_release__(message);
     return true;
   } else {
     LOG(WARNING) << "Cannot send RestoreInstanceState Request to task "
@@ -726,11 +742,9 @@ void InstanceServer::SendStartInstanceStatefulProcessing(const std::string& _ckp
   for (auto kv : instance_info_) {
     Connection* conn = kv.second->conn_;
     if (conn) {
-      proto::ckptmgr::StartInstanceStatefulProcessing* message = nullptr;
-      message = __global_protobuf_pool_acquire__(message);
+      auto message = make_unique<proto::ckptmgr::StartInstanceStatefulProcessing>();
       message->set_checkpoint_id(_ckpt_id);
       SendMessage(conn, *message);
-      __global_protobuf_pool_release__(message);
     } else {
       LOG(WARNING) << "Cannot send StartInstanceStatefulProcessing to task "
                    << kv.first << " because it is not connected to us";

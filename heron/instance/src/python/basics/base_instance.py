@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -22,25 +22,23 @@
 
 import logging
 import traceback
+
 from abc import abstractmethod
+
+from heron.common.src.python.utils.log import Log
+from heron.proto import tuple_pb2
+from heron.instance.src.python.utils.misc import SerializerHelper
+from heron.instance.src.python.utils.misc import OutgoingTupleHelper
+from heron.instance.src.python.utils import system_config
+import heron.instance.src.python.utils.system_constants as system_constants
+import heron.common.src.python.pex_loader as pex_loader
 
 import heronpy.api.global_metrics as global_metrics
 import heronpy.api.api_constants as api_constants
 from heronpy.api.state.stateful_component import StatefulComponent
 
-from heron.common.src.python.utils.log import Log
-
-from heron.proto import tuple_pb2
-
-from heron.instance.src.python.utils.misc import SerializerHelper
-from heron.instance.src.python.utils.misc import OutgoingTupleHelper
-from heron.instance.src.python.utils import system_config
-
-import heron.instance.src.python.utils.system_constants as system_constants
-import heron.common.src.python.pex_loader as pex_loader
-
 # pylint: disable=too-many-instance-attributes
-class BaseInstance(object):
+class BaseInstance:
   """The base class for heron bolt/spout instance
 
   Implements the following functionality:
@@ -85,7 +83,7 @@ class BaseInstance(object):
     if level is None:
       _log_level = logging.INFO
     else:
-      if level == "trace" or level == "debug":
+      if level in ("trace", "debug"):
         _log_level = logging.DEBUG
       elif level == "info":
         _log_level = logging.INFO

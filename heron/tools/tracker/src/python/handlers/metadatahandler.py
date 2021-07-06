@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -67,11 +67,10 @@ class MetaDataHandler(BaseHandler):
       role = self.get_argument_role()
       environ = self.get_argument_environ()
       topology_name = self.get_argument_topology()
-      topology_info = self.tracker.getTopologyInfo(topology_name, cluster, role, environ)
+      topology_info = self.tracker.get_topology_info(topology_name, cluster, role, environ)
       metadata = topology_info["metadata"]
       self.write_success_response(metadata)
     except Exception as e:
       Log.error("Exception when handling GET request '/topologies/metadata'")
       Log.debug(traceback.format_exc())
       self.write_error_response(e)
-

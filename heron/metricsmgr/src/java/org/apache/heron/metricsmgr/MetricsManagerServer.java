@@ -22,10 +22,11 @@ package org.apache.heron.metricsmgr;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +41,7 @@ import org.apache.heron.common.network.HeronSocketOptions;
 import org.apache.heron.common.network.REQID;
 import org.apache.heron.proto.system.Common;
 import org.apache.heron.proto.system.Metrics;
-import org.apache.heron.proto.tmaster.TopologyMaster;
+import org.apache.heron.proto.tmanager.TopologyManager;
 import org.apache.heron.spi.metricsmgr.metrics.ExceptionInfo;
 import org.apache.heron.spi.metricsmgr.metrics.MetricsInfo;
 import org.apache.heron.spi.metricsmgr.metrics.MetricsRecord;
@@ -48,21 +49,23 @@ import org.apache.heron.spi.metricsmgr.metrics.MetricsRecord;
 public class MetricsManagerServer extends HeronServer {
   private static final Logger LOG = Logger.getLogger(MetricsManagerServer.class.getName());
 
-  // Bean name to register the TMasterLocation object into SingletonRegistry
-  private static final String TMASTER_LOCATION_BEAN_NAME =
-      TopologyMaster.TMasterLocation.newBuilder().getDescriptorForType().getFullName();
+  // Bean name to register the TManagerLocation object into SingletonRegistry
+  private static final String TMANAGER_LOCATION_BEAN_NAME =
+      TopologyManager.TManagerLocation.newBuilder().getDescriptorForType().getFullName();
   public static final String METRICSCACHE_LOCATION_BEAN_NAME =
-      TopologyMaster.MetricsCacheLocation.newBuilder().getDescriptorForType().getFullName();
+      TopologyManager.MetricsCacheLocation.newBuilder().getDescriptorForType().getFullName();
 
   // Metrics Counter Name
   private static final String SERVER_CLOSE_PUBLISHER = "close-publisher";
   private static final String SERVER_NEW_REGISTER = "new-register-request";
   private static final String SERVER_METRICS_RECEIVED = "metrics-received";
   private static final String SERVER_EXCEPTIONS_RECEIVED = "exceptions-received";
-  private static final String SERVER_NEW_TMASTER_LOCATION = "new-tmaster-location";
-  private static final String SERVER_TMASTER_LOCATION_RECEIVED = "tmaster-location-received";
+  private static final String SERVER_NEW_TMANAGER_LOCATION = "new-tmanager-location";
+  private static final String SERVER_TMANAGER_LOCATION_RECEIVED = "tmanager-location-received";
+  private static final String SERVER_COMMUNICATOR_OFFER = "communicator-offer";
+  private static final String SERVER_COMMUNICATOR_SIZE = "communicator-size";
 
-  private final List<Communicator<MetricsRecord>> metricsSinkCommunicators;
+  private final Map<String, Communicator<MetricsRecord>> metricsSinkCommunicators;
 
   // A map from MetricPublisher's immutable SocketAddress to the MetricPublisher
   // We would fetch SocketAddress by using SocketChannel.socket().getRemoteSocketAddress,
@@ -96,7 +99,7 @@ public class MetricsManagerServer extends HeronServer {
     // Since we might mutate the list while iterating it
     // Consider that the iteration vastly outnumbers mutation,
     // it would barely hurt any performance
-    this.metricsSinkCommunicators = new CopyOnWriteArrayList<Communicator<MetricsRecord>>();
+    this.metricsSinkCommunicators = Collections.synchronizedMap(new HashMap<>());
 
     this.publisherMap = new HashMap<SocketAddress, Metrics.MetricPublisher>();
 
@@ -111,22 +114,32 @@ public class MetricsManagerServer extends HeronServer {
     // Register the Metrics Message
     registerOnMessage(Metrics.MetricPublisherPublishMessage.newBuilder());
 
-    // Register the TMasterLocationRefreshMessage, which is used by TMasterSink
-    // We do this to avoid communication between TMasterSink and Zookeeper
-    // TODO -- Reading TMasterLocationRefreshMessage from StreamMgr is more a temp solution
+    // Register the TManagerLocationRefreshMessage, which is used by TManagerSink
+    // We do this to avoid communication between TManagerSink and Zookeeper
+    // TODO -- Reading TManagerLocationRefreshMessage from StreamMgr is more a temp solution
     // TODO -- It adds dependencies on internal broadcast service
-    registerOnMessage(Metrics.TMasterLocationRefreshMessage.newBuilder());
+    registerOnMessage(Metrics.TManagerLocationRefreshMessage.newBuilder());
     registerOnMessage(Metrics.MetricsCacheLocationRefreshMessage.newBuilder());
   }
 
-  public void addSinkCommunicator(Communicator<MetricsRecord> communicator) {
-    LOG.info("Communicator is added: " + communicator);
-    this.metricsSinkCommunicators.add(communicator);
+  public void addSinkCommunicator(String id, Communicator<MetricsRecord> communicator) {
+    LOG.info("Communicator " + id + " is added: " + communicator);
+    synchronized (metricsSinkCommunicators) {
+      this.metricsSinkCommunicators.put(id, communicator);
+    }
   }
 
-  public boolean removeSinkCommunicator(Communicator<MetricsRecord> communicator) {
-    LOG.info("Communicator is removed: " + communicator);
-    return this.metricsSinkCommunicators.remove(communicator);
+  public boolean removeSinkCommunicator(String id) {
+    LOG.info("Remove communicator: " + id);
+    boolean found = false;
+    synchronized (metricsSinkCommunicators) {
+      if (metricsSinkCommunicators.containsKey(id)) {
+        this.metricsSinkCommunicators.remove(id);
+        found = true;
+        LOG.info("Communicator " + id + " is removed");
+      }
+    }
+    return found;
   }
 
   @Override
@@ -162,10 +175,11 @@ public class MetricsManagerServer extends HeronServer {
           + channel.socket().getRemoteSocketAddress());
       handleMetricsCacheLocationRefreshMessage(
           request, (Metrics.MetricsCacheLocationRefreshMessage) message);
-    } else if (message instanceof Metrics.TMasterLocationRefreshMessage) {
-      // LOG down where the TMaster Location comes from
-      LOG.info("TMaster Location is refresh from: " + channel.socket().getRemoteSocketAddress());
-      handleTMasterLocationRefreshMessage(request, (Metrics.TMasterLocationRefreshMessage) message);
+    } else if (message instanceof Metrics.TManagerLocationRefreshMessage) {
+      // LOG down where the TManager Location comes from
+      LOG.info("TManager Location is refresh from: " + channel.socket().getRemoteSocketAddress());
+      handleTManagerLocationRefreshMessage(
+          request, (Metrics.TManagerLocationRefreshMessage) message);
     } else {
       LOG.severe("Unknown kind of message received from Metrics Manager");
     }
@@ -278,74 +292,81 @@ public class MetricsManagerServer extends HeronServer {
 
     MetricsRecord record = new MetricsRecord(source, metricsInfos, exceptionInfos);
 
-    // Push MetricsRecord to Communicator, which would wake up SlaveLooper bind with IMetricsSink
-    for (Communicator<MetricsRecord> c : metricsSinkCommunicators) {
-      c.offer(record);
+    // Push MetricsRecord to Communicator, which would wake up ExecutorLooper bind with IMetricsSink
+    synchronized (metricsSinkCommunicators) {
+      Iterator<String> itr = metricsSinkCommunicators.keySet().iterator();
+      while (itr.hasNext()) {
+        String key = itr.next();
+        Communicator<MetricsRecord> c = metricsSinkCommunicators.get(key);
+        c.offer(record);
+        serverMetricsCounters.scope(SERVER_COMMUNICATOR_OFFER).incr();
+        serverMetricsCounters.scope(SERVER_COMMUNICATOR_SIZE + "-" + key).incrBy(c.size());
+      }
     }
   }
 
-  // TMasterLocationRefreshMessage handler
-  private void handleTMasterLocationRefreshMessage(
+  // TManagerLocationRefreshMessage handler
+  private void handleTManagerLocationRefreshMessage(
       Metrics.MetricPublisher request,
-      Metrics.TMasterLocationRefreshMessage tMasterLocationRefreshMessage) {
-    TopologyMaster.TMasterLocation oldLocation =
-        (TopologyMaster.TMasterLocation)
-            SingletonRegistry.INSTANCE.getSingleton(TMASTER_LOCATION_BEAN_NAME);
+      Metrics.TManagerLocationRefreshMessage tManagerLocationRefreshMessage) {
+    TopologyManager.TManagerLocation oldLocation =
+        (TopologyManager.TManagerLocation)
+            SingletonRegistry.INSTANCE.getSingleton(TMANAGER_LOCATION_BEAN_NAME);
 
-    TopologyMaster.TMasterLocation newLocation = tMasterLocationRefreshMessage.getTmaster();
+    TopologyManager.TManagerLocation newLocation = tManagerLocationRefreshMessage.getTmanager();
 
     if (oldLocation == null) {
-      // The first time to get TMasterLocation
+      // The first time to get TManagerLocation
 
       // Register to the SingletonRegistry
-      LOG.info("We received a new TMasterLocation. Register it into SingletonRegistry");
-      SingletonRegistry.INSTANCE.registerSingleton(TMASTER_LOCATION_BEAN_NAME, newLocation);
+      LOG.info("We received a new TManagerLocation. Register it into SingletonRegistry");
+      SingletonRegistry.INSTANCE.registerSingleton(TMANAGER_LOCATION_BEAN_NAME, newLocation);
 
       // Update Metrics
-      serverMetricsCounters.scope(SERVER_NEW_TMASTER_LOCATION).incr();
+      serverMetricsCounters.scope(SERVER_NEW_TMANAGER_LOCATION).incr();
 
     } else if (oldLocation.equals(newLocation)) {
       // The new one is the same as old one.
 
       // Just Log. Do nothing
-      LOG.info("We received a new TMasterLocation the same as the old one. Do nothing.");
+      LOG.info("We received a new TManagerLocation the same as the old one. Do nothing.");
     } else {
-      // Have received TMasterLocation earlier, but it changed.
+      // Have received TManagerLocation earlier, but it changed.
 
       // We need update the SingletonRegistry
-      LOG.info("We received a new TMasterLocation. Replace the old one.");
-      LOG.info("Old TMasterLocation: " + oldLocation);
-      SingletonRegistry.INSTANCE.updateSingleton(TMASTER_LOCATION_BEAN_NAME, newLocation);
+      LOG.info("We received a new TManagerLocation. Replace the old one.");
+      LOG.info("Old TManagerLocation: " + oldLocation);
+      SingletonRegistry.INSTANCE.updateSingleton(TMANAGER_LOCATION_BEAN_NAME, newLocation);
 
       // Update Metrics
-      serverMetricsCounters.scope(SERVER_NEW_TMASTER_LOCATION).incr();
+      serverMetricsCounters.scope(SERVER_NEW_TMANAGER_LOCATION).incr();
     }
 
-    LOG.info("Current TMaster location: " + newLocation);
+    LOG.info("Current TManager location: " + newLocation);
 
     // Update Metrics
-    serverMetricsCounters.scope(SERVER_TMASTER_LOCATION_RECEIVED).incr();
+    serverMetricsCounters.scope(SERVER_TMANAGER_LOCATION_RECEIVED).incr();
   }
 
   private void handleMetricsCacheLocationRefreshMessage(
       Metrics.MetricPublisher request,
-      Metrics.MetricsCacheLocationRefreshMessage tMasterLocationRefreshMessage) {
-    TopologyMaster.MetricsCacheLocation oldLocation =
-        (TopologyMaster.MetricsCacheLocation)
+      Metrics.MetricsCacheLocationRefreshMessage tManagerLocationRefreshMessage) {
+    TopologyManager.MetricsCacheLocation oldLocation =
+        (TopologyManager.MetricsCacheLocation)
             SingletonRegistry.INSTANCE.getSingleton(METRICSCACHE_LOCATION_BEAN_NAME);
 
-    TopologyMaster.MetricsCacheLocation newLocation =
-        tMasterLocationRefreshMessage.getMetricscache();
+    TopologyManager.MetricsCacheLocation newLocation =
+        tManagerLocationRefreshMessage.getMetricscache();
 
     if (oldLocation == null) {
-      // The first time to get TMasterLocation
+      // The first time to get TManagerLocation
 
       // Register to the SingletonRegistry
       LOG.info("We received a new MetricsCacheLocation. Register it into SingletonRegistry");
       SingletonRegistry.INSTANCE.registerSingleton(METRICSCACHE_LOCATION_BEAN_NAME, newLocation);
 
       // Update Metrics
-      serverMetricsCounters.scope(SERVER_NEW_TMASTER_LOCATION).incr();
+      serverMetricsCounters.scope(SERVER_NEW_TMANAGER_LOCATION).incr();
 
     } else if (oldLocation.equals(newLocation)) {
       // The new one is the same as old one.
@@ -354,7 +375,7 @@ public class MetricsManagerServer extends HeronServer {
       LOG.info("We received a new MetricsCacheLocation the same as the old one "
           + newLocation + " . Do nothing.");
     } else {
-      // Have received TMasterLocation earlier, but it changed.
+      // Have received TManagerLocation earlier, but it changed.
 
       // We need update the SingletonRegistry
       LOG.info("We received a new MetricsCacheLocation " + newLocation
@@ -362,10 +383,10 @@ public class MetricsManagerServer extends HeronServer {
       SingletonRegistry.INSTANCE.updateSingleton(METRICSCACHE_LOCATION_BEAN_NAME, newLocation);
 
       // Update Metrics
-      serverMetricsCounters.scope(SERVER_NEW_TMASTER_LOCATION).incr();
+      serverMetricsCounters.scope(SERVER_NEW_TMANAGER_LOCATION).incr();
     }
 
     // Update Metrics
-    serverMetricsCounters.scope(SERVER_TMASTER_LOCATION_RECEIVED).incr();
+    serverMetricsCounters.scope(SERVER_TMANAGER_LOCATION_RECEIVED).incr();
   }
 }

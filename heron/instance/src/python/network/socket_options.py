@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -21,6 +21,7 @@
 '''socket_options.py'''
 
 from collections import namedtuple
+
 from heron.common.src.python.utils.log import Log
 import heron.instance.src.python.utils.system_constants as const
 from heron.instance.src.python.utils import system_config

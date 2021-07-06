@@ -45,7 +45,7 @@
 #include "util/xor-manager.h"
 #include "util/neighbour-calculator.h"
 #include "manager/stateful-restorer.h"
-#include "manager/tmaster-client.h"
+#include "manager/tmanager-client.h"
 #include "util/tuple-cache.h"
 #include "manager/ckptmgr-client.h"
 
@@ -71,33 +71,26 @@ const sp_string METRIC_TIME_SPENT_BACK_PRESSURE_INIT =
     "__server/__time_spent_back_pressure_initiated";
 const sp_int64 PROCESS_METRICS_FREQUENCY = 10_s;
 const sp_int64 UPTIME_METRIC_FREQUENCY = 1_s;
-const sp_int64 TMASTER_RETRY_FREQUENCY = 10_s;
+const sp_int64 TMANAGER_RETRY_FREQUENCY = 10_s;
 
-StMgr::StMgr(EventLoop* eventLoop, const sp_string& _myhost, sp_int32 _data_port,
+StMgr::StMgr(shared_ptr<EventLoop> eventLoop, const sp_string& _myhost, sp_int32 _data_port,
              sp_int32 _local_data_port,
              const sp_string& _topology_name, const sp_string& _topology_id,
-             proto::api::Topology* _hydrated_topology, const sp_string& _stmgr_id,
+             shared_ptr<proto::api::Topology> _hydrated_topology, const sp_string& _stmgr_id,
              const std::vector<sp_string>& _instances, const sp_string& _zkhostport,
              const sp_string& _zkroot, sp_int32 _metricsmgr_port, sp_int32 _shell_port,
              sp_int32 _ckptmgr_port, const sp_string& _ckptmgr_id,
              sp_int64 _high_watermark, sp_int64 _low_watermark,
              const sp_string& _metricscachemgr_mode)
 
-    : pplan_(NULL),
-      topology_name_(_topology_name),
+    : topology_name_(_topology_name),
       topology_id_(_topology_id),
       stmgr_id_(_stmgr_id),
       stmgr_host_(_myhost),
       data_port_(_data_port),
       local_data_port_(_local_data_port),
       instances_(_instances),
-      stmgr_server_(NULL),
-      instance_server_(NULL),
-      clientmgr_(NULL),
-      tmaster_client_(NULL),
       eventLoop_(eventLoop),
-      xor_mgrs_(NULL),
-      tuple_cache_(NULL),
       hydrated_topology_(_hydrated_topology),
       start_time_(std::chrono::high_resolution_clock::now()),
       zkhostport_(_zkhostport),
@@ -118,7 +111,7 @@ void StMgr::Init() {
     heron::config::HeronInternalsConfigReader::Instance()
       ->GetHeronStreammgrMempoolMaxMessageNumber());
   state_mgr_ = heron::common::HeronStateMgr::MakeStateMgr(zkhostport_, zkroot_, eventLoop_, false);
-  metrics_manager_client_ = new heron::common::MetricsMgrSt(
+  metrics_manager_client_ = make_shared<heron::common::MetricsMgrSt>(
       metricsmgr_port_, metrics_export_interval_sec, eventLoop_);
   stmgr_process_metrics_ = make_shared<heron::common::MultiAssignableMetric>();
   metrics_manager_client_->register_metric(METRIC_PROCESS, stmgr_process_metrics_);
@@ -133,7 +126,7 @@ void StMgr::Init() {
   back_pressure_metric_initiated_ = make_shared<heron::common::TimeSpentMetric>();
   metrics_manager_client_->register_metric(METRIC_TIME_SPENT_BACK_PRESSURE_INIT,
                                            back_pressure_metric_initiated_);
-  state_mgr_->SetTMasterLocationWatch(topology_name_, [this]() { this->FetchTMasterLocation(); });
+  state_mgr_->SetTManagerLocationWatch(topology_name_, [this]() { this->FetchTManagerLocation(); });
   if (0 != metricscachemgr_mode_.compare("disabled")) {
     state_mgr_->SetMetricsCacheLocationWatch(
                        topology_name_, [this]() { this->FetchMetricsCacheLocation(); });
@@ -145,8 +138,8 @@ void StMgr::Init() {
   stateful_restorer_ = nullptr;
 
   // Create the client manager
-  clientmgr_ = new StMgrClientMgr(eventLoop_, topology_name_, topology_id_, stmgr_id_, this,
-                   metrics_manager_client_, high_watermark_, low_watermark_,
+  clientmgr_ = make_shared<StMgrClientMgr>(eventLoop_, topology_name_, topology_id_, stmgr_id_,
+                   this, metrics_manager_client_, high_watermark_, low_watermark_,
                    config::TopologyConfigHelper::DropTuplesUponBackpressure(*hydrated_topology_));
 
   // Create and Register Tuple cache
@@ -154,22 +147,22 @@ void StMgr::Init() {
 
   CHECK_GT(
       eventLoop_->registerTimer(
-          [this](EventLoop::Status status) { this->CheckTMasterLocation(status); }, false,
-          config::HeronInternalsConfigReader::Instance()->GetCheckTMasterLocationIntervalSec() *
+          [this](EventLoop::Status status) { this->CheckTManagerLocation(status); }, false,
+          config::HeronInternalsConfigReader::Instance()->GetCheckTManagerLocationIntervalSec() *
               1_s),
       0);  // fire only once
 
   // Instantiate neighbour calculator. Required by stmgr server
-  neighbour_calculator_ = new NeighbourCalculator();
+  neighbour_calculator_ = make_shared<NeighbourCalculator>();
 
   // Create and start StmgrServer. The actual stmgr server port is assgined.
   StartStmgrServer();
   // Create and start InstanceServer
   StartInstanceServer();
-  // FetchTMasterLocation() triggers the StMgr::CreateTMasterClient() where the TMasterClient
-  // constructor needs actual stmgr ports, thus put FetchTMasterLocation()
+  // FetchTManagerLocation() triggers the StMgr::CreateTManagerClient() where the TManagerClient
+  // constructor needs actual stmgr ports, thus put FetchTManagerLocation()
   // has to be after after StartStmgrServer and StartInstanceServer()
-  FetchTMasterLocation();
+  FetchTManagerLocation();
   if (0 != metricscachemgr_mode_.compare("disabled")) {
     FetchMetricsCacheLocation();
   }
@@ -207,20 +200,8 @@ StMgr::~StMgr() {
   metrics_manager_client_->unregister_metric(METRIC_DROPPED_DURING_RESTORE);
   metrics_manager_client_->unregister_metric(METRIC_INSTANCE_BYTES_RECEIVED);
   metrics_manager_client_->unregister_metric(METRIC_TIME_SPENT_BACK_PRESSURE_INIT);
-  delete tuple_cache_;
-  delete pplan_;
-  delete stmgr_server_;
-  delete instance_server_;
-  delete clientmgr_;
-  delete tmaster_client_;
   CleanupStreamConsumers();
   CleanupXorManagers();
-  delete hydrated_topology_;
-  delete ckptmgr_client_;
-  delete stateful_restorer_;
-  delete metrics_manager_client_;
-
-  delete neighbour_calculator_;
 }
 
 bool StMgr::DidAnnounceBackPressure() {
@@ -240,9 +221,9 @@ const NetworkOptions&  StMgr::GetInstanceServerNetworkOptions() const {
   return instance_server_->get_serveroptions();
 }
 
-void StMgr::CheckTMasterLocation(EventLoop::Status) {
-  if (!tmaster_client_) {
-    LOG(FATAL) << "Could not fetch the TMaster location in time. Exiting. ";
+void StMgr::CheckTManagerLocation(EventLoop::Status) {
+  if (!tmanager_client_) {
+    LOG(FATAL) << "Could not fetch the TManager location in time. Exiting. ";
   }
 }
 
@@ -265,20 +246,20 @@ void StMgr::UpdateProcessMetrics(EventLoop::Status) {
   stmgr_process_metrics_->scope(METRIC_MEM_USED)->SetValue(totalmemory);
 }
 
-void StMgr::FetchTMasterLocation() {
-  LOG(INFO) << "Fetching TMaster Location";
-  auto tmaster = new proto::tmaster::TMasterLocation();
+void StMgr::FetchTManagerLocation() {
+  LOG(INFO) << "Fetching TManager Location";
+  auto tmanager = make_shared<proto::tmanager::TManagerLocation>();
 
-  auto cb = [tmaster, this](proto::system::StatusCode status) {
-    this->OnTMasterLocationFetch(tmaster, status);
+  auto cb = [tmanager, this](proto::system::StatusCode status) {
+    this->OnTManagerLocationFetch(tmanager, status);
   };
 
-  state_mgr_->GetTMasterLocation(topology_name_, tmaster, std::move(cb));
+  state_mgr_->GetTManagerLocation(topology_name_, tmanager, std::move(cb));
 }
 
 void StMgr::FetchMetricsCacheLocation() {
   LOG(INFO) << "Fetching MetricsCache Location";
-  auto metricscache = new proto::tmaster::MetricsCacheLocation();
+  auto metricscache = make_shared<proto::tmanager::MetricsCacheLocation>();
 
   auto cb = [metricscache, this](proto::system::StatusCode status) {
     this->OnMetricsCacheLocationFetch(metricscache, status);
@@ -300,8 +281,8 @@ void StMgr::StartStmgrServer() {
       1_MB);
   sops.set_high_watermark(high_watermark_);
   sops.set_low_watermark(low_watermark_);
-  stmgr_server_ = new StMgrServer(eventLoop_, sops, topology_name_, topology_id_, stmgr_id_, this,
-                                  metrics_manager_client_);
+  stmgr_server_ = make_shared<StMgrServer>(eventLoop_, sops, topology_name_, topology_id_,
+                                           stmgr_id_, this, metrics_manager_client_);
 
   // start the server
   CHECK_EQ(stmgr_server_->Start(), 0);
@@ -321,8 +302,8 @@ void StMgr::StartInstanceServer() {
       1_MB);
   sops.set_high_watermark(high_watermark_);
   sops.set_low_watermark(low_watermark_);
-  instance_server_ = new InstanceServer(eventLoop_, sops, topology_name_, topology_id_, stmgr_id_,
-                     instances_, this, metrics_manager_client_,
+  instance_server_ = make_shared<InstanceServer>(eventLoop_, sops, topology_name_, topology_id_,
+                     stmgr_id_, instances_, this, metrics_manager_client_,
                      neighbour_calculator_,
                      config::TopologyConfigHelper::DropTuplesUponBackpressure(*hydrated_topology_));
 
@@ -347,46 +328,58 @@ void StMgr::CreateCheckpointMgrClient() {
                            std::placeholders::_1, std::placeholders::_2,
                            std::placeholders::_3, std::placeholders::_4);
   auto ckpt_watcher = std::bind(&StMgr::HandleCkptMgrRegistration, this);
-  ckptmgr_client_ = new CkptMgrClient(eventLoop_, client_options,
+  ckptmgr_client_ = make_shared<CkptMgrClient>(eventLoop_, client_options,
                                       topology_name_, topology_id_,
                                       ckptmgr_id_, stmgr_id_,
                                       save_watcher, get_watcher, ckpt_watcher);
 }
 
-void StMgr::CreateTMasterClient(proto::tmaster::TMasterLocation* tmasterLocation) {
-  CHECK(!tmaster_client_);
-  LOG(INFO) << "Creating Tmaster Client at " << tmasterLocation->host() << ":"
-            << tmasterLocation->master_port();
-  NetworkOptions master_options;
-  master_options.set_host(tmasterLocation->host());
-  master_options.set_port(tmasterLocation->master_port());
-  master_options.set_socket_family(PF_INET);
-  master_options.set_max_packet_size(
+void StMgr::CreateTManagerClient(shared_ptr<proto::tmanager::TManagerLocation> tmanagerLocation) {
+  CHECK(!tmanager_client_);
+  LOG(INFO) << "Creating Tmanager Client at " << tmanagerLocation->host() << ":"
+            << tmanagerLocation->server_port();
+  NetworkOptions client_options;
+  client_options.set_host(tmanagerLocation->host());
+  client_options.set_port(tmanagerLocation->server_port());
+  client_options.set_socket_family(PF_INET);
+  client_options.set_max_packet_size(
       config::HeronInternalsConfigReader::Instance()
-          ->GetHeronTmasterNetworkMasterOptionsMaximumPacketMb() *
+          ->GetHeronTmanagerNetworkServerOptionsMaximumPacketMb() *
       1_MB);
-  master_options.set_high_watermark(high_watermark_);
-  master_options.set_low_watermark(low_watermark_);
-  auto pplan_watch = [this](proto::system::PhysicalPlan* pplan) { this->NewPhysicalPlan(pplan); };
+  client_options.set_high_watermark(high_watermark_);
+  client_options.set_low_watermark(low_watermark_);
+
+  auto pplan_watch = [this](shared_ptr<proto::system::PhysicalPlan> pplan) {
+    this->NewPhysicalPlan(pplan);
+  };
+
   auto stateful_checkpoint_watch =
        [this](sp_string checkpoint_id) {
     this->InitiateStatefulCheckpoint(checkpoint_id);
   };
+
   auto restore_topology_watch =
        [this](sp_string checkpoint_id, sp_int64 restore_txid) {
     this->RestoreTopologyState(checkpoint_id, restore_txid);
   };
+
   auto start_stateful_watch =
        [this](sp_string checkpoint_id) {
     this->StartStatefulProcessing(checkpoint_id);
   };
 
-  tmaster_client_ = new TMasterClient(eventLoop_, master_options, stmgr_id_, stmgr_host_,
+  auto broadcast_checkpoint_saved =
+       [this](const proto::ckptmgr::StatefulConsistentCheckpointSaved& _msg) {
+    this->BroadcastCheckpointSaved(_msg);
+  };
+
+  tmanager_client_ = make_shared<TManagerClient>(eventLoop_, client_options, stmgr_id_, stmgr_host_,
                                       data_port_, local_data_port_, shell_port_,
                                       std::move(pplan_watch),
                                       std::move(stateful_checkpoint_watch),
                                       std::move(restore_topology_watch),
-                                      std::move(start_stateful_watch));
+                                      std::move(start_stateful_watch),
+                                      std::move(broadcast_checkpoint_saved));
 }
 
 void StMgr::CreateTupleCache() {
@@ -394,150 +387,146 @@ void StMgr::CreateTupleCache() {
   LOG(INFO) << "Creating tuple cache ";
   sp_uint32 drain_threshold_bytes_ =
       config::HeronInternalsConfigReader::Instance()->GetHeronStreammgrCacheDrainSizeMb() * 1_MB;
-  tuple_cache_ = new TupleCache(eventLoop_, drain_threshold_bytes_);
+  tuple_cache_ = make_shared<TupleCache>(eventLoop_, drain_threshold_bytes_);
 
   tuple_cache_->RegisterDrainer(&StMgr::DrainInstanceData, this);
   tuple_cache_->RegisterCheckpointDrainer(&StMgr::DrainDownstreamCheckpoint, this);
 }
 
-void StMgr::HandleNewTmaster(proto::tmaster::TMasterLocation* newTmasterLocation) {
-  // Lets delete the existing tmaster if we have one.
-  if (tmaster_client_) {
-    LOG(INFO) << "Destroying existing tmasterClient";
-    tmaster_client_->Die();
-    tmaster_client_ = NULL;
+void StMgr::HandleNewTmanager(shared_ptr<proto::tmanager::TManagerLocation> newTmanagerLocation) {
+  // Lets delete the existing tmanager if we have one.
+  if (tmanager_client_) {
+    LOG(INFO) << "Destroying existing tmanagerClient";
+    tmanager_client_->Die();
+    tmanager_client_ = NULL;
   }
 
-  // Create the tmaster and the servers/clients but don't start the tmaster
+  // Create the tmanager and the servers/clients but don't start the tmanager
   // connection as yet. We'll do that once we connect to all the instances.
-  CreateTMasterClient(newTmasterLocation);
+  CreateTManagerClient(newTmanagerLocation);
 
-  // In the case where we are doing a tmaster refresh we may have already
+  // In the case where we are doing a tmanager refresh we may have already
   // connected to all of the instances
   if (instance_server_ && instance_server_->HaveAllInstancesConnectedToUs()) {
-    StartTMasterClient();
+    StartTManagerClient();
   }
 }
 
-void StMgr::BroadcastTmasterLocation(proto::tmaster::TMasterLocation* tmasterLocation) {
-  // Notify metrics manager of the tmaster location changes
+void StMgr::BroadcastTmanagerLocation(shared_ptr<proto::tmanager::TManagerLocation> tmanagerLocation) {
+  // Notify metrics manager of the tmanager location changes
   // TODO(vikasr): What if the refresh fails?
-  metrics_manager_client_->RefreshTMasterLocation(*tmasterLocation);
+  metrics_manager_client_->RefreshTManagerLocation(*tmanagerLocation);
 }
 
-void StMgr::BroadcastMetricsCacheLocation(proto::tmaster::MetricsCacheLocation* tmasterLocation) {
+void StMgr::BroadcastMetricsCacheLocation(
+        shared_ptr<proto::tmanager::MetricsCacheLocation> tmanagerLocation) {
   // Notify metrics manager of the metricscache location changes
   // TODO(huijun): What if the refresh fails?
   LOG(INFO) << "BroadcastMetricsCacheLocation";
-  metrics_manager_client_->RefreshMetricsCacheLocation(*tmasterLocation);
+  metrics_manager_client_->RefreshMetricsCacheLocation(*tmanagerLocation);
 }
 
-void StMgr::OnTMasterLocationFetch(proto::tmaster::TMasterLocation* newTmasterLocation,
+void StMgr::OnTManagerLocationFetch(shared_ptr<proto::tmanager::TManagerLocation> newTmanagerLocation,
                                    proto::system::StatusCode _status) {
   if (_status != proto::system::OK) {
-    LOG(INFO) << "TMaster Location Fetch failed with status " << _status;
-    LOG(INFO) << "Retrying after " << TMASTER_RETRY_FREQUENCY << " micro seconds ";
+    LOG(INFO) << "TManager Location Fetch failed with status " << _status;
+    LOG(INFO) << "Retrying after " << TMANAGER_RETRY_FREQUENCY << " micro seconds ";
     CHECK_GT(eventLoop_->registerTimer([this](EventLoop::Status) {
-      this->FetchTMasterLocation();
-    }, false, TMASTER_RETRY_FREQUENCY), 0);
+      this->FetchTManagerLocation();
+    }, false, TMANAGER_RETRY_FREQUENCY), 0);
   } else {
-    // We got a new tmaster location.
+    // We got a new tmanager location.
     // Just verify that we are talking to the right entity
-    if (newTmasterLocation->topology_name() != topology_name_ ||
-        newTmasterLocation->topology_id() != topology_id_) {
-      LOG(FATAL) << "Topology name/id mismatch between stmgr and TMaster "
-                 << "We expected " << topology_name_ << " : " << topology_id_ << " but tmaster had "
-                 << newTmasterLocation->topology_name() << " : "
-                 << newTmasterLocation->topology_id();
+    if (newTmanagerLocation->topology_name() != topology_name_ ||
+        newTmanagerLocation->topology_id() != topology_id_) {
+      LOG(FATAL) << "Topology name/id mismatch between stmgr and TManager "
+                 << "We expected " << topology_name_ << " : " << topology_id_ << " but tmanager had "
+                 << newTmanagerLocation->topology_name() << " : "
+                 << newTmanagerLocation->topology_id();
     }
 
-    LOG(INFO) << "Fetched TMasterLocation to be " << newTmasterLocation->host() << ":"
-              << newTmasterLocation->master_port();
+    LOG(INFO) << "Fetched TManagerLocation to be " << newTmanagerLocation->host() << ":"
+              << newTmanagerLocation->server_port();
 
-    bool isNewTmaster = true;
+    bool isNewTmanager = true;
 
-    if (tmaster_client_) {
-      sp_string currentTmasterHostPort = tmaster_client_->getTmasterHostPort();
-      std::string newTmasterHostPort =
-          newTmasterLocation->host() + ":" + std::to_string(newTmasterLocation->master_port());
+    if (tmanager_client_) {
+      sp_string currentTmanagerHostPort = tmanager_client_->getTmanagerHostPort();
+      std::string newTmanagerHostPort =
+          newTmanagerLocation->host() + ":" + std::to_string(newTmanagerLocation->server_port());
 
-      if (currentTmasterHostPort == newTmasterHostPort) {
-        LOG(INFO) << "New tmaster location same as the current one. "
+      if (currentTmanagerHostPort == newTmanagerHostPort) {
+        LOG(INFO) << "New tmanager location same as the current one. "
                   << "Nothing to do here... ";
-        isNewTmaster = false;
+        isNewTmanager = false;
       } else {
-        LOG(INFO) << "New tmaster location different from the current one."
-                  << " Current one at " << currentTmasterHostPort << " and New one at "
-                  << newTmasterHostPort;
-        isNewTmaster = true;
+        LOG(INFO) << "New tmanager location different from the current one."
+                  << " Current one at " << currentTmanagerHostPort << " and New one at "
+                  << newTmanagerHostPort;
+        isNewTmanager = true;
       }
     }
 
-    if (isNewTmaster) {
-      HandleNewTmaster(newTmasterLocation);
+    if (isNewTmanager) {
+      HandleNewTmanager(newTmanagerLocation);
     }
 
     // Stmgr doesn't know what other things might have changed, so it is important
-    // to broadcast the location, even though we know its the same tmaster.
-    BroadcastTmasterLocation(newTmasterLocation);
+    // to broadcast the location, even though we know its the same tmanager.
+    BroadcastTmanagerLocation(newTmanagerLocation);
   }
-
-  // Delete the tmasterLocation Proto
-  delete newTmasterLocation;
 }
 
-void StMgr::OnMetricsCacheLocationFetch(proto::tmaster::MetricsCacheLocation* newTmasterLocation,
-                                   proto::system::StatusCode _status) {
+void StMgr::OnMetricsCacheLocationFetch(
+                               shared_ptr<proto::tmanager::MetricsCacheLocation> newTmanagerLocation,
+                               proto::system::StatusCode _status) {
   if (_status != proto::system::OK) {
     LOG(INFO) << "MetricsCache Location Fetch failed with status " << _status;
-    LOG(INFO) << "Retrying after " << TMASTER_RETRY_FREQUENCY << " micro seconds ";
+    LOG(INFO) << "Retrying after " << TMANAGER_RETRY_FREQUENCY << " micro seconds ";
     CHECK_GT(eventLoop_->registerTimer([this](EventLoop::Status) {
       this->FetchMetricsCacheLocation();
-    }, false, TMASTER_RETRY_FREQUENCY), 0);
+    }, false, TMANAGER_RETRY_FREQUENCY), 0);
   } else {
     // We got a new metricscache location.
     // Just verify that we are talking to the right entity
-    if (newTmasterLocation->topology_name() != topology_name_ ||
-        newTmasterLocation->topology_id() != topology_id_) {
+    if (newTmanagerLocation->topology_name() != topology_name_ ||
+        newTmanagerLocation->topology_id() != topology_id_) {
       LOG(FATAL) << "Topology name/id mismatch between stmgr and MetricsCache "
                  << "We expected " << topology_name_ << " : " << topology_id_
                  << " but MetricsCache had "
-                 << newTmasterLocation->topology_name() << " : "
-                 << newTmasterLocation->topology_id() << std::endl;
+                 << newTmanagerLocation->topology_name() << " : "
+                 << newTmanagerLocation->topology_id() << std::endl;
     }
 
-    LOG(INFO) << "Fetched MetricsCacheLocation to be " << newTmasterLocation->host() << ":"
-              << newTmasterLocation->master_port();
+    LOG(INFO) << "Fetched MetricsCacheLocation to be " << newTmanagerLocation->host() << ":"
+              << newTmanagerLocation->server_port();
 
     // Stmgr doesn't know what other things might have changed, so it is important
     // to broadcast the location, even though we know its the same metricscache.
-    BroadcastMetricsCacheLocation(newTmasterLocation);
+    BroadcastMetricsCacheLocation(newTmanagerLocation);
   }
-
-  // Delete the tmasterLocation Proto
-  delete newTmasterLocation;
 }
 
-// Start the tmaster client
-void StMgr::StartTMasterClient() {
-  if (!tmaster_client_) {
-    LOG(INFO) << "We haven't received tmaster location yet"
-              << ", so tmaster_client_ hasn't been created"
+// Start the tmanager client
+void StMgr::StartTManagerClient() {
+  if (!tmanager_client_) {
+    LOG(INFO) << "We haven't received tmanager location yet"
+              << ", so tmanager_client_ hasn't been created"
               << "Once we get the location, it will be started";
     // Nothing else to do here
   } else {
     std::vector<proto::system::Instance*> all_instance_info;
     instance_server_->GetInstanceInfo(all_instance_info);
-    tmaster_client_->SetInstanceInfo(all_instance_info);
-    if (!tmaster_client_->IsConnected()) {
-      LOG(INFO) << "Connecting to the TMaster as all the instances have connected to us";
-      tmaster_client_->Start();
+    tmanager_client_->SetInstanceInfo(all_instance_info);
+    if (!tmanager_client_->IsConnected()) {
+      LOG(INFO) << "Connecting to the TManager as all the instances have connected to us";
+      tmanager_client_->Start();
     }
   }
 }
 
-void StMgr::NewPhysicalPlan(proto::system::PhysicalPlan* _pplan) {
-  LOG(INFO) << "Received a new physical plan from tmaster";
+void StMgr::NewPhysicalPlan(shared_ptr<proto::system::PhysicalPlan> _pplan) {
+  LOG(INFO) << "Received a new physical plan from tmanager";
   heron::config::TopologyConfigHelper::LogTopology(_pplan->topology());
   // first make sure that we are part of the plan ;)
   bool found = false;
@@ -563,7 +552,7 @@ void StMgr::NewPhysicalPlan(proto::system::PhysicalPlan* _pplan) {
               << _pplan->topology().state();
   }
 
-  PatchPhysicalPlanWithHydratedTopology(_pplan, hydrated_topology_);
+  PatchPhysicalPlanWithHydratedTopology(_pplan, *hydrated_topology_);
   LOG(INFO) << "Patched with hydrated topology";
   heron::config::TopologyConfigHelper::LogTopology(_pplan->topology());
 
@@ -587,14 +576,13 @@ void StMgr::NewPhysicalPlan(proto::system::PhysicalPlan* _pplan) {
                         component_to_task_ids);
   }
 
-  delete pplan_;
   pplan_ = _pplan;
   neighbour_calculator_->Reconstruct(*pplan_);
   // For effectively once topologies, we only start connecting after we have recovered
   // from a globally consistent checkpoint. The act of starting connections is initiated
   // by the restorer
   if (!stateful_restorer_) {
-    clientmgr_->StartConnections(pplan_);
+    clientmgr_->StartConnections(*pplan_);
   }
   instance_server_->BroadcastNewPhysicalPlan(*pplan_);
 
@@ -602,7 +590,7 @@ void StMgr::NewPhysicalPlan(proto::system::PhysicalPlan* _pplan) {
   if (reliability_mode_ == config::TopologyConfigVars::EFFECTIVELY_ONCE
       && ckptmgr_client_ == nullptr && stateful_restorer_ == nullptr) {
     CreateCheckpointMgrClient();
-    stateful_restorer_ = new StatefulRestorer(ckptmgr_client_, clientmgr_,
+    stateful_restorer_ = make_shared<StatefulRestorer>(ckptmgr_client_, clientmgr_,
                                tuple_cache_, instance_server_, metrics_manager_client_,
                                std::bind(&StMgr::HandleStatefulRestoreDone, this,
                                          std::placeholders::_1, std::placeholders::_2,
@@ -614,15 +602,11 @@ void StMgr::NewPhysicalPlan(proto::system::PhysicalPlan* _pplan) {
 }
 
 void StMgr::CleanupStreamConsumers() {
-  for (auto iter = stream_consumers_.begin(); iter != stream_consumers_.end(); ++iter) {
-    delete iter->second;
-  }
   stream_consumers_.clear();
 }
 
 void StMgr::CleanupXorManagers() {
-  delete xor_mgrs_;
-  xor_mgrs_ = NULL;
+  xor_mgrs_.reset();
 }
 
 sp_int32 StMgr::ExtractTopologyTimeout(const proto::api::Topology& _topology) {
@@ -668,7 +652,7 @@ void StMgr::PopulateStreamConsumers(
       CHECK(iter != _component_to_task_ids.end());
       const std::vector<sp_int32>& component_task_ids = iter->second;
       if (stream_consumers_.find(p) == stream_consumers_.end()) {
-        stream_consumers_[p] = new StreamConsumers(is, *schema, component_task_ids);
+        stream_consumers_[p] = make_unique<StreamConsumers>(is, *schema, component_task_ids);
       } else {
         stream_consumers_[p]->NewConsumer(is, *schema, component_task_ids);
       }
@@ -691,32 +675,31 @@ void StMgr::PopulateXorManagers(
                              component_task_ids.end());
     }
   }
-  xor_mgrs_ = new XorManager(eventLoop_, _message_timeout, all_spout_tasks);
+  xor_mgrs_ = make_shared<XorManager>(eventLoop_, _message_timeout, all_spout_tasks);
 }
 
-const proto::system::PhysicalPlan* StMgr::GetPhysicalPlan() const { return pplan_; }
+const shared_ptr<proto::system::PhysicalPlan> StMgr::GetPhysicalPlan() const { return pplan_; }
 
 void StMgr::HandleStreamManagerData(const sp_string&,
-                                    proto::stmgr::TupleStreamMessage* _message) {
+                                    pool_unique_ptr<proto::stmgr::TupleStreamMessage> _message) {
   if (stateful_restorer_ && stateful_restorer_->InProgress()) {
     LOG(INFO) << "Dropping data received from stmgr because we are in Restore";
     dropped_during_restore_metrics_->scope(RESTORE_DROPPED_STMGR_BYTES)
            ->incr_by(_message->set().size());
-    __global_protobuf_pool_release__(_message);
     return;
   }
+
   // We received message from another stream manager
   sp_int32 _task_id = _message->task_id();
 
   // We have a shortcut for non-acking case
   if (!is_acking_enabled) {
-    instance_server_->SendToInstance2(_message);
+    instance_server_->SendToInstance2(std::move(_message));
   } else {
     proto::system::HeronTupleSet2* tuple_set = nullptr;
     tuple_set = __global_protobuf_pool_acquire__(tuple_set);
     tuple_set->ParsePartialFromString(_message->set());
     SendInBound(_task_id, tuple_set);
-    __global_protobuf_pool_release__(_message);
   }
 }
 
@@ -792,7 +775,7 @@ void StMgr::ProcessAcksAndFails(sp_int32 _src_task_id, sp_int32 _task_id,
 
 // Called when local tasks generate data
 void StMgr::HandleInstanceData(const sp_int32 _src_task_id, bool _local_spout,
-                               proto::system::HeronTupleSet* _message) {
+                               pool_unique_ptr<proto::system::HeronTupleSet> _message) {
   instance_bytes_received_metrics_->scope(std::to_string(_src_task_id))
       ->incr_by(_message->ByteSize());
 
@@ -813,13 +796,13 @@ void StMgr::HandleInstanceData(const sp_int32 _src_task_id, bool _local_spout,
         make_pair(d->stream().component_name(), d->stream().id());
     auto s = stream_consumers_.find(stream);
     if (s != stream_consumers_.end()) {
-      StreamConsumers* s_consumer = s->second;
+      StreamConsumers& s_consumer = *(s->second);
       for (sp_int32 i = 0; i < d->tuples_size(); ++i) {
         proto::system::HeronDataTuple* _tuple = d->mutable_tuples(i);
         // just to make sure that instances do not set any key
         CHECK_EQ(_tuple->key(), 0);
         out_tasks_.clear();
-        s_consumer->GetListToSend(*_tuple, out_tasks_);
+        s_consumer.GetListToSend(*_tuple, out_tasks_);
         // In addition to out_tasks_, the instance might have asked
         // us to send the tuple to some more tasks
         for (sp_int32 j = 0; j < _tuple->dest_task_ids_size(); ++j) {
@@ -859,8 +842,8 @@ void StMgr::DrainInstanceData(sp_int32 _task_id, proto::system::HeronTupleSet2* 
     if (dropped && stateful_restorer_ && !stateful_restorer_->InProgress()) {
       LOG(INFO) << "We dropped some messages because we are not yet connected with stmgr "
                 << dest_stmgr_id << " and we are not in restore. Hence sending Reset "
-                << "message to TMaster";
-      tmaster_client_->SendResetTopologyState("", _task_id, "Dropped Instance Tuples");
+                << "message to TManager";
+      tmanager_client_->SendResetTopologyState("", _task_id, "Dropped Instance Tuples");
       restore_initiated_metrics_->incr();
     }
     __global_protobuf_pool_release__(_tuple);
@@ -946,10 +929,10 @@ void StMgr::HandleDeadStMgrConnection(const sp_string& _stmgr_id) {
   // If we are stateful topology, we need to send a resetTopology message
   // in case we are not in 2pc
   if (stateful_restorer_) {
-    if (!stateful_restorer_->InProgress() && tmaster_client_) {
+    if (!stateful_restorer_->InProgress() && tmanager_client_) {
       LOG(INFO) << "We lost connection with stmgr " << _stmgr_id
-                << " and hence sending ResetTopology message to tmaster";
-      tmaster_client_->SendResetTopologyState(_stmgr_id, -1, "Dead Stmgr");
+                << " and hence sending ResetTopology message to tmanager";
+      tmanager_client_->SendResetTopologyState(_stmgr_id, -1, "Dead Stmgr");
       restore_initiated_metrics_->incr();
     } else {
       // We are in restore
@@ -971,22 +954,22 @@ void StMgr::HandleAllInstancesConnected() {
     if (stateful_restorer_->InProgress()) {
       // We are in the middle of a restore
       stateful_restorer_->HandleAllInstancesConnected();
-    } else if (tmaster_client_ && tmaster_client_->IsConnected()) {
-      LOG(INFO) << "We are already connected to tmaster(which means we are not in"
+    } else if (tmanager_client_ && tmanager_client_->IsConnected()) {
+      LOG(INFO) << "We are already connected to tmanager(which means we are not in"
                 << " initial startup), and we are not in the middle of restore."
                 << " This means that while running normally, some instances"
                 << " got reconnected to us and thus we might have lost some tuples in middle"
                 << " We must reset the topology";
-      tmaster_client_->SendResetTopologyState("", -1, "All Instances connected");
+      tmanager_client_->SendResetTopologyState("", -1, "All Instances connected");
       restore_initiated_metrics_->incr();
     } else {
-      // This is the first time we came up when we haven't even connected to tmaster
-      // Now that all instances are connected to us, we should connect to tmaster
-      StartTMasterClient();
+      // This is the first time we came up when we haven't even connected to tmanager
+      // Now that all instances are connected to us, we should connect to tmanager
+      StartTManagerClient();
     }
   } else {
-    // Now we can connect to the tmaster
-    StartTMasterClient();
+    // Now we can connect to the tmanager
+    StartTManagerClient();
   }
 }
 
@@ -996,8 +979,8 @@ void StMgr::HandleDeadInstance(sp_int32 _task_id) {
       stateful_restorer_->HandleDeadInstanceConnection(_task_id);
     } else {
       LOG(INFO) << "An instance " << _task_id << " died while we are not "
-                << "in restore. Sending ResetMessage to tmaster";
-      tmaster_client_->SendResetTopologyState("", _task_id, "Dead Instance");
+                << "in restore. Sending ResetMessage to tmanager";
+      tmanager_client_->SendResetTopologyState("", _task_id, "Dead Instance");
       restore_initiated_metrics_->incr();
     }
   }
@@ -1059,7 +1042,7 @@ void StMgr::HandleSavedInstanceState(const proto::system::Instance& _instance,
   LOG(INFO) << "Got notification from ckptmgr that we saved instance state for task "
             << _instance.info().task_id() << " for checkpoint "
             << _checkpoint_id;
-  tmaster_client_->SavedInstanceState(_instance, _checkpoint_id);
+  tmanager_client_->SavedInstanceState(_instance, _checkpoint_id);
 }
 
 // Invoked by CheckpointMgr Client when it retreives the state of an instance
@@ -1090,27 +1073,33 @@ void StMgr::HandleDownStreamStatefulCheckpoint(
                                            _message.checkpoint_id());
 }
 
-// Called by TmasterClient when it receives directive from tmaster
+// Called by TmanagerClient when it receives directive from tmanager
 // to restore the topology to _checkpoint_id checkpoint
 void StMgr::RestoreTopologyState(sp_string _checkpoint_id, sp_int64 _restore_txid) {
-  LOG(INFO) << "Got a Restore Topology State message from Tmaster for checkpoint "
+  LOG(INFO) << "Got a Restore Topology State message from Tmanager for checkpoint "
             << _checkpoint_id << " and txid " << _restore_txid;
   CHECK(stateful_restorer_);
 
   // Start the restore process
   std::unordered_set<sp_int32> local_taskids;
   config::PhysicalPlanHelper::GetTasks(*pplan_, stmgr_id_, local_taskids),
-  stateful_restorer_->StartRestore(_checkpoint_id, _restore_txid, local_taskids, pplan_);
+  stateful_restorer_->StartRestore(_checkpoint_id, _restore_txid, local_taskids, *pplan_);
 }
 
-// Called by TmasterClient when it receives directive from tmaster
+// broadcast the news that the checkpoint has been saved to all instances connected to this stmgr
+void StMgr::BroadcastCheckpointSaved(
+        const proto::ckptmgr::StatefulConsistentCheckpointSaved& _msg) {
+  instance_server_->BroadcastStatefulCheckpointSaved(_msg);
+}
+
+// Called by TmanagerClient when it receives directive from tmanager
 // to start processing after having previously recovered the state at _checkpoint_id
 void StMgr::StartStatefulProcessing(sp_string _checkpoint_id) {
-  LOG(INFO) << "Received StartProcessing message from tmaster for "
+  LOG(INFO) << "Received StartProcessing message from tmanager for "
             << _checkpoint_id;
   CHECK(stateful_restorer_);
   if (stateful_restorer_->InProgress()) {
-    LOG(FATAL) << "StartProcessing received from Tmaster for "
+    LOG(FATAL) << "StartProcessing received from Tmanager for "
                << _checkpoint_id << " when we are still in Restore";
   }
   instance_server_->SendStartInstanceStatefulProcessing(_checkpoint_id);
@@ -1121,23 +1110,23 @@ void StMgr::HandleRestoreInstanceStateResponse(sp_int32 _task_id,
                                                const std::string& _checkpoint_id) {
   // If we are stateful topology, we might want to see how the restore went
   // and if it was successful and all other local instances have recovered
-  // send back a success response to tmaster saying that we have recovered
+  // send back a success response to tmanager saying that we have recovered
   CHECK(stateful_restorer_);
   stateful_restorer_->HandleInstanceRestoredState(_task_id, _status.status(), _checkpoint_id);
 }
 
 // Called after we have recovered our state(either successfully or unsuccessfully)
-// We need to let our tmaster know
+// We need to let our tmanager know
 void StMgr::HandleStatefulRestoreDone(proto::system::StatusCode _status,
                                       std::string _checkpoint_id, sp_int64 _restore_txid) {
-  tmaster_client_->SendRestoreTopologyStateResponse(_status, _checkpoint_id, _restore_txid);
+  tmanager_client_->SendRestoreTopologyStateResponse(_status, _checkpoint_id, _restore_txid);
 }
 
 // Patch new physical plan with internal hydrated topology but keep new topology data:
 // - new topology state
 // - new topology/component config
-void StMgr::PatchPhysicalPlanWithHydratedTopology(proto::system::PhysicalPlan* _pplan,
-                                                  proto::api::Topology* _topology) {
+void StMgr::PatchPhysicalPlanWithHydratedTopology(shared_ptr<proto::system::PhysicalPlan> _pplan,
+                                                  proto::api::Topology const& _topology) {
   // Back up new topology data (state and configs)
   proto::api::TopologyState st = _pplan->topology().state();
 
@@ -1155,7 +1144,7 @@ void StMgr::PatchPhysicalPlanWithHydratedTopology(proto::system::PhysicalPlan* _
 
   // Copy hydrated topology into pplan
   _pplan->clear_topology();
-  _pplan->mutable_topology()->CopyFrom(*_topology);
+  _pplan->mutable_topology()->CopyFrom(_topology);
 
   // Restore new topology data
   _pplan->mutable_topology()->set_state(st);

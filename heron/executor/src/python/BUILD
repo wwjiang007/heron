@@ -3,11 +3,11 @@ package(default_visibility = ["//visibility:public"])
 pex_library(
     name = "executor-py",
     srcs = ["heron_executor.py"],
+    reqs = ["PyYAML==3.13", "click==7.1.2"],
     deps = [
-        "//heron/statemgrs/src/python:statemgr-py",
         "//heron/common/src/python:common-py",
+        "//heron/statemgrs/src/python:statemgr-py",
     ],
-    reqs = ["PyYAML==3.13"],
 )
 
 pex_binary(

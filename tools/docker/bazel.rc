@@ -17,6 +17,7 @@
 
 # This is so we understand failures better
 build --verbose_failures
+build --host_force_python=PY3
 
 # This is so we don't use sandboxed execution. Sandboxed execution
 # runs stuff in a container, and since Travis already runs its script
@@ -28,7 +29,8 @@ test --test_strategy=standalone
 # Workaround https://github.com/bazelbuild/bazel/issues/3645
 # Bazel doesn't calculate the memory ceiling correctly when running under Docker.
 # Limit Bazel to consuming 4G ram and 2 cores.
-build --local_resources=4096,2.0,1.0
+build --local_ram_resources=4096
+build --local_cpu_resources=2
 
 # Echo all the configuration settings and their source
  build --announce_rc

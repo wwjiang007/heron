@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -91,7 +91,7 @@ def _list(cl_args):
   cluster = cl_args['cluster']
   config = cliconfig.cluster_config(cluster)
   if config:
-    for k, v in config.items():
+    for k, v in list(config.items()):
       print("%s = %s" % (str(k), str(v)))
   else:
     print("No config for cluster %s" % cluster)
@@ -134,7 +134,6 @@ def run(command, parser, cl_args, unknown_args):
   configcommand = cl_args.get('configcommand', None)
   if configcommand == 'set':
     return _set(cl_args)
-  elif configcommand == 'unset':
+  if configcommand == 'unset':
     return _unset(cl_args)
-  else:
-    return _list(cl_args)
+  return _list(cl_args)

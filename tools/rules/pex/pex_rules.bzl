@@ -44,265 +44,258 @@ Lastly, make sure that `tools/build_rules/BUILD` exists, even if it is empty,
 so that Bazel can find your `prelude_bazel` file.
 """
 
-pex_file_types = FileType(types=[".py"])
-egg_file_types = FileType(types=[".egg", ".whl"])
+pex_file_types = [".py"]
+egg_file_types = [".egg", ".whl"]
 
-# As much as I think this test file naming convention is a good thing, it's
-# probably a bad idea to impose it as a policy to all OSS users of these rules,
-# so I guess let's skip it.
-#
-# pex_test_file_types = FileType(["_unittest.py", "_test.py"])
-
+PexProviderInfo = provider(fields = ["transitive_sources", "transitive_eggs", "transitive_reqs"])
 
 def _collect_transitive_sources(ctx):
-  source_files = depset(order="postorder")
-  for dep in ctx.attr.deps:
-    source_files += dep.py.transitive_sources
-  source_files += pex_file_types.filter(ctx.files.srcs)
-  return source_files
-
+    return depset(
+        ctx.files.srcs,
+        transitive = [dep[PexProviderInfo].transitive_sources for dep in ctx.attr.deps],
+    )
 
 def _collect_transitive_eggs(ctx):
-  transitive_eggs = depset(order="postorder")
-  for dep in ctx.attr.deps:
-    if hasattr(dep.py, "transitive_eggs"):
-      transitive_eggs += dep.py.transitive_eggs
-  transitive_eggs += egg_file_types.filter(ctx.files.eggs)
-  return transitive_eggs
-
+    return depset(
+        ctx.files.eggs,
+        transitive = [dep[PexProviderInfo].transitive_eggs for dep in ctx.attr.deps],
+    )
 
 def _collect_transitive_reqs(ctx):
-  transitive_reqs = depset(order="postorder")
-  for dep in ctx.attr.deps:
-    if hasattr(dep.py, "transitive_reqs"):
-      transitive_reqs += dep.py.transitive_reqs
-  transitive_reqs += ctx.attr.reqs
-  return transitive_reqs
-
+    return depset(
+        ctx.attr.reqs,
+        transitive = [dep[PexProviderInfo].transitive_reqs for dep in ctx.attr.deps],
+    )
 
 def _collect_transitive(ctx):
-  return struct(
-      # These rules don't use transitive_sources internally; it's just here for
-      # parity with the native py_library rule type.
-      transitive_sources = _collect_transitive_sources(ctx),
-      transitive_eggs = _collect_transitive_eggs(ctx),
-      transitive_reqs = _collect_transitive_reqs(ctx),
-      # uses_shared_libraries = ... # native py_library has this. What is it?
-  )
-
+    return PexProviderInfo(
+        # These rules don't use transitive_sources internally; it's just here for
+        # parity with the native py_library rule type.
+        transitive_sources = _collect_transitive_sources(ctx),
+        transitive_eggs = _collect_transitive_eggs(ctx),
+        transitive_reqs = _collect_transitive_reqs(ctx),
+        # uses_shared_libraries = ... # native py_library has this. What is it?
+    )
 
 def _pex_library_impl(ctx):
-  transitive_files = depset(ctx.files.srcs)
-  for dep in ctx.attr.deps:
-    transitive_files += dep.default_runfiles.files
-  return struct(
-      files = depset(),
-      py = _collect_transitive(ctx),
-      runfiles = ctx.runfiles(
-          collect_default = True,
-          transitive_files = depset(transitive_files),
-      )
-  )
-
+    transitive_files = depset(
+        ctx.files.srcs,
+        transitive = [dep.default_runfiles.files for dep in ctx.attr.deps],
+    )
+    return struct(
+        providers = [_collect_transitive(ctx)],
+        runfiles = ctx.runfiles(
+            collect_default = True,
+            transitive_files = transitive_files,
+        ),
+    )
 
 def _gen_manifest(py, runfiles, resources):
-  """Generate a manifest for pex_wrapper.
+    """Generate a manifest for pex_wrapper.
 
-  Returns:
-      struct(
-          modules = [struct(src = "path_on_disk", dest = "path_in_pex"), ...],
-          requirements = ["pypi_package", ...],
-          prebuiltLibraries = ["path_on_disk", ...],
-          resources = ["path_on_disk", ...],
-      )
-  """
-
-  pex_files = []
-
-  for f in runfiles.files:
-    dpath = f.short_path
-    if dpath.startswith("../"):
-      dpath = dpath[3:]
-    pex_files.append(
+    Returns:
         struct(
-            src = f.path,
-            dest = dpath,
-        ),
+            modules = [struct(src = "path_on_disk", dest = "path_in_pex"), ...],
+            requirements = ["pypi_package", ...],
+            prebuiltLibraries = ["path_on_disk", ...],
+            resources = ["path_on_disk", ...],
+        )
+    """
+
+    pex_files = []
+
+    for f in runfiles.files.to_list():
+        dpath = f.short_path
+        if dpath.startswith("../"):
+            dpath = dpath[3:]
+        pex_files.append(
+            struct(
+                src = f.path,
+                dest = dpath,
+            ),
+        )
+
+    res_files = []
+
+    for f in resources:
+        dpath = f.short_path
+        if dpath.startswith("../"):
+            dpath = dpath[3:]
+        res_files.append(
+            struct(
+                src = f.path,
+                dest = dpath,
+            ),
+        )
+
+    return struct(
+        modules = pex_files,
+        requirements = py.transitive_reqs.to_list(),
+        prebuiltLibraries = [f.path for f in py.transitive_eggs.to_list()],
+        resources = res_files,
     )
-
-  res_files = []
-
-  for f in resources:
-    dpath = f.short_path
-    if dpath.startswith("../"):
-      dpath = dpath[3:]
-    res_files.append(
-        struct(
-            src = f.path,
-            dest = dpath,
-        ),
-    )
-
-  return struct(
-      modules = pex_files,
-      requirements = list(py.transitive_reqs),
-      prebuiltLibraries = [f.path for f in py.transitive_eggs],
-      resources = res_files,
-  )
-
 
 def _pex_binary_impl(ctx):
-  transitive_files = depset(ctx.files.srcs)
+    if ctx.attr.entrypoint and ctx.file.main:
+        fail("Please specify either entrypoint or main, not both.")
+    if ctx.attr.entrypoint:
+        main_file = None
+        main_pkg = ctx.attr.entrypoint
+    elif ctx.file.main:
+        main_file = ctx.file.main
+    else:
+        main_file = ctx.files.srcs[0]
 
-  if ctx.attr.entrypoint and ctx.file.main:
-    fail("Please specify either entrypoint or main, not both.")
-  if ctx.attr.entrypoint:
-    main_file = None
-    main_pkg = ctx.attr.entrypoint
-  elif ctx.file.main:
-    main_file = ctx.file.main
-  else:
-    main_file = pex_file_types.filter(ctx.files.srcs)[0]
-  if main_file:
-    # Translate main_file's short path into a python module name
-    main_pkg = main_file.short_path.replace('/', '.')[:-3]
-    transitive_files += [main_file]
+    transitive_files = list(ctx.files.srcs)
+    if main_file:
+        # Translate main_file's short path into a python module name
+        main_pkg = main_file.short_path.replace("/", ".")[:-3]
+        transitive_files.append(main_file)
 
-  deploy_pex = ctx.new_file(
-      ctx.configuration.bin_dir, ctx.outputs.executable, '.pex')
+    deploy_pex = ctx.actions.declare_file("%s.pex" % ctx.attr.name)
 
-  py = _collect_transitive(ctx)
+    py = _collect_transitive(ctx)
 
-  for dep in ctx.attr.deps:
-    transitive_files += dep.default_runfiles.files
-  runfiles = ctx.runfiles(
-      collect_default = True,
-      transitive_files = transitive_files,
-  )
+    transitive_files = depset(
+        transitive_files,
+        transitive = [dep.default_runfiles.files for dep in ctx.attr.deps],
+    )
 
-  resources = ctx.files.resources
-  manifest_file = ctx.new_file(
-      ctx.configuration.bin_dir, deploy_pex, '_manifest')
+    runfiles = ctx.runfiles(
+        collect_default = True,
+        transitive_files = depset(transitive_files.to_list()),
+    )
 
-  manifest = _gen_manifest(py, runfiles, resources)
+    resources = ctx.files.resources
+    manifest_file = ctx.actions.declare_file("%s.pex_manifest" % ctx.attr.name)
 
-  ctx.file_action(
-      output = manifest_file,
-      content = manifest.to_json(),
-  )
+    manifest = _gen_manifest(py, runfiles, resources)
 
-  pexbuilder = ctx.executable._pexbuilder
+    ctx.actions.write(
+        output = manifest_file,
+        content = manifest.to_json(),
+    )
 
-  # form the arguments to pex builder
-  arguments =  [] if ctx.attr.zip_safe else ["--not-zip-safe"]
-  arguments += [] if ctx.attr.pex_use_wheels else ["--no-use-wheel"]
-  if ctx.attr.interpreter:
-    arguments += ["--python", ctx.attr.interpreter]
-  for platform in ctx.attr.platforms:
-    arguments += ["--platform", platform]
-  for egg in py.transitive_eggs:
-    arguments += ["--find-links", egg.dirname]
-  arguments += [
-      "--pex-root", ".pex",  # May be redundant since we also set PEX_ROOT
-      "--entry-point", main_pkg,
-      "--output-file", deploy_pex.path,
-      "--disable-cache",
-      manifest_file.path,
-  ]
-  #EXTRA_PEX_ARGS#
+    pexbuilder = ctx.executable._pexbuilder
 
-  # form the inputs to pex builder
-  _inputs = (
-      [manifest_file] +
-      list(runfiles.files) +
-      list(py.transitive_eggs) +
-      list(resources)
-  )
+    # form the arguments to pex builder
+    arguments = [] if ctx.attr.zip_safe else ["--not-zip-safe"]
+    arguments += [] if ctx.attr.pex_use_wheels else ["--no-use-wheel"]
+    if ctx.attr.interpreter:
+        arguments += ["--python", ctx.attr.interpreter]
+    for platform in ctx.attr.platforms:
+        arguments += ["--platform", platform]
+    for egg in py.transitive_eggs.to_list():
+        arguments += ["--find-links", egg.dirname]
+    arguments += [
+        "--pex-root",
+        ".pex",  # May be redundant since we also set PEX_ROOT
+        "--entry-point",
+        main_pkg,
+        "--output-file",
+        deploy_pex.path,
+        "--disable-cache",
+        "--python-shebang", "#!/usr/bin/env python3",
+        "--no-compile",
+        manifest_file.path,
+    ]
+    #EXTRA_PEX_ARGS#
 
-  ctx.action(
-      mnemonic = "PexPython",
-      inputs = _inputs,
-      outputs = [deploy_pex],
-      executable = pexbuilder,
-      execution_requirements = {
-          "requires-network": "1",
-      },
-      env = {
-          # TODO(benley): Write a repository rule to pick up certain
-          # PEX-related environment variables (like PEX_VERBOSE) from the
-          # system.
-          # Also, what if python is actually in /opt or something?
-          'PATH': '/bin:/usr/bin:/usr/local/bin',
-          'PEX_VERBOSE': str(ctx.attr.pex_verbosity),
-          'PEX_ROOT': '.pex',  # So pex doesn't try to unpack into $HOME/.pex
-      },
-      arguments = arguments,
-  )
+    # form the inputs to pex builder
+    _inputs = (
+        [manifest_file] +
+        runfiles.files.to_list() +
+        py.transitive_eggs.to_list() +
+        list(resources)
+    )
 
-  executable = ctx.outputs.executable
+    ctx.actions.run(
+        mnemonic = "PexPython",
+        inputs = _inputs,
+        outputs = [deploy_pex],
+        executable = pexbuilder,
+        execution_requirements = {
+            "requires-network": "1",
+        },
+        env = {
+            # TODO(benley): Write a repository rule to pick up certain
+            # PEX-related environment variables (like PEX_VERBOSE) from the
+            # system.
+            # Also, what if python is actually in /opt or something?
+            "PATH": "/bin:/usr/bin:/usr/local/bin",
+            "PEX_VERBOSE": str(ctx.attr.pex_verbosity),
+            "PEX_ROOT": ".pex",  # So pex doesn't try to unpack into $HOME/.pex
+        },
+        arguments = arguments,
+    )
 
-  # There isn't much point in having both foo.pex and foo as identical pex
-  # files, but someone is probably relying on that behaviour by now so we might
-  # as well keep doing it.
-  ctx.action(
-      mnemonic = "LinkPex",
-      inputs = [deploy_pex],
-      outputs = [executable],
-      command = "ln -f {pex} {exe} 2>/dev/null || cp -f {pex} {exe}".format(
-          pex = deploy_pex.path,
-          exe = executable.path,
-      ),
-  )
+    executable = ctx.outputs.executable
 
-  return struct(
-      files = depset([executable]),  # Which files show up in cmdline output
-      runfiles = runfiles,
-  )
+    # There isn't much point in having both foo.pex and foo as identical pex
+    # files, but someone is probably relying on that behaviour by now so we might
+    # as well keep doing it.
+    ctx.actions.run_shell(
+        mnemonic = "LinkPex",
+        inputs = [deploy_pex],
+        outputs = [executable],
+        command = "ln -f {pex} {exe} 2>/dev/null || cp -f {pex} {exe}".format(
+            pex = deploy_pex.path,
+            exe = executable.path,
+        ),
+    )
 
+    return struct(
+        files = depset([executable]),  # Which files show up in cmdline output
+        runfiles = runfiles,
+    )
 
 def _get_runfile_path(ctx, f):
-  """Return the path to f, relative to runfiles."""
-  if ctx.workspace_name:
-    return ctx.workspace_name + "/" + f.short_path
-  else:
-    return f.short_path
-
+    """Return the path to f, relative to runfiles."""
+    if ctx.workspace_name:
+        return ctx.workspace_name + "/" + f.short_path
+    else:
+        return f.short_path
 
 def _pex_pytest_impl(ctx):
-  test_runner = ctx.executable.runner
-  output_file = ctx.outputs.executable
+    test_runner = ctx.executable.runner
+    output_file = ctx.outputs.executable
 
-  test_file_paths = ["${RUNFILES}/" + _get_runfile_path(ctx, f) for f in ctx.files.srcs]
-  ctx.template_action(
-      template = ctx.file.launcher_template,
-      output = output_file,
-      substitutions = {
-          "%test_runner%": _get_runfile_path(ctx, test_runner),
-          "%test_files%": " \\\n    ".join(test_file_paths),
-      },
-      executable = True,
-  )
+    test_file_paths = ["${RUNFILES}/" + _get_runfile_path(ctx, f) for f in ctx.files.srcs]
+    ctx.actions.expand_template(
+        template = ctx.file.launcher_template,
+        output = output_file,
+        substitutions = {
+            "%test_runner%": _get_runfile_path(ctx, test_runner),
+            "%test_files%": " \\\n    ".join(test_file_paths),
+        },
+        is_executable = True,
+    )
 
-  transitive_files = depset(ctx.files.srcs + [test_runner])
-  for dep in ctx.attr.deps:
-    transitive_files += dep.default_runfiles
+    transitive_files = depset(ctx.files.srcs + [test_runner])
+    for dep in ctx.attr.deps:
+        transitive_files += dep.default_runfiles
 
-  return struct(
-      runfiles = ctx.runfiles(
-          files = [output_file],
-          transitive_files = transitive_files,
-          collect_default = True
-      )
-  )
-
+    return struct(
+        runfiles = ctx.runfiles(
+            files = [output_file],
+            transitive_files = transitive_files,
+            collect_default = True,
+        ),
+    )
 
 pex_attrs = {
-    "srcs": attr.label_list(flags = ["DIRECT_COMPILE_TIME_INPUT"],
-                            allow_files = pex_file_types),
-    "deps": attr.label_list(allow_files = False,
-                            providers = ["py"]),
-    "eggs": attr.label_list(flags = ["DIRECT_COMPILE_TIME_INPUT"],
-                            allow_files = egg_file_types),
+    "srcs": attr.label_list(
+        flags = ["DIRECT_COMPILE_TIME_INPUT"],
+        allow_files = pex_file_types,
+    ),
+    "deps": attr.label_list(
+        allow_files = False,
+        providers = [PexProviderInfo],
+    ),
+    "eggs": attr.label_list(
+        flags = ["DIRECT_COMPILE_TIME_INPUT"],
+        allow_files = egg_file_types,
+    ),
     "reqs": attr.string_list(),
     "data": attr.label_list(allow_files = True),
 
@@ -314,37 +307,34 @@ pex_attrs = {
     ),
 }
 
-
 def _dmerge(a, b):
-  """Merge two dictionaries, a+b
+    """Merge two dictionaries, a+b
 
-  Workaround for https://github.com/bazelbuild/skydoc/issues/10
-  """
-  return dict(a.items() + b.items())
-
+    Workaround for https://github.com/bazelbuild/skydoc/issues/10
+    """
+    return dict(a.items() + b.items())
 
 pex_bin_attrs = _dmerge(pex_attrs, {
-    "main": attr.label(allow_files = True,
-                       single_file = True),
+    "main": attr.label(allow_single_file = True),
     "entrypoint": attr.string(),
     "interpreter": attr.string(),
     "platforms": attr.string_list(),
-    "pex_use_wheels": attr.bool(default=True),
-    "pex_verbosity": attr.int(default=0),
+    "pex_use_wheels": attr.bool(default = True),
+    "pex_verbosity": attr.int(default = 0),
     "resources": attr.label_list(allow_files = True),
     "zip_safe": attr.bool(
-        default = True,
+        default = False,
         mandatory = False,
     ),
 })
 
 pex_library = rule(
     _pex_library_impl,
-    attrs = pex_attrs
+    attrs = pex_attrs,
 )
 
 pex_binary_outputs = {
-    "deploy_pex": "%{name}.pex"
+    "deploy_pex": "%{name}.pex",
 }
 
 pex_binary = rule(
@@ -413,69 +403,71 @@ _pytest_pex_test = rule(
             cfg = "target",
         ),
         "launcher_template": attr.label(
-            allow_files = True,
-            single_file = True,
+            allow_single_file = True,
             default = Label("//tools/rules/pex:testlauncher.sh.template"),
         ),
     }),
 )
 
+def pex_pytest(
+        name,
+        srcs,
+        deps = [],
+        eggs = [],
+        data = [],
+        args = [],
+        flaky = False,
+        local = None,
+        size = None,
+        timeout = None,
+        tags = [],
+        **kwargs):
+    """A variant of pex_test that uses py.test to run one or more sets of tests.
 
-def pex_pytest(name, srcs, deps=[], eggs=[], data=[],
-               args=[],
-               flaky=False,
-               local=None,
-               size=None,
-               timeout=None,
-               tags=[],
-               **kwargs):
-  """A variant of pex_test that uses py.test to run one or more sets of tests.
+    This produces two things:
 
-  This produces two things:
+      1. A pex_binary (`<name>_runner`) containing all your code and its
+         dependencies, plus py.test, and the entrypoint set to the py.test
+         runner.
+      2. A small shell script to launch the `<name>_runner` executable with each
+         of the `srcs` enumerated as commandline arguments.  This is the actual
+         test entrypoint for bazel.
 
-    1. A pex_binary (`<name>_runner`) containing all your code and its
-       dependencies, plus py.test, and the entrypoint set to the py.test
-       runner.
-    2. A small shell script to launch the `<name>_runner` executable with each
-       of the `srcs` enumerated as commandline arguments.  This is the actual
-       test entrypoint for bazel.
+    Almost all of the attributes that can be used with pex_test work identically
+    here, including those not specifically mentioned in this docstring.
+    Exceptions are `main` and `entrypoint`, which cannot be used with this macro.
 
-  Almost all of the attributes that can be used with pex_test work identically
-  here, including those not specifically mentioned in this docstring.
-  Exceptions are `main` and `entrypoint`, which cannot be used with this macro.
+    Args:
 
-  Args:
+      srcs: List of files containing tests that should be run.
+    """
+    if "main" in kwargs:
+        fail("Specifying a `main` file makes no sense for pex_pytest.")
+    if "entrypoint" in kwargs:
+        fail("Do not specify `entrypoint` for pex_pytest.")
 
-    srcs: List of files containing tests that should be run.
-  """
-  if "main" in kwargs:
-    fail("Specifying a `main` file makes no sense for pex_pytest.")
-  if "entrypoint" in kwargs:
-    fail("Do not specify `entrypoint` for pex_pytest.")
-
-  pex_binary(
-      name = "%s_runner" % name,
-      srcs = srcs,
-      deps = deps,
-      data = data,
-      eggs = eggs + [
-          "@pytest_whl//file",
-          "@py_whl//file",
-      ],
-      entrypoint = "pytest",
-      testonly = True,
-      **kwargs
-  )
-  _pytest_pex_test(
-      name = name,
-      runner = ":%s_runner" % name,
-      args = args,
-      data = data,
-      flaky = flaky,
-      local = local,
-      size = size,
-      srcs = srcs,
-      timeout = timeout,
-      tags = tags,
-  )
-
+    pex_binary(
+        name = "%s_runner" % name,
+        srcs = srcs,
+        deps = deps,
+        data = data,
+        eggs = eggs + [
+            "@pytest_whl//file",
+            "@py_whl//file",
+        ],
+        entrypoint = "pytest",
+        testonly = True,
+        **kwargs
+    )
+    _pytest_pex_test(
+        name = name,
+        runner = ":%s_runner" % name,
+        args = args,
+        data = data,
+        flaky = flaky,
+        local = local,
+        size = size,
+        srcs = srcs,
+        timeout = timeout,
+        tags = tags,
+    )

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-#include "core/network/misc/echoclient.h"
+#include "heron/common/src/cpp/network/misc/echoclient.h"
 #include <stdio.h>
 #include <iostream>
 
@@ -46,7 +46,7 @@ void EchoClient::CreateAndSendRequest()
       line[strlen(line) - 1] = '\0';
     }
   } else {
-    strcpy(buf, "I love you");
+    snprintf(buf, sizeof(buf), "I love you");
   }
   std::string tosend(buf);
   EchoServerRequest* request = new EchoServerRequest();
@@ -81,7 +81,7 @@ void EchoClient::HandleClose(NetworkErrorCode)
   getEventLoop()->loopExit();
 }
 
-void EchoClient::HandleEchoResponse(void*, EchoServerResponse* _response,
+void EchoClient::HandleEchoResponse(void*, std::unique_ptr<EchoServerResponse> _response,
                                     NetworkErrorCode _status)
 {
   if (_status != OK) {
@@ -95,6 +95,6 @@ void EchoClient::HandleEchoResponse(void*, EchoServerResponse* _response,
       }
     }
   }
-  delete _response;
+
   CreateAndSendRequest();
 }

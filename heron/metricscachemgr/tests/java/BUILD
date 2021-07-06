@@ -1,3 +1,5 @@
+load("@rules_java//java:defs.bzl", "java_library")
+
 metricscachemgr_deps_files = [
     "//heron/spi/src/java:common-spi-java",
     "//heron/metricsmgr/src/java:metricsmgr-java",
@@ -7,7 +9,7 @@ metricscachemgr_deps_files = [
     "//heron/spi/src/java:metricsmgr-spi-java",
     "//heron/proto:proto_common_java",
     "//heron/proto:proto_metrics_java",
-    "//heron/proto:proto_tmaster_java",
+    "//heron/proto:proto_tmanager_java",
     "//third_party/java:jackson",
     "//third_party/java:cli",
     "//third_party/java:guava",
@@ -23,30 +25,28 @@ metricscachemgr_deps_files = [
 test_deps_files = [
     "//third_party/java:junit4",
     "//heron/spi/src/java:utils-spi-java",
-    "@com_google_guava_guava//jar",
+    "@maven//:com_google_guava_guava",
     "//third_party/java:powermock",
     "//third_party/java:mockito",
-  ]
-
+]
 
 java_library(
     name = "metricscachemgr-tests",
     srcs = glob(["**/*.java"]),
-    deps = metricscachemgr_deps_files +\
-           test_deps_files
-           + [
-               "//heron/statemgrs/src/java:null-statemgr-java",
-               "//heron/schedulers/src/java:null-scheduler-java",
-               "//heron/packing/src/java:roundrobin-packing",
-             ]
+    deps = metricscachemgr_deps_files +
+           test_deps_files + [
+        "//heron/statemgrs/src/java:null-statemgr-java",
+        "//heron/schedulers/src/java:null-scheduler-java",
+        "//heron/packing/src/java:roundrobin-packing",
+    ],
 )
 
 java_tests(
-   test_classes = [
-       "org.apache.heron.metricscachemgr.metricscache.CacheCoreTest",
-       "org.apache.heron.metricscachemgr.metricscache.MetricsCacheQueryUtilsTest",
-       "org.apache.heron.metricscachemgr.metricscache.MetricsCacheTest",
-     ],
-     runtime_deps = [ ":metricscachemgr-tests" ],
-     size = "small",
+    size = "small",
+    test_classes = [
+        "org.apache.heron.metricscachemgr.metricscache.CacheCoreTest",
+        "org.apache.heron.metricscachemgr.metricscache.MetricsCacheQueryUtilsTest",
+        "org.apache.heron.metricscachemgr.metricscache.MetricsCacheTest",
+    ],
+    runtime_deps = [":metricscachemgr-tests"],
 )

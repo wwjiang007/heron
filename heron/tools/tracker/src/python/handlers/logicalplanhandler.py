@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -18,14 +18,47 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-""" logicalplanhandler.py """
+"""
+Logical plan objects have the shape:
+  {
+   'spouts': {
+      spout_name: {
+        'outputs': [{'stream_name': stream_name}],
+      }
+   },
+   'bolts': {
+     bolt_name: {
+       'outputs': [{'stream_name': stream_name}],
+       'inputs': [{
+         'stream_name': stream_name,
+         'component_name': component_name,
+         'grouping': grouping_type,
+       }]
+     }
+   }
+  }
+
+"""
 import traceback
 import tornado.gen
 import tornado.web
 
 from heron.common.src.python.utils.log import Log
-from heron.tools.tracker.src.python import graph
 from heron.tools.tracker.src.python.handlers import BaseHandler
+
+import networkx
+
+
+def topology_stages(logical_plan):
+  """Return the number of stages in a logical plan."""
+  graph = networkx.DiGraph(
+      (input_info["component_name"], bolt_name)
+      for bolt_name, bolt_info in logical_plan.get("bolts", {}).items()
+      for input_info in bolt_info["inputs"]
+  )
+  # this is is the same as "diameter" if treating the topology as an undirected graph
+  return networkx.dag_longest_path_length(graph)
+
 
 
 class LogicalPlanHandler(BaseHandler):
@@ -51,22 +84,23 @@ class LogicalPlanHandler(BaseHandler):
       role = self.get_argument_role()
       environ = self.get_argument_environ()
       topology_name = self.get_argument_topology()
-      topology_info = self.tracker.getTopologyInfo(topology_name, cluster, role, environ)
+      topology_info = self.tracker.get_topology_info(topology_name, cluster, role, environ)
       lplan = topology_info["logical_plan"]
 
       # format the logical plan as required by the web (because of Ambrose)
       # first, spouts followed by bolts
       spouts_map = dict()
-      for name, value in lplan['spouts'].items():
+      for name, value in list(lplan['spouts'].items()):
         spouts_map[name] = dict(
             config=value.get("config", dict()),
             outputs=value["outputs"],
             spout_type=value["type"],
             spout_source=value["source"],
+            extra_links=value["extra_links"],
         )
 
       bolts_map = dict()
-      for name, value in lplan['bolts'].items():
+      for name, value in list(lplan['bolts'].items()):
         bolts_map[name] = dict(
             config=value.get("config", dict()),
             inputComponents=[i['component_name'] for i in value['inputs']],
@@ -74,10 +108,8 @@ class LogicalPlanHandler(BaseHandler):
             outputs=value["outputs"]
         )
 
-      diameter = graph.TopologyDAG(lplan).diameter()
-
       result = dict(
-          stages=diameter,
+          stages=topology_stages(lplan),
           spouts=spouts_map,
           bolts=bolts_map
       )

@@ -28,7 +28,7 @@
 platform: minikube
 
 # Heron image to use
-image: heron/heron:VERSION
+image: apache/heron:VERSION
 
 # Heron image pull policy
 imagePullPolicy: IfNotPresent
@@ -38,6 +38,13 @@ jobReplicas: 1
 
 # amount of memory to provide for API server
 apiServerMemory: 512M
+heron:
+  # set to `-` to set base-url to the default k8s proxy URL
+  # set to `null` to remove the use of base_url
+  url: "-"
+
+# Can be EQUAL_TO_LIMIT or NOT_SET
+topologyResourceRequestMode: EQUAL_TO_LIMIT
 
 # Topologies uploader
 uploader:
@@ -52,22 +59,30 @@ uploader:
 packing: RoundRobin # ResourceCompliantRR, FirstFitDecreasing
 
 # Number of replicas for storage bookies, memory and storage requirements
-bookieReplicas: 1
+bookieReplicas: 3
 bookieCpuMin: 100m
 bookieCpuMax: 250m
-bookieHeapMemory: 256M
-bookieDirectMemory: 128M
+bookieHeapMemory: 512M
+bookieDirectMemory: 256M
 bookieReadCacheSize: 32
 bookieWriteCacheSize: 32
-bookieJournalCapacity: 1G
-bookieStorageCapacity: 3G
+bookieJournalCapacity: 5G
+bookieStorageCapacity: 15G
+bookieJournalMaxBackups: 3
+bookieJournalMaxSizeMB: 300
+bookieLogSizeLimit: 10000000
 
 # Number of replicas for zookeeper
-zkReplicas: 1
+zkReplicas: 3
 
 bookkeeper:
-  image: apache/bookkeeper:4.7.3
+  image: apache/bookkeeper:4.13.0
   imagePullPolicy: IfNotPresent
+  
+  # set storageClassName to "none" to not use storageClassName
+  storageClassName: "none"
+  prometheus:
+    enabled: false
 
 zookeeper:
   enabled: true
@@ -98,3 +113,5 @@ zookeeper:
     enabled: false
     runAsUser: 1000
     fsGroup: 1000
+  # set storageClassName to "none" to not use storageClassName
+  storageClassName: "none"

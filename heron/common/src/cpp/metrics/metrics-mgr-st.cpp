@@ -38,7 +38,8 @@ namespace common {
 
 using std::shared_ptr;
 
-MetricsMgrSt::MetricsMgrSt(sp_int32 _metricsmgr_port, sp_int32 _interval, EventLoop* eventLoop) {
+MetricsMgrSt::MetricsMgrSt(sp_int32 _metricsmgr_port, sp_int32 _interval,
+        shared_ptr<EventLoop> eventLoop) {
   options_.set_host("127.0.0.1");
   options_.set_port(_metricsmgr_port);
   options_.set_max_packet_size(1024 * 1024);
@@ -63,12 +64,12 @@ void MetricsMgrSt::Start(const sp_string& _my_hostname, sp_int32 _my_port,
                                  -1, eventLoop_, options_);
 }
 
-void MetricsMgrSt::RefreshTMasterLocation(const proto::tmaster::TMasterLocation& location) {
-  client_->SendTMasterLocation(location);
+void MetricsMgrSt::RefreshTManagerLocation(const proto::tmanager::TManagerLocation& location) {
+  client_->SendTManagerLocation(location);
 }
 
 void MetricsMgrSt::RefreshMetricsCacheLocation(
-    const proto::tmaster::MetricsCacheLocation& location) {
+    const proto::tmanager::MetricsCacheLocation& location) {
   LOG(INFO) << "RefreshMetricsCacheLocation";
   client_->SendMetricsCacheLocation(location);
 }

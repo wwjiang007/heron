@@ -25,19 +25,20 @@
 
 namespace heron {
 namespace proto {
-namespace tmaster {
-class TMasterLocation;
+namespace tmanager {
+class TManagerLocation;
 }
 }
 }
 
 class DummyMtrMgr : public Server {
  public:
-  DummyMtrMgr(EventLoopImpl* ss, const NetworkOptions& options, const sp_string& stmgr_id,
-              CountDownLatch* tmasterLatch, CountDownLatch* connectionCloseLatch);
+  DummyMtrMgr(std::shared_ptr<EventLoopImpl> ss, const NetworkOptions& options,
+              const sp_string& stmgr_id,
+              CountDownLatch* tmanagerLatch, CountDownLatch* connectionCloseLatch);
   virtual ~DummyMtrMgr();
 
-  heron::proto::tmaster::TMasterLocation* get_tmaster();
+  heron::proto::tmanager::TManagerLocation* get_tmanager();
 
  protected:
   // handle an incoming connection from server
@@ -47,18 +48,19 @@ class DummyMtrMgr : public Server {
   virtual void HandleConnectionClose(Connection* connection, NetworkErrorCode status);
 
   // Handle metrics publisher request
-  virtual void HandleMetricPublisherRegisterRequest(
-      REQID _id, Connection* _conn, heron::proto::system::MetricPublisherRegisterRequest* _request);
+  virtual void HandleMetricPublisherRegisterRequest(REQID _id, Connection* _conn,
+                  pool_unique_ptr<heron::proto::system::MetricPublisherRegisterRequest> _request);
   virtual void HandleMetricPublisherPublishMessage(
-      Connection* _conn, heron::proto::system::MetricPublisherPublishMessage* _message);
-  virtual void HandleTMasterLocationMessage(
-      Connection*, heron::proto::system::TMasterLocationRefreshMessage* _message);
+      Connection* _conn,
+      pool_unique_ptr<heron::proto::system::MetricPublisherPublishMessage> _message);
+  virtual void HandleTManagerLocationMessage(
+      Connection*, pool_unique_ptr<heron::proto::system::TManagerLocationRefreshMessage> _message);
 
  private:
   sp_string stmgr_id_expected_;
-  heron::proto::tmaster::TMasterLocation* location_;
-  // Used to signal that tmaster location has been received
-  CountDownLatch* tmasterLatch_;
+  heron::proto::tmanager::TManagerLocation* location_;
+  // Used to signal that tmanager location has been received
+  CountDownLatch* tmanagerLatch_;
   // Used to signal that connection to stmgr has been closed
   CountDownLatch* connectionCloseLatch_;
 };

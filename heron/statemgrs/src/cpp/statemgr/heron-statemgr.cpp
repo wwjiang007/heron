@@ -32,9 +32,12 @@
 namespace heron {
 namespace common {
 
-shared_ptr<HeronStateMgr> HeronStateMgr::MakeStateMgr(const std::string& _zk_hostport,
-                                           const std::string& _topleveldir, EventLoop* eventLoop,
-                                           bool exitOnSessionExpiry) {
+shared_ptr<HeronStateMgr> HeronStateMgr::MakeStateMgr(
+    const std::string& _zk_hostport,
+    const std::string& _topleveldir,
+    shared_ptr<EventLoop> eventLoop,
+    bool exitOnSessionExpiry) {
+
   if (_zk_hostport.empty()) {
     return std::make_shared<HeronLocalFileStateMgr>(_topleveldir, eventLoop);
   } else {
@@ -96,7 +99,7 @@ void HeronStateMgr::ListExecutionStateDone(std::vector<proto::system::ExecutionS
   }
 }
 
-std::string HeronStateMgr::GetTMasterLocationDir() { return topleveldir_ + "/tmasters"; }
+std::string HeronStateMgr::GetTManagerLocationDir() { return topleveldir_ + "/tmanagers"; }
 std::string HeronStateMgr::GetMetricsCacheLocationDir() { return topleveldir_ + "/metricscaches"; }
 
 std::string HeronStateMgr::GetTopologyDir() { return topleveldir_ + "/topologies"; }
@@ -111,8 +114,8 @@ std::string HeronStateMgr::GetStatefulCheckpointsDir() {
   return topleveldir_ + "/statefulcheckpoints";
 }
 
-std::string HeronStateMgr::GetTMasterLocationPath(const std::string& _topname) {
-  return GetTMasterLocationDir() + "/" + _topname;
+std::string HeronStateMgr::GetTManagerLocationPath(const std::string& _topname) {
+  return GetTManagerLocationDir() + "/" + _topname;
 }
 std::string HeronStateMgr::GetMetricsCacheLocationPath(const std::string& _topname) {
   return GetMetricsCacheLocationDir() + "/" + _topname;

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -29,7 +29,7 @@ from heron.proto import metrics_pb2
 from heronpy.api.metrics import (CountMetric, MultiCountMetric, MeanReducedMetric,
                                  ReducedMetric, MultiMeanReducedMetric, MultiReducedMetric)
 
-class BaseMetricsHelper(object):
+class BaseMetricsHelper:
   """Helper class for metrics management
 
   It registers metrics to the metrics collector and provides methods for
@@ -41,7 +41,7 @@ class BaseMetricsHelper(object):
 
   def register_metrics(self, metrics_collector, interval):
     """Registers its metrics to a given metrics collector with a given interval"""
-    for field, metrics in self.metrics.items():
+    for field, metrics in list(self.metrics.items()):
       metrics_collector.register_metric(field, metrics, interval)
 
   def update_count(self, name, incr_by=1, key=None):
@@ -325,7 +325,7 @@ class BoltMetrics(ComponentMetrics):
     self.update_count(self.FAIL_COUNT, key=global_stream_id)
     self.update_reduced_metric(self.FAIL_LATENCY, latency_in_ns, global_stream_id)
 
-class MetricsCollector(object):
+class MetricsCollector:
   """Helper class for pushing metrics to Out-Metrics queue"""
   def __init__(self, looper, out_metrics):
     self.looper = looper
@@ -378,8 +378,8 @@ class MetricsCollector(object):
 
     if metric_value is None:
       return
-    elif isinstance(metric_value, dict):
-      for key, value in metric_value.items():
+    if isinstance(metric_value, dict):
+      for key, value in list(metric_value.items()):
         if key is not None and value is not None:
           self._add_data_to_message(message, name + "/" + str(key), value)
           self._add_data_to_message(message, "%s/%s" % (name, str(key)), value)

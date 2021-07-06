@@ -48,7 +48,7 @@ import org.apache.heron.proto.system.PhysicalPlans;
  * 2. Send Register Request when it is onConnect()
  * 3. Handle relative response for requests
  * 4. if onIncomingMessage(message) is called, it will see whether it is NewAssignment or NewTuples.
- * 5. If it is a new assignment, it will pass the PhysicalPlan to Slave,
+ * 5. If it is a new assignment, it will pass the PhysicalPlan to Executor,
  * which will new a corresponding instance.
  */
 
@@ -120,6 +120,7 @@ public class StreamManagerClient extends HeronClient {
     registerOnMessage(CheckpointManager.InitiateStatefulCheckpoint.newBuilder());
     registerOnMessage(CheckpointManager.RestoreInstanceStateRequest.newBuilder());
     registerOnMessage(CheckpointManager.StartInstanceStatefulProcessing.newBuilder());
+    registerOnMessage(CheckpointManager.StatefulConsistentCheckpointSaved.newBuilder());
   }
 
 
@@ -205,6 +206,8 @@ public class StreamManagerClient extends HeronClient {
       handleRestoreInstanceStateRequest((CheckpointManager.RestoreInstanceStateRequest) message);
     } else if (message instanceof CheckpointManager.StartInstanceStatefulProcessing) {
       handleStartStatefulRequest((CheckpointManager.StartInstanceStatefulProcessing) message);
+    } else if (message instanceof CheckpointManager.StatefulConsistentCheckpointSaved) {
+      handleCheckpointSaved((CheckpointManager.StatefulConsistentCheckpointSaved) message);
     } else {
       throw new RuntimeException("Unknown kind of message received from Stream Manager");
     }
@@ -286,6 +289,17 @@ public class StreamManagerClient extends HeronClient {
     inControlQueue.offer(instanceControlMsg);
   }
 
+  private void handleCheckpointSaved(
+      CheckpointManager.StatefulConsistentCheckpointSaved message) {
+    LOG.info("Received a StatefulCheckpointSaved message with checkpoint id: "
+        + message.getConsistentCheckpoint().getCheckpointId());
+
+    InstanceControlMsg instanceControlMsg = InstanceControlMsg.newBuilder()
+        .setStatefulCheckpointSaved(message)
+        .build();
+    inControlQueue.offer(instanceControlMsg);
+  }
+
   private void handleRestoreInstanceStateRequest(
       CheckpointManager.RestoreInstanceStateRequest request) {
     LOG.info("Received a RestoreInstanceState request with checkpoint id: "
@@ -360,7 +374,7 @@ public class StreamManagerClient extends HeronClient {
           helper.getTopologyState(), newHelper.getTopologyState()));
     }
     helper = newHelper;
-    LOG.info("Push to Slave");
+    LOG.info("Push to Executor");
     InstanceControlMsg instanceControlMsg = InstanceControlMsg.newBuilder().
         setNewPhysicalPlanHelper(helper).
         build();

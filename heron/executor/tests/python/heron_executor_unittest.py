@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -19,13 +19,15 @@
 #  under the License.
 
 '''heron executor unittest'''
+import argparse
 import os
 import socket
-import unittest2 as unittest
+import unittest
 import json
 
-from heron.executor.src.python.heron_executor import ProcessInfo
-from heron.executor.src.python.heron_executor import HeronExecutor
+from pprint import pprint
+
+from heron.executor.src.python.heron_executor import cli, HeronExecutor, ProcessInfo
 from heron.proto.packing_plan_pb2 import PackingPlan
 
 # pylint: disable=unused-argument
@@ -52,7 +54,7 @@ class CommandEncoder(json.JSONEncoder):
   def default(self, o):
     return o.cmd
 
-class MockPOpen(object):
+class MockPOpen:
   """fake subprocess.Popen object that we can use to mock processes and pids"""
   next_pid = 0
 
@@ -72,7 +74,7 @@ class MockExecutor(HeronExecutor):
 
   # pylint: disable=no-self-use
   def _load_logging_dir(self, heron_internals_config_file):
-    return "fake_dir"
+    return "log-files"
 
   def _run_process(self, name, cmd, env=None):
     popen = MockPOpen()
@@ -80,19 +82,20 @@ class MockExecutor(HeronExecutor):
     return popen
 
   def _get_jvm_version(self):
-    return "1.8.y.x"
+    return "11.0.6"
+
 
 class HeronExecutorTest(unittest.TestCase):
   """Unittest for Heron Executor"""
 
   def get_expected_shell_command(container_id):
     return 'heron_shell_binary --port=shell-port ' \
-           '--log_file_prefix=fake_dir/heron-shell-%s.log ' \
+           '--log_file_prefix=log-files/heron-shell-%s.log ' \
            '--secret=topid' % container_id
 
   def build_packing_plan(self, instance_distribution):
     packing_plan = PackingPlan()
-    for container_id in instance_distribution.keys():
+    for container_id in list(instance_distribution.keys()):
       container_plan = packing_plan.container_plans.add()
       container_plan.id = int(container_id)
       for (component_name, global_task_id, component_index) in instance_distribution[container_id]:
@@ -102,76 +105,75 @@ class HeronExecutorTest(unittest.TestCase):
         instance_plan.component_index = int(component_index)
     return packing_plan
 
-  # pylint: disable=no-self-argument
+    # pylint: disable=no-self-argument
   def get_expected_metricsmgr_command(container_id):
-    return "heron_java_home/bin/java -Xmx1024M -XX:+PrintCommandLineFlags -verbosegc " \
-           "-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCCause " \
-           "-XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=100M " \
-           "-XX:+PrintPromotionFailure -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC " \
-           "-XX:+HeapDumpOnOutOfMemoryError -XX:+UseConcMarkSweepGC -XX:+PrintCommandLineFlags " \
-           "-Xloggc:log-files/gc.metricsmgr.log -Djava.net.preferIPv4Stack=true " \
+    return "heron_java_home/bin/java -Xmx1024M -XX:+PrintCommandLineFlags " \
+           "-Djava.net.preferIPv4Stack=true " \
+           "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication " \
+           "-XX:MaxGCPauseMillis=100 -XX:InitiatingHeapOccupancyPercent=30 " \
+           "-XX:ParallelGCThreads=4 " \
            "-cp metricsmgr_classpath org.apache.heron.metricsmgr.MetricsManager " \
            "--id=metricsmgr-%d --port=metricsmgr_port " \
-           "--topology=topname --cluster=cluster --role=role --environment=environ --topology-id=topid " \
-           "--system-config-file=%s --override-config-file=%s --sink-config-file=metrics_sinks_config_file" %\
+           "--topology=topname --cluster=cluster --role=role --environment=environ " \
+           "--topology-id=topid " \
+           "--system-config-file=%s --override-config-file=%s " \
+           "--sink-config-file=metrics_sinks_config_file" % \
            (container_id, INTERNAL_CONF_PATH, OVERRIDE_PATH)
 
   def get_expected_metricscachemgr_command():
-      return "heron_java_home/bin/java -Xmx1024M -XX:+PrintCommandLineFlags -verbosegc " \
-             "-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCCause " \
-             "-XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=100M " \
-             "-XX:+PrintPromotionFailure -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC " \
-             "-XX:+HeapDumpOnOutOfMemoryError -XX:+UseConcMarkSweepGC -XX:+PrintCommandLineFlags " \
-             "-Xloggc:log-files/gc.metricscache.log -Djava.net.preferIPv4Stack=true " \
-             "-cp metricscachemgr_classpath org.apache.heron.metricscachemgr.MetricsCacheManager " \
-             "--metricscache_id metricscache-0 --master_port metricscachemgr_masterport " \
-             "--stats_port metricscachemgr_statsport --topology_name topname --topology_id topid " \
-             "--system_config_file %s --override_config_file %s " \
-             "--sink_config_file metrics_sinks_config_file " \
-             "--cluster cluster --role role --environment environ" %\
-             (INTERNAL_CONF_PATH, OVERRIDE_PATH)
+    return "heron_java_home/bin/java -Xmx1024M -XX:+PrintCommandLineFlags " \
+           "-Djava.net.preferIPv4Stack=true " \
+           "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication " \
+           "-XX:MaxGCPauseMillis=100 -XX:InitiatingHeapOccupancyPercent=30 " \
+           "-XX:ParallelGCThreads=4 " \
+           "-cp metricscachemgr_classpath org.apache.heron.metricscachemgr.MetricsCacheManager " \
+           "--metricscache_id metricscache-0 --server_port metricscachemgr_serverport " \
+           "--stats_port metricscachemgr_statsport --topology_name topname --topology_id topid " \
+           "--system_config_file %s --override_config_file %s " \
+           "--sink_config_file metrics_sinks_config_file " \
+           "--cluster cluster --role role --environment environ" \
+           % (INTERNAL_CONF_PATH, OVERRIDE_PATH)
 
   def get_expected_healthmgr_command():
-      return "heron_java_home/bin/java -Xmx1024M -XX:+PrintCommandLineFlags -verbosegc " \
-             "-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCCause " \
-             "-XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=100M " \
-             "-XX:+PrintPromotionFailure -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC " \
-             "-XX:+HeapDumpOnOutOfMemoryError -XX:+UseConcMarkSweepGC -XX:+PrintCommandLineFlags " \
-             "-Xloggc:log-files/gc.healthmgr.log -Djava.net.preferIPv4Stack=true " \
-             "-cp scheduler_classpath:healthmgr_classpath " \
-             "org.apache.heron.healthmgr.HealthManager --cluster cluster --role role " \
-             "--environment environ --topology_name topname --metricsmgr_port metricsmgr_port"
+    return "heron_java_home/bin/java -Xmx1024M -XX:+PrintCommandLineFlags " \
+           "-Djava.net.preferIPv4Stack=true " \
+           "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication " \
+           "-XX:MaxGCPauseMillis=100 -XX:InitiatingHeapOccupancyPercent=30 " \
+           "-XX:ParallelGCThreads=4 " \
+           "-cp scheduler_classpath:healthmgr_classpath " \
+           "org.apache.heron.healthmgr.HealthManager --cluster cluster --role role " \
+           "--environment environ --topology_name topname --metricsmgr_port metricsmgr_port"
 
   def get_expected_instance_command(component_name, instance_id, container_id):
     instance_name = "container_%d_%s_%d" % (container_id, component_name, instance_id)
     return "heron_java_home/bin/java -Xmx320M -Xms320M -Xmn160M -XX:MaxMetaspaceSize=128M " \
-           "-XX:MetaspaceSize=128M -XX:ReservedCodeCacheSize=64M -XX:+CMSScavengeBeforeRemark " \
-           "-XX:TargetSurvivorRatio=90 -XX:+PrintCommandLineFlags -verbosegc -XX:+PrintGCDetails " \
-           "-XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCCause " \
-           "-XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=100M " \
-           "-XX:+PrintPromotionFailure -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC " \
-           "-XX:+HeapDumpOnOutOfMemoryError -XX:+UseConcMarkSweepGC -XX:ParallelGCThreads=4 " \
-           "-Xloggc:log-files/gc.%s.log -Djava.net.preferIPv4Stack=true " \
+           "-XX:MetaspaceSize=128M -XX:ReservedCodeCacheSize=64M -XX:+PrintCommandLineFlags " \
+           "-Djava.net.preferIPv4Stack=true " \
+           "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication " \
+           "-XX:MaxGCPauseMillis=100 -XX:InitiatingHeapOccupancyPercent=30 " \
+           "-XX:ParallelGCThreads=4 " \
            "-cp instance_classpath:classpath -XX:+HeapDumpOnOutOfMemoryError " \
-           "org.apache.heron.instance.HeronInstance -topology_name topname -topology_id topid -instance_id %s -component_name %s -task_id %d -component_index 0 -stmgr_id stmgr-%d " \
-           "-stmgr_port tmaster_controller_port -metricsmgr_port metricsmgr_port -system_config_file %s -override_config_file %s" \
-           % (instance_name, instance_name, component_name, instance_id,
+           "org.apache.heron.instance.HeronInstance -topology_name topname -topology_id topid " \
+           "-instance_id %s -component_name %s -task_id %d -component_index 0 -stmgr_id stmgr-%d " \
+           "-stmgr_port tmanager_controller_port -metricsmgr_port metricsmgr_port " \
+           "-system_config_file %s -override_config_file %s" \
+           % (instance_name, component_name, instance_id,
               container_id, INTERNAL_CONF_PATH, OVERRIDE_PATH)
 
   MockPOpen.set_next_pid(37)
   expected_processes_container_0 = [
-      ProcessInfo(MockPOpen(), 'heron-tmaster',
-                  'tmaster_binary --topology_name=topname --topology_id=topid '
-                  '--zkhostportlist=zknode --zkroot=zkroot --myhost=%s --master_port=master_port '
-                  '--controller_port=tmaster_controller_port --stats_port=tmaster_stats_port '
+      ProcessInfo(MockPOpen(), 'heron-tmanager',
+                  'tmanager_binary --topology_name=topname --topology_id=topid '
+                  '--zkhostportlist=zknode --zkroot=zkroot --myhost=%s --server_port=server_port '
+                  '--controller_port=tmanager_controller_port --stats_port=tmanager_stats_port '
                   '--config_file=%s --override_config_file=%s '
                   '--metrics_sinks_yaml=metrics_sinks_config_file '
                   '--metricsmgr_port=metricsmgr_port '
                   '--ckptmgr_port=ckptmgr-port' % (HOSTNAME, INTERNAL_CONF_PATH, OVERRIDE_PATH)),
-      ProcessInfo(MockPOpen(), 'heron-shell-0', get_expected_shell_command(0)),
-      ProcessInfo(MockPOpen(), 'metricsmgr-0', get_expected_metricsmgr_command(0)),
       ProcessInfo(MockPOpen(), 'heron-metricscache', get_expected_metricscachemgr_command()),
       ProcessInfo(MockPOpen(), 'heron-healthmgr', get_expected_healthmgr_command()),
+      ProcessInfo(MockPOpen(), 'metricsmgr-0', get_expected_metricsmgr_command(0)),
+      ProcessInfo(MockPOpen(), 'heron-shell-0', get_expected_shell_command(0)),
   ]
 
   MockPOpen.set_next_pid(37)
@@ -181,38 +183,38 @@ class HeronExecutorTest(unittest.TestCase):
                   '--topologydefn_file=topdefnfile --zkhostportlist=zknode --zkroot=zkroot '
                   '--stmgr_id=stmgr-1 '
                   '--instance_ids=container_1_word_3,container_1_exclaim1_2,container_1_exclaim1_1 '
-                  '--myhost=%s --data_port=master_port '
-                  '--local_data_port=tmaster_controller_port --metricsmgr_port=metricsmgr_port '
+                  '--myhost=%s --data_port=server_port '
+                  '--local_data_port=tmanager_controller_port --metricsmgr_port=metricsmgr_port '
                   '--shell_port=shell-port --config_file=%s --override_config_file=%s '
                   '--ckptmgr_port=ckptmgr-port --ckptmgr_id=ckptmgr-1 '
                   '--metricscachemgr_mode=cluster'
                   % (HOSTNAME, INTERNAL_CONF_PATH, OVERRIDE_PATH)),
+      ProcessInfo(MockPOpen(), 'metricsmgr-1', get_expected_metricsmgr_command(1)),
       ProcessInfo(MockPOpen(), 'container_1_word_3', get_expected_instance_command('word', 3, 1)),
-      ProcessInfo(MockPOpen(), 'container_1_exclaim1_1',
-                  get_expected_instance_command('exclaim1', 1, 1)),
       ProcessInfo(MockPOpen(), 'container_1_exclaim1_2',
                   get_expected_instance_command('exclaim1', 2, 1)),
+      ProcessInfo(MockPOpen(), 'container_1_exclaim1_1',
+                  get_expected_instance_command('exclaim1', 1, 1)),
       ProcessInfo(MockPOpen(), 'heron-shell-1', get_expected_shell_command(1)),
-      ProcessInfo(MockPOpen(), 'metricsmgr-1', get_expected_metricsmgr_command(1)),
   ]
 
   MockPOpen.set_next_pid(37)
   expected_processes_container_7 = [
-      ProcessInfo(MockPOpen(), 'container_7_word_11', get_expected_instance_command('word', 11, 7)),
-      ProcessInfo(MockPOpen(), 'container_7_exclaim1_210',
-                  get_expected_instance_command('exclaim1', 210, 7)),
       ProcessInfo(MockPOpen(), 'stmgr-7',
                   'stmgr_binary --topology_name=topname --topology_id=topid '
                   '--topologydefn_file=topdefnfile --zkhostportlist=zknode --zkroot=zkroot '
                   '--stmgr_id=stmgr-7 '
                   '--instance_ids=container_7_word_11,container_7_exclaim1_210 --myhost=%s '
-                  '--data_port=master_port '
-                  '--local_data_port=tmaster_controller_port --metricsmgr_port=metricsmgr_port '
+                  '--data_port=server_port '
+                  '--local_data_port=tmanager_controller_port --metricsmgr_port=metricsmgr_port '
                   '--shell_port=shell-port --config_file=%s --override_config_file=%s '
                   '--ckptmgr_port=ckptmgr-port --ckptmgr_id=ckptmgr-7 '
                   '--metricscachemgr_mode=cluster'
                   % (HOSTNAME, INTERNAL_CONF_PATH, OVERRIDE_PATH)),
       ProcessInfo(MockPOpen(), 'metricsmgr-7', get_expected_metricsmgr_command(7)),
+      ProcessInfo(MockPOpen(), 'container_7_word_11', get_expected_instance_command('word', 11, 7)),
+      ProcessInfo(MockPOpen(), 'container_7_exclaim1_210',
+                  get_expected_instance_command('exclaim1', 210, 7)),
       ProcessInfo(MockPOpen(), 'heron-shell-7', get_expected_shell_command(7)),
   ]
 
@@ -228,9 +230,9 @@ class HeronExecutorTest(unittest.TestCase):
     })
 
   # ./heron-executor <shardid> <topname> <topid> <topdefnfile>
-  # <zknode> <zkroot> <tmaster_binary> <stmgr_binary>
+  # <zknode> <zkroot> <tmanager_binary> <stmgr_binary>
   # <metricsmgr_classpath> <instance_jvm_opts_in_base64> <classpath>
-  # <master_port> <tmaster_controller_port> <tmaster_stats_port> <heron_internals_config_file>
+  # <server_port> <tmanager_controller_port> <tmanager_stats_port> <heron_internals_config_file>
   # <override_config_file> <component_rammap> <component_jvm_opts_in_base64> <pkg_type>
   # <topology_bin_file> <heron_java_home> <shell-port> <heron_shell_binary> <metricsmgr_port>
   # <cluster> <role> <environ> <instance_classpath> <metrics_sinks_config_file>
@@ -245,14 +247,14 @@ class HeronExecutorTest(unittest.TestCase):
       ("--state-manager-connection", "zknode"),
       ("--state-manager-root", "zkroot"),
       ("--state-manager-config-file", "state_manager_config_file"),
-      ("--tmaster-binary", "tmaster_binary"),
+      ("--tmanager-binary", "tmanager_binary"),
       ("--stmgr-binary", "stmgr_binary"),
       ("--metrics-manager-classpath", "metricsmgr_classpath"),
       ("--instance-jvm-opts", "LVhYOitIZWFwRHVtcE9uT3V0T2ZNZW1vcnlFcnJvcg(61)(61)"),
       ("--classpath", "classpath"),
-      ("--master-port", "master_port"),
-      ("--tmaster-controller-port", "tmaster_controller_port"),
-      ("--tmaster-stats-port", "tmaster_stats_port"),
+      ("--server-port", "server_port"),
+      ("--tmanager-controller-port", "tmanager_controller_port"),
+      ("--tmanager-stats-port", "tmanager_stats_port"),
       ("--heron-internals-config-file", INTERNAL_CONF_PATH),
       ("--override-config-file", OVERRIDE_PATH),
       ("--component-ram-map", "exclaim1:536870912,word:536870912"),
@@ -273,7 +275,7 @@ class HeronExecutorTest(unittest.TestCase):
       ("--python-instance-binary", "python_instance_binary"),
       ("--cpp-instance-binary", "cpp_instance_binary"),
       ("--metricscache-manager-classpath", "metricscachemgr_classpath"),
-      ("--metricscache-manager-master-port", "metricscachemgr_masterport"),
+      ("--metricscache-manager-server-port", "metricscachemgr_serverport"),
       ("--metricscache-manager-stats-port", "metricscachemgr_statsport"),
       ("--is-stateful", "is_stateful_enabled"),
       ("--checkpoint-manager-classpath", "ckptmgr_classpath"),
@@ -285,19 +287,18 @@ class HeronExecutorTest(unittest.TestCase):
       ("--metricscache-manager-mode", "cluster")
     ]
 
-    args = ("%s=%s" % (arg[0], (str(arg[1]))) for arg in executor_args)
-    command = "./heron-executor %s" % (" ".join(args))
-    return command.split()
-
+    args = [f"{k}={v}" for k, v in executor_args]
+    ctx = cli.make_context('heron-executor', args)
+    return argparse.Namespace(**ctx.params)
 
   def test_update_packing_plan(self):
     self.executor_0.update_packing_plan(self.packing_plan_expected)
 
-    self.assertEquals(self.packing_plan_expected, self.executor_0.packing_plan)
-    self.assertEquals({1: "stmgr-1", 7: "stmgr-7"}, self.executor_0.stmgr_ids)
-    self.assertEquals(
+    self.assertEqual(self.packing_plan_expected, self.executor_0.packing_plan)
+    self.assertEqual({1: "stmgr-1", 7: "stmgr-7"}, self.executor_0.stmgr_ids)
+    self.assertEqual(
       {0: "metricsmgr-0", 1: "metricsmgr-1", 7: "metricsmgr-7"}, self.executor_0.metricsmgr_ids)
-    self.assertEquals(
+    self.assertEqual(
       {0: "heron-shell-0", 1: "heron-shell-1", 7: "heron-shell-7"}, self.executor_0.heron_shell_ids)
 
   def test_launch_container_0(self):
@@ -315,20 +316,20 @@ class HeronExecutorTest(unittest.TestCase):
     monitored_processes = executor.processes_to_monitor
 
     # convert to (pid, name, command)
-    found_processes = list(map(lambda process_info:
-                          (process_info.pid, process_info.name, process_info.command_str),
-                          executor.processes))
-    found_monitored = list(map(lambda pinfo:
-                          (pinfo[0], pinfo[1].name, pinfo[1].command_str),
-                          monitored_processes.items()))
+    found_processes = list([(process_info.pid, process_info.name, process_info.command_str) for process_info in executor.processes])
+    found_monitored = list([(pinfo[0], pinfo[1].name, pinfo[1].command_str) for pinfo in list(monitored_processes.items())])
     found_processes.sort(key=lambda tuple: tuple[0])
     found_monitored.sort(key=lambda tuple: tuple[0])
-    print("do_test_commands - found_processes: %s found_monitored: %s" \
-          % (found_processes, found_monitored))
-    self.assertEquals(found_processes, found_monitored)
+    print("found_processes:")
+    pprint(found_processes)
+    print("found_monitored:")
+    pprint(found_monitored)
+    self.assertEqual(found_processes, found_monitored)
 
-    print("do_test_commands - expected_processes: %s monitored_processes: %s" \
-          % (expected_processes, monitored_processes))
+    print("expected_processes:")
+    pprint(expected_processes)
+    print("monitored_processes:")
+    pprint(monitored_processes)
     self.assert_processes(expected_processes, monitored_processes)
 
   def test_change_instance_dist_container_1(self):
@@ -337,18 +338,18 @@ class HeronExecutorTest(unittest.TestCase):
     current_commands = self.executor_1.get_commands_to_run()
 
     temp_dict = dict(
-        map((lambda process_info: (process_info.name, process_info.command.split(' '))),
-            self.expected_processes_container_1))
+        list(map((lambda process_info: (process_info.name, process_info.command.split(' '))),
+            self.expected_processes_container_1)))
 
     current_json = json.dumps(current_commands, sort_keys=True, cls=CommandEncoder).split(' ')
     temp_json = json.dumps(temp_dict, sort_keys=True).split(' ')
 
-    print ("current_json: %s" % current_json)
-    print ("temp_json: %s" % temp_json)
+    print("current_json: %s" % current_json)
+    print("temp_json: %s" % temp_json)
 
     # better test error report
     for (s1, s2) in zip(current_json, temp_json):
-      self.assertEquals(s1, s2)
+      self.assertEqual(s1, s2)
 
     # update instance distribution
     new_packing_plan = self.build_packing_plan(
@@ -360,20 +361,21 @@ class HeronExecutorTest(unittest.TestCase):
     commands_to_kill, commands_to_keep, commands_to_start = \
       self.executor_1.get_command_changes(current_commands, updated_commands)
 
-    self.assertEquals(['container_1_exclaim1_2', 'stmgr-1'], sorted(commands_to_kill.keys()))
-    self.assertEquals(
+    self.assertEqual(['container_1_exclaim1_2', 'stmgr-1'], sorted(commands_to_kill.keys()))
+    self.assertEqual(
         ['container_1_exclaim1_1', 'container_1_word_3', 'heron-shell-1', 'metricsmgr-1'],
         sorted(commands_to_keep.keys()))
-    self.assertEquals(['container_1_word_2', 'stmgr-1'], sorted(commands_to_start.keys()))
+    self.assertEqual(['container_1_word_2', 'stmgr-1'], sorted(commands_to_start.keys()))
 
   def assert_processes(self, expected_processes, found_processes):
-    self.assertEquals(len(expected_processes), len(found_processes))
+    self.assertEqual(len(expected_processes), len(found_processes))
     for expected_process in expected_processes:
       self.assert_process(expected_process, found_processes)
 
   def assert_process(self, expected_process, found_processes):
     pid = expected_process.pid
     self.assertTrue(found_processes[pid])
-    self.assertEquals(expected_process.name, found_processes[pid].name)
-    self.assertEquals(expected_process.command, found_processes[pid].command_str)
-    self.assertEquals(1, found_processes[pid].attempts)
+    self.assertEqual(expected_process.name, found_processes[pid].name)
+    self.assertEqual(expected_process.command, found_processes[pid].command_str)
+    self.assertEqual(1, found_processes[pid].attempts)
+

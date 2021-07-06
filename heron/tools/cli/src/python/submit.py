@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -23,9 +23,9 @@ import glob
 import logging
 import os
 import tempfile
-import requests
 import subprocess
-import urlparse
+from urllib.parse import urlparse
+import requests
 
 from heron.common.src.python.utils.log import Log
 from heron.proto import topology_pb2
@@ -79,6 +79,7 @@ def create_parser(subparsers):
   cli_args.add_service_url(parser)
   cli_args.add_system_property(parser)
   cli_args.add_verbose(parser)
+  cli_args.add_verbose_gc(parser)
 
   parser.set_defaults(subcommand='submit')
   return parser
@@ -126,7 +127,10 @@ def launch_a_topology(cl_args, tmp_dir, topology_file, topology_defn_file, topol
   if Log.getEffectiveLevel() == logging.DEBUG:
     args.append("--verbose")
 
-  if cl_args["dry_run"]:
+  if cl_args["verbose_gc"]:
+    args.append("--verbose_gc")
+
+  if cl_args['dry_run']:
     args.append("--dry_run")
     if "dry_run_format" in cl_args:
       args += ["--dry_run_format", cl_args["dry_run_format"]]
@@ -183,6 +187,9 @@ def launch_topology_server(cl_args, topology_file, topology_defn_file, topology_
   if cl_args['dry_run']:
     data["dry_run"] = True
 
+  if cl_args['verbose_gc']:
+    data['verbose_gc'] = True
+
   files = dict(
       definition=open(topology_defn_file, 'rb'),
       topology=open(topology_file, 'rb'),
@@ -233,6 +240,14 @@ def launch_topologies(cl_args, topology_file, tmp_dir):
     except Exception as e:
       err_context = "Cannot load topology definition '%s': %s" % (defn_file, e)
       return SimpleResult(Status.HeronError, err_context)
+
+    # log topology and components configurations
+    Log.debug("Topology config: %s", topology_defn.topology_config)
+    Log.debug("Component config:")
+    for spout in topology_defn.spouts:
+      Log.debug("%s => %s", spout.comp.name, spout.comp.config)
+    for bolt in topology_defn.bolts:
+      Log.debug("%s => %s", bolt.comp.name, bolt.comp.config)
 
     # launch the topology
     Log.info("Launching topology: \'%s\'%s", topology_defn.name, launch_mode_msg(cl_args))
@@ -388,6 +403,7 @@ def download(uri, cluster):
   for f in os.listdir(tmp_dir):
     if f.endswith(suffix):
       return os.path.join(tmp_dir, f)
+  return None
 
 ################################################################################
 # pylint: disable=unused-argument
@@ -410,7 +426,7 @@ def run(command, parser, cl_args, unknown_args):
   # get the topology file name
   topology_file = cl_args['topology-file-name']
 
-  if urlparse.urlparse(topology_file).scheme:
+  if urlparse(topology_file).scheme:
     cl_args['topology-file-name'] = download(topology_file, cl_args['cluster'])
     topology_file = cl_args['topology-file-name']
     Log.debug("download uri to local file: %s", topology_file)
@@ -455,6 +471,10 @@ def run(command, parser, cl_args, unknown_args):
   opts.set_config('cmdline.topology.initial.state', initial_state)
   opts.set_config('cmdline.topology.role', cl_args['role'])
   opts.set_config('cmdline.topology.environment', cl_args['environ'])
+  opts.set_config('cmdline.topology.cluster', cl_args['cluster'])
+  opts.set_config('cmdline.topology.file_name', cl_args['topology-file-name'])
+  opts.set_config('cmdline.topology.class_name', cl_args['topology-class-name'])
+  opts.set_config('cmdline.topology.submit_user', cl_args['submit_user'])
 
   # Use CLI release yaml file if the release_yaml_file config is empty
   if not cl_args['release_yaml_file']:
@@ -463,9 +483,8 @@ def run(command, parser, cl_args, unknown_args):
   # check the extension of the file name to see if it is tar/jar file.
   if jar_type:
     return submit_fatjar(cl_args, unknown_args, tmp_dir)
-  elif tar_type:
+  if tar_type:
     return submit_tar(cl_args, unknown_args, tmp_dir)
-  elif cpp_type:
+  if cpp_type:
     return submit_cpp(cl_args, unknown_args, tmp_dir)
-  else:
-    return submit_pex(cl_args, unknown_args, tmp_dir)
+  return submit_pex(cl_args, unknown_args, tmp_dir)

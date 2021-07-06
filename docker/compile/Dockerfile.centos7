@@ -19,10 +19,10 @@ FROM centos:centos7
 
 # This is passed to the heron build command via the --config flag
 ENV TARGET_PLATFORM centos
-ENV bazelVersion 0.23.2
 
 RUN yum -y upgrade
 RUN yum -y install \
+      ant \
       automake \
       curl \
       cmake \
@@ -35,21 +35,23 @@ RUN yum -y install \
       libtool \
       make \
       patch \
-      python \
-      python-devel \
-      python-setuptools \
+      python3-devel \
       zip \
       unzip \
       wget \
-      which
+      which \
+      tree \
+      java-11-openjdk \
+      java-11-openjdk-devel
 
-RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk
 
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0
+ENV bazelVersion 3.7.2
 
 RUN wget -O /tmp/bazel.sh https://github.com/bazelbuild/bazel/releases/download/$bazelVersion/bazel-$bazelVersion-installer-linux-x86_64.sh \
       && chmod +x /tmp/bazel.sh \
-      && /tmp/bazel.sh
+      && /tmp/bazel.sh \
+      && rm -rf /tmp/bazel.sh
 
 ADD bazelrc /root/.bazelrc
 ADD scripts/compile-platform.sh /compile-platform.sh

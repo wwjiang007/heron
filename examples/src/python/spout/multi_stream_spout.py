@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -21,6 +21,7 @@
 """Word spout with error streams"""
 
 from itertools import cycle
+
 from heronpy.api.spout.spout import Spout
 from heronpy.api.stream import Stream
 

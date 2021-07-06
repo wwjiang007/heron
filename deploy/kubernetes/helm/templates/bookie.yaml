@@ -36,24 +36,35 @@ metadata:
 data:
   BK_BOOKIE_EXTRA_OPTS: "\"-Xms{{ $bookieHeapMemory }} -Xmx{{ $bookieHeapMemory }} -XX:MaxDirectMemorySize={{ $bookieDirectMemory }} -XX:+UseG1GC  -XX:MaxGCPauseMillis=10 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB\""
   BK_bookiePort: "3181"
+  BK_httpServerPort: "8080"
   BK_journalDirectory: "/bookkeeper/data/journal"
   BK_ledgerDirectories: "/bookkeeper/data/ledgers"
   BK_indexDirectories: "/bookkeeper/data/ledgers" 
   BK_zkServers: {{ .Release.Name }}-zookeeper:{{ .Values.zookeeper.clientPort }}
   BK_autoRecoveryDaemonEnabled: "true"
+  BK_journalMaxBackups: "{{ .Values.bookieJournalMaxBackups }}"
+  BK_journalMaxSizeMB: "{{ .Values.bookieJournalMaxSizeMB }}"
+  BK_logSizeLimit: "{{ int64 .Values.bookieLogSizeLimit }}"
+  {{- if or (eq .Values.platform "gke") (eq .Values.platform "minikube") }}
+  BK_useHostNameAsBookieID: "true"
+  {{- end }}
   # TODO: Issue 458: https://github.com/apache/bookkeeper/issues/458
-  #BK_statsProviderClass: org.apache.bookkeeper.stats.PrometheusMetricsProvider
----
+  {{- if eq .Values.bookkeeper.prometheus.enabled true }}
+  BK_enableStatistics: "true"
+  BK_enableTaskExecutionStats: "true"
+  BK_statsProviderClass: org.apache.bookkeeper.stats.prometheus.PrometheusMetricsProvider
+  {{- end }}
 
+---
 ## BookKeeper servers need to access the local disks and the pods
 ## cannot be moved across different nodes.
 ## For this reason, we run BK as a daemon set, one for each node in the
 ## cluster, unless restricted by label selectors
 {{- if or (eq .Values.platform "gke") (eq .Values.platform "minikube") }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 {{- else }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 {{- end }}
 
@@ -63,8 +74,13 @@ metadata:
     app: {{ .Release.Name }}-bookkeeper
     component: {{ .Release.Name }}-bookie
 spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-bookkeeper
+      component: {{ .Release.Name }}-bookie
+      cluster: {{ .Release.Name }}-bookkeeper
 {{- if or (eq .Values.platform "gke") (eq .Values.platform "minikube") }}
-  serviceName: {{ .Release.Name }}-bookkeeper
+  serviceName: {{ .Release.Name }}-bookie
   replicas: {{ $bookieReplicas }}
 {{- end }}
 
@@ -101,20 +117,35 @@ spec:
       initContainers:
         # Wait until the zookeeper pods are up and running
         - name: bookie-init-container
-          image: {{ .Values.bookkeeper.image }}
+          image: {{ .Values.image }} # use heron image until bookkeeper has nc
           command: 
             - sh
             - -c
             - >-
               while true; do
-                status=$(echo ruok | nc {{ .Release.Name }}-zookeeper {{ .Values.zookeeper.clientPort }});
-                writestatus=$(echo isro | nc {{ .Release.Name }}-zookeeper {{ .Values.zookeeper.clientPort }})
-                if [ "$status" = "imok" ] && [ "$writestatus" == "rw" ]; then
+                status=$(echo ruok | nc -w 3 {{ .Release.Name }}-zookeeper {{ .Values.zookeeper.clientPort }});
+                writestatus=$(echo isro | nc -w 3 {{ .Release.Name }}-zookeeper {{ .Values.zookeeper.clientPort }})
+                if [ "$status" = "imok" ] && [ "$writestatus" = "rw" ]; then
                   break;
                 fi;
                 echo 'Zookeeper {{ .Release.Name }}-zookeeper:{{ .Values.zookeeper.clientPort }} not ready';
                 sleep 4;
               done
+{{- if eq .Values.platform "minikube" }}
+        # The first time, initialize BK to wipe data for minikube
+        - name: bookie-format
+          image: {{ .Values.bookkeeper.image }}
+          args: ["/opt/bookkeeper/bin/bookkeeper", "shell", "bookieformat", "-nonInteractive", "-force"]
+          command: [ "/bin/bash", "/opt/bookkeeper/scripts/entrypoint.sh" ]
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-bookie-config
+          volumeMounts:
+            - name: journal-disk
+              mountPath: /bookkeeper/data/journal
+            - name: ledgers-disk
+              mountPath: /bookkeeper/data/ledgers
+{{- end }}
       containers:
         - name: bookie
           image: {{ .Values.bookkeeper.image }}
@@ -129,16 +160,13 @@ spec:
           ports:
             - name: client
               containerPort: 3181
-              # we are using `status.hostIP` for the bookie's advertised address. export 3181 as the hostPort,
-              # so that the containers are able to access the host port
-              hostPort: 3181
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-bookie-config
           volumeMounts:
             - name: journal-disk
               mountPath: /bookkeeper/data/journal
-            - name: data-disk
+            - name: ledgers-disk
               mountPath: /bookkeeper/data/ledgers
 
 {{- if or (eq .Values.platform "aws") (eq .Values.platform "baremetal") }}
@@ -162,23 +190,29 @@ spec:
           component: {{ .Release.Name }}-bookkeeper
       spec:
         accessModes: [ "ReadWriteOnce" ]
+        {{- if ne .Values.bookkeeper.storageClassName "none" }}
+        storageClassName: {{ .Values.bookkeeper.storageClassName }}
+        {{- end }}
         resources:
           requests:
             storage: {{ $bookieJournalCapacity }}
     - metadata:
-        name: data-disk
+        name: ledgers-disk
         annotations:
           volume.alpha.kubernetes.io/storage-class: default
         labels:
           component: {{ .Release.Name }}-bookkeeper
       spec:
         accessModes: [ "ReadWriteOnce" ]
+        {{- if ne .Values.bookkeeper.storageClassName "none" }}
+        storageClassName: {{ .Values.bookkeeper.storageClassName }}
+        {{- end }}
         resources:
           requests:
             storage: {{ $bookieStorageCapacity }}
 {{- end }}
----
 
+---
 ##
 ## Define the Bookie headless service
 ## In practice, in this case, it is only useful to have a view of
@@ -187,6 +221,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  {{- if or (eq .Values.platform "gke") (eq .Values.platform "minikube") }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  {{- end }}
   name: {{ .Release.Name }}-bookie
   labels:
     app: {{ .Release.Name }}-bookkeeper

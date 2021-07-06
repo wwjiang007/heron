@@ -1,3 +1,21 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 # Heron on Kubernetes via Minikube
 
 
@@ -56,7 +74,7 @@ $ kubectl proxy -p 8001
 2. Verify we can access the API server:
 
 ```shell
-$ curl http://localhost:8001/api/v1/proxy/namespaces/default/services/heron-apiserver:9000/api/v1/version
+$ curl http://localhost:8001/api/v1/namespaces/default/services/heron-apiserver:9000/proxy/api/v1/version
 {
    "heron.build.git.revision" : "bf9fe93f76b895825d8852e010dffd5342e1f860",
    "heron.build.git.status" : "Clean",
@@ -71,7 +89,7 @@ $ curl http://localhost:8001/api/v1/proxy/namespaces/default/services/heron-apis
 3. Set service_url:
 ```shell
 $ heron config kubernetes \
-set service_url http://localhost:8001/api/v1/proxy/namespaces/default/services/heron-apiserver:9000 \
+set service_url http://localhost:8001/api/v1/namespaces/default/services/heron-apiserver:9000/proxy \
 ```
 
 4. Submit an example topology:
@@ -82,5 +100,5 @@ org.apache.heron.examples.api.AckingTopology acking
 
 5. View heron ui:
 ```
-http://localhost:8001/api/v1/proxy/namespaces/default/services/heron-ui:8889
+http://localhost:8001/api/v1/namespaces/default/services/heron-ui:8889/proxy
 ```

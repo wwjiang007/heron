@@ -6,16 +6,19 @@ pex_library(
         ["**/*.py"],
         exclude = ["main.py"],
     ),
+    reqs = [
+        "click==7.1.2",
+        "javaobj-py3==0.4.1",
+        "networkx==2.4",
+        "protobuf==3.8.0",
+        "tornado==4.0.2",
+    ],
     deps = [
         "//heron/common/src/python:common-py",
-        "//heronpy/api:heron-python-py",
-        "//heron/tools/common/src/python:common-py",
-        "//heron/statemgrs/src/python:statemgr-py",
         "//heron/proto:proto-py",
-    ],
-    reqs = [
-        "protobuf==3.6.1",
-        "tornado==4.0.2",
+        "//heron/statemgrs/src/python:statemgr-py",
+        "//heron/tools/common/src/python:common-py",
+        "//heronpy/api:heron-python-py",
     ],
 )
 

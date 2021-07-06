@@ -30,17 +30,19 @@
 namespace heron {
 namespace common {
 
+using std::shared_ptr;
+
 MetricsMgrClient::MetricsMgrClient(const sp_string& _hostname, sp_int32 _port,
                                    const sp_string& _component_name, const sp_string& _instance_id,
                                    int _instance_index,
-                                   EventLoop* eventLoop, const NetworkOptions& _options)
+                                   shared_ptr<EventLoop> eventLoop, const NetworkOptions& _options)
     : Client(eventLoop, _options),
       hostname_(_hostname),
       port_(_port),
       component_name_(_component_name),
       instance_id_(_instance_id),
       instance_index_(_instance_index),
-      tmaster_location_(NULL),
+      tmanager_location_(NULL),
       metricscache_location_(NULL),
       registered_(false) {
   InstallResponseHandler(make_unique<proto::system::MetricPublisherRegisterRequest>(),
@@ -48,7 +50,7 @@ MetricsMgrClient::MetricsMgrClient(const sp_string& _hostname, sp_int32 _port,
   Start();
 }
 
-MetricsMgrClient::~MetricsMgrClient() { delete tmaster_location_; delete metricscache_location_; }
+MetricsMgrClient::~MetricsMgrClient() { delete tmanager_location_; delete metricscache_location_; }
 
 void MetricsMgrClient::HandleConnect(NetworkErrorCode _status) {
   if (_status == OK) {
@@ -78,11 +80,12 @@ void MetricsMgrClient::SendRegisterRequest() {
   publisher->set_instance_id(instance_id_);
   publisher->set_instance_index(instance_index_);
 
-  SendRequest(std::move(request), NULL);
+  SendRequest(std::move(request), nullptr);
 }
 
 void MetricsMgrClient::HandleRegisterResponse(
-    void*, proto::system::MetricPublisherRegisterResponse* _response, NetworkErrorCode _status) {
+    void*, pool_unique_ptr<proto::system::MetricPublisherRegisterResponse> _response,
+    NetworkErrorCode _status) {
   if (_status == OK && _response->status().status() != proto::system::OK) {
     // What the heck we explicitly got a non ok response
     LOG(ERROR) << "Recieved a non-ok status from metrics mgr" << std::endl;
@@ -91,13 +94,13 @@ void MetricsMgrClient::HandleRegisterResponse(
     LOG(INFO) << "Successfully registered ourselves to the metricsmgr";
     registered_ = true;
   }
-  delete _response;
-  // Check if we need to send tmaster location
-  if (tmaster_location_) {
-    LOG(INFO) << "Sending TMaster Location to metricsmgr";
-    InternalSendTMasterLocation();
+
+  // Check if we need to send tmanager location
+  if (tmanager_location_) {
+    LOG(INFO) << "Sending TManager Location to metricsmgr";
+    InternalSendTManagerLocation();
   } else {
-    LOG(INFO) << "Do not have a TMasterLocation yet";
+    LOG(INFO) << "Do not have a TManagerLocation yet";
   }
   // Check if we need to send metricscache location
   if (metricscache_location_) {
@@ -108,26 +111,26 @@ void MetricsMgrClient::HandleRegisterResponse(
   }
 }
 
-void MetricsMgrClient::SendTMasterLocation(const proto::tmaster::TMasterLocation& location) {
-  if (tmaster_location_) {
-    delete tmaster_location_;
+void MetricsMgrClient::SendTManagerLocation(const proto::tmanager::TManagerLocation& location) {
+  if (tmanager_location_) {
+    delete tmanager_location_;
   }
-  tmaster_location_ = new proto::tmaster::TMasterLocation(location);
+  tmanager_location_ = new proto::tmanager::TManagerLocation(location);
   if (registered_) {
-    LOG(INFO) << "Sending TMaster Location to metricsmgr";
-    InternalSendTMasterLocation();
+    LOG(INFO) << "Sending TManager Location to metricsmgr";
+    InternalSendTManagerLocation();
   } else {
     LOG(INFO) << "We have not yet registered to metricsmgr."
-              << " Holding off sending TMasterLocation";
+              << " Holding off sending TManagerLocation";
   }
 }
 
 void MetricsMgrClient::SendMetricsCacheLocation(
-    const proto::tmaster::MetricsCacheLocation& location) {
+    const proto::tmanager::MetricsCacheLocation& location) {
   if (metricscache_location_) {
     delete metricscache_location_;
   }
-  metricscache_location_ = new proto::tmaster::MetricsCacheLocation(location);
+  metricscache_location_ = new proto::tmanager::MetricsCacheLocation(location);
   if (registered_) {
     LOG(INFO) << "Sending MetricsCache Location to metricsmgr";
     InternalSendMetricsCacheLocation();
@@ -143,11 +146,11 @@ void MetricsMgrClient::SendMetrics(proto::system::MetricPublisherPublishMessage*
   delete _message;
 }
 
-void MetricsMgrClient::InternalSendTMasterLocation() {
-  CHECK(tmaster_location_);
-  proto::system::TMasterLocationRefreshMessage* m =
-      new proto::system::TMasterLocationRefreshMessage();
-  m->mutable_tmaster()->CopyFrom(*tmaster_location_);
+void MetricsMgrClient::InternalSendTManagerLocation() {
+  CHECK(tmanager_location_);
+  proto::system::TManagerLocationRefreshMessage* m =
+      new proto::system::TManagerLocationRefreshMessage();
+  m->mutable_tmanager()->CopyFrom(*tmanager_location_);
   SendMessage(*m);
 
   delete m;

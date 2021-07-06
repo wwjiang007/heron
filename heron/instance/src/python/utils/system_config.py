@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -28,7 +28,7 @@ sys_config = {}
 
 def merge(default, override):
   if isinstance(default, dict) and isinstance(override, dict):
-    for k, v in override.items():
+    for k, v in list(override.items()):
       Log.info("Add overriding configuration '%s'", k)
       if k not in default:
         default[k] = v

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -51,7 +51,7 @@ Log = log.Log
 HELP_EPILOG = '''Getting more help:
   heron help <command> Prints help and options for <command>
 
-For detailed documentation, go to http://heronstreaming.io'''
+For detailed documentation, go to https://heron.apache.org'''
 
 
 # pylint: disable=protected-access,superfluous-parens
@@ -69,7 +69,7 @@ class _HelpAction(argparse._HelpAction):
     # but better save than sorry
     for subparsers_action in subparsers_actions:
       # get all subparsers and print help
-      for choice, subparser in subparsers_action.choices.items():
+      for choice, subparser in list(subparsers_action.choices.items()):
         print("Subparser '{}'".format(choice))
         print(subparser.format_help())
         return
@@ -127,9 +127,8 @@ def run(handlers, command, parser, command_args, unknown_args):
 
   if command in handlers:
     return handlers[command].run(command, parser, command_args, unknown_args)
-  else:
-    err_context = 'Unknown subcommand: %s' % command
-    return result.SimpleResult(result.Status.InvocationError, err_context)
+  err_context = 'Unknown subcommand: %s' % command
+  return result.SimpleResult(result.Status.InvocationError, err_context)
 
 def cleanup(files):
   '''
@@ -149,9 +148,6 @@ def check_environment():
   Check whether the environment variables are set
   :return:
   '''
-  if not config.check_java_home_set():
-    sys.exit(1)
-
   if not config.check_release_file_exists():
     sys.exit(1)
 

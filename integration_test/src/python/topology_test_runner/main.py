@@ -24,7 +24,7 @@ import re
 import sys
 import time
 import uuid
-from httplib import HTTPConnection
+from http.client import HTTPConnection
 from threading import Lock, Thread
 
 from ..common import status
@@ -37,14 +37,14 @@ from heron.statemgrs.src.python.filestatemanager import FileStateManager
 DEFAULT_TEST_CONF_FILE = "integration_test/src/python/topology_test_runner/resources/test.json"
 
 #seconds
-RETRY_ATTEMPTS = 15
+RETRY_ATTEMPTS = 50
 RETRY_INTERVAL = 10
 WAIT_FOR_DEACTIVATION = 5
 
 successes = []
 failures = []
 
-class TopologyStructureResultChecker(object):
+class TopologyStructureResultChecker:
   """
   Validate topology graph structure
   """
@@ -198,7 +198,7 @@ class InstanceStateResultChecker(TopologyStructureResultChecker):
       raise status.TestFailure("Fail to get actual results of instance states for topology %s"
                                % self.topology_name)
 
-    if '_' not in expected_result[0].keys()[0]:
+    if '_' not in list(expected_result[0].keys())[0]:
       actual_result = self._parse_instance_id(actual_result)
 
     return self._compare_state(sorted(expected_result), sorted(actual_result))
@@ -210,8 +210,8 @@ class InstanceStateResultChecker(TopologyStructureResultChecker):
     else:
       failure = status.TestFailure("Actual result did not match expected result")
       # lambda required below to remove the unicode 'u' from the output
-      logging.info("Actual result ---------- \n" + str(map(lambda x: str(x), actual_results)))
-      logging.info("Expected result ---------- \n" + str(map(lambda x: str(x), expected_results)))
+      logging.info("Actual result ---------- \n" + str([str(x) for x in actual_results]))
+      logging.info("Expected result ---------- \n" + str([str(x) for x in expected_results]))
       raise failure
 
   def _parse_instance_id(self, input):
@@ -224,14 +224,14 @@ class InstanceStateResultChecker(TopologyStructureResultChecker):
     return output
 
 
-class FileBasedExpectedResultsHandler(object):
+class FileBasedExpectedResultsHandler:
   """
   Get expected topology graph structure result from local file
   """
   def __init__(self, file_path):
     self.file_path = file_path
 
-  def fetch_results(self):
+  def fetch_results(self) -> str:
     """
     Read expected result from the expected result file
     """
@@ -245,7 +245,7 @@ class FileBasedExpectedResultsHandler(object):
       raise status.TestFailure("Failed to read expected result file %s" % self.file_path, e)
 
 
-class ZkFileBasedActualResultsHandler(object):
+class ZkFileBasedActualResultsHandler:
   """
   Get actual topology graph structure result from zk
   """
@@ -294,7 +294,7 @@ class ZkFileBasedActualResultsHandler(object):
     self.state_mgr.stop()
 
 
-class HttpBasedActualResultsHandler(object):
+class HttpBasedActualResultsHandler:
   """
   Get actually loaded instance states
   TODO(yaoli): complete this class when stateful processing is ready
@@ -303,23 +303,23 @@ class HttpBasedActualResultsHandler(object):
     self.server_host_port = server_host_port
     self.topology_name = topology_name
 
-  def fetch_results(self):
+  def fetch_results(self) -> str:
     try:
       return self.fetch_from_server(self.server_host_port, self.topology_name,
         'instance_state', '/stateResults/%s' % self.topology_name)
     except Exception as e:
       raise status.TestFailure("Fetching instance state failed for %s topology" % self.topology_name, e)
 
-  def fetch_from_server(self, server_host_port, topology_name, data_name, path):
+  def fetch_from_server(self, server_host_port, topology_name, data_name, path) -> str:
     ''' Make a http get request to fetch actual results from http server '''
     for i in range(0, RETRY_ATTEMPTS):
       logging.info("Fetching %s for topology %s, retry count: %d", data_name, topology_name, i)
       response = self.get_http_response(server_host_port, path)
       if response.status == 200:
-        return response.read()
+        return response.read().decode()
       elif i != RETRY_ATTEMPTS:
         logging.info("Fetching %s failed with status: %s; reason: %s; body: %s",
-          data_name, response.status, response.reason, response.read())
+          data_name, response.status, response.reason, response.read().decode())
         time.sleep(RETRY_INTERVAL)
 
     raise status.TestFailure("Failed to fetch %s after %d attempts" % (data_name, RETRY_ATTEMPTS))
@@ -345,11 +345,11 @@ def filter_test_topologies(test_topologies, test_pattern):
   initial_topologies = test_topologies
   if test_pattern:
     pattern = re.compile(test_pattern)
-    test_topologies = filter(lambda x: pattern.match(x['topologyName']), test_topologies)
+    test_topologies = [x for x in test_topologies if pattern.match(x['topologyName'])]
 
   if len(test_topologies) == 0:
     logging.error("Test filter '%s' did not match any configured test names:\n%s",
-      test_pattern, '\n'.join(map(lambda x: x['topologyName'], initial_topologies)))
+      test_pattern, '\n'.join([x['topologyName'] for x in initial_topologies]))
     sys.exit(1)
   return test_topologies
 
@@ -632,7 +632,7 @@ def main():
   log.configure(level=logging.DEBUG)
   conf_file = DEFAULT_TEST_CONF_FILE
   # Read the configuration file from package
-  conf_string = pkgutil.get_data(__name__, conf_file)
+  conf_string = pkgutil.get_data(__name__, conf_file).decode()
   decoder = json.JSONDecoder(strict=False)
   # Convert the conf file to a json format
   conf = decoder.decode(conf_string)

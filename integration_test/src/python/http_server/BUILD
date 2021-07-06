@@ -3,11 +3,11 @@ package(default_visibility = ["//visibility:public"])
 pex_binary(
     name = "http-server",
     srcs = [
-        "main.py"
+        "main.py",
     ],
     main = "main.py",
     reqs = [
-        "tornado==4.0.2",
+        "tornado==4.5.3",
     ],
     deps = [
         "//heron/common/src/python:common-py",

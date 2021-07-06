@@ -110,6 +110,15 @@ public class Config extends HashMap<String, Object> {
    * The serialization class that is used to serialize/deserialize tuples
    */
   public static final String TOPOLOGY_SERIALIZER_CLASSNAME = "topology.serializer.classname";
+
+  /**
+   * The serializers available for TOPOLOGY_SERIALIZER_CLASSNAME.
+   */
+  public static final String HERON_JAVA_SERIALIZER_CLASS_NAME =
+      "org.apache.heron.api.serializer.JavaSerializer";
+  public static final String HERON_KRYO_SERIALIZER_CLASS_NAME =
+      "org.apache.heron.api.serializer.KryoSerializer";
+
   /**
    * Class that specifies how to create a Kryo instance for serialization. Heron will then apply
    * topology.kryo.register. The default implementation
@@ -369,7 +378,11 @@ public class Config extends HashMap<String, Object> {
       "topology.droptuples.upon.backpressure";
 
   /**
-   * The per component output bytes per second in this topology.
+   * The per component output bytes per second (rate limit) in this topology. It works with
+   * the addConfiguration() function in ComponentConfigurationDeclarer class.
+   * Example:
+   *   builder.setSpout(...).addConfiguration(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, 1000);
+   *   builder.setBolt(...).addConfiguration(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, 1000);
    */
   public static final String TOPOLOGY_COMPONENT_OUTPUT_BPS = "topology.component.output.bps";
 
@@ -480,11 +493,19 @@ public class Config extends HashMap<String, Object> {
   }
 
   public static void registerKryoSerialization(Map<String, Object> conf, Class klass) {
+    // Set to Kryo Seralizer when this function is called. In Storm API, Kryo seralizer is
+    // the default but it is not in Heron. This implicit set could make migration easier
+    // since it is more consistent.
+    setSerializationClassName(conf, HERON_KRYO_SERIALIZER_CLASS_NAME);
     getRegisteredKryoSerializations(conf).add(klass.getName());
   }
 
   public static void registerKryoSerialization(
       Map<String, Object> conf, Class klass, Class<? extends Serializer> serializerClass) {
+    // Set to Kryo Seralizer when this function is called. In Storm API, Kryo seralizer is
+    // the default but it is not in Heron. This implicit set could make migration easier
+    // since it is more consistent.
+    setSerializationClassName(conf, HERON_KRYO_SERIALIZER_CLASS_NAME);
     Map<String, String> register = new HashMap<>();
     register.put(klass.getName(), serializerClass.getName());
     getRegisteredKryoSerializations(conf).add(register);
@@ -629,13 +650,21 @@ public class Config extends HashMap<String, Object> {
     conf.put(Config.TOPOLOGY_AUTO_TASK_HOOKS, hooks);
   }
 
-  public static void setTopologyComponentOutputBPS(Map<String, Object> conf, long bps) {
-    conf.put(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, String.valueOf(bps));
-  }
-
   @SuppressWarnings("unchecked")
   public static List<String> getAutoTaskHooks(Map<String, Object> conf) {
     return (List<String>) conf.get(Config.TOPOLOGY_AUTO_TASK_HOOKS);
+  }
+
+  /**
+   * This function should not be used to set rate limiter in topology config.
+   * @deprecated use the TOPOLOGY_COMPONENT_OUTPUT_BPS config with ComponentConfigurationDeclarer's
+   * addConfiguration() instead.
+   * Example:
+   *   builder.setSpout(...).addConfiguration(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, 1000);
+   */
+  @Deprecated
+  public static void setTopologyComponentOutputBPS(Map<String, Object> conf, long bps) {
+    conf.put(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, String.valueOf(bps));
   }
 
   /**
@@ -1013,6 +1042,14 @@ public class Config extends HashMap<String, Object> {
     this.put(Config.TOPOLOGY_DROPTUPLES_UPON_BACKPRESSURE, String.valueOf(dropTuples));
   }
 
+  /**
+   * This function should not be used to set rate limiter in topology config.
+   * @deprecated use the TOPOLOGY_COMPONENT_OUTPUT_BPS config with ComponentConfigurationDeclarer's
+   * addConfiguration() instead.
+   * Example:
+   *   builder.setSpout(...).addConfiguration(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, 1000);
+   */
+  @Deprecated
   public void setTopologyComponentOutputBPS(long bps) {
     this.put(Config.TOPOLOGY_COMPONENT_OUTPUT_BPS, String.valueOf(bps));
   }

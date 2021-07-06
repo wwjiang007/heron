@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -37,7 +37,7 @@ def get_heron_config():
   :return:
   '''
   opt_list = []
-  for (key, value) in config_opts.items():
+  for (key, value) in list(config_opts.items()):
     opt_list.append('%s=%s' % (key, value))
 
   all_opts = (','.join(opt_list)).replace(' ', '%%%%')

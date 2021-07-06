@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -24,6 +24,7 @@ import time
 import random
 
 from collections import namedtuple
+
 from heronpy.api.tuple import Tuple
 
 HeronTuple = namedtuple('Tuple', Tuple._fields + ('creation_time', 'roots'))
@@ -50,7 +51,7 @@ class RootTupleInfo(namedtuple('RootTupleInfo', 'stream_id tuple_id insertion_ti
   def is_expired(self, current_time, timeout_sec):
     return self.insertion_time + timeout_sec - current_time <= 0
 
-class TupleHelper(object):
+class TupleHelper:
   """Tuple Helper, returns Heron Tuple compatible tuple"""
   TICK_TUPLE_ID = "__tick"
   TICK_SOURCE_COMPONENT = "__system"

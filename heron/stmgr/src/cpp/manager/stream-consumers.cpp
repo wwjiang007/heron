@@ -40,9 +40,8 @@ StreamConsumers::StreamConsumers(const proto::api::InputStream& _is,
 
 StreamConsumers::~StreamConsumers() {
   while (!consumers_.empty()) {
-    Grouping* c = consumers_.front();
+    auto c = std::move(consumers_.front());
     consumers_.pop_front();
-    delete c;
   }
 }
 

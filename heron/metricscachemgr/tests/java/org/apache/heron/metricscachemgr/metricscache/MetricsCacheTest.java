@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.apache.heron.common.basics.NIOLooper;
 import org.apache.heron.common.config.SystemConfig;
 import org.apache.heron.metricsmgr.MetricsSinksConfig;
-import org.apache.heron.proto.tmaster.TopologyMaster;
+import org.apache.heron.proto.tmanager.TopologyManager;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,16 +42,16 @@ public class MetricsCacheTest {
     SystemConfig systemConfig = SystemConfig.newBuilder(true)
         .putAll(CONFIG_SYSTEM_PATH, true)
         .build();
-    MetricsSinksConfig sinksConfig = new MetricsSinksConfig(CONFIG_SINK_PATH);
+    MetricsSinksConfig sinksConfig = new MetricsSinksConfig(CONFIG_SINK_PATH, null);
 
     // initialize metric cache, except looper
     MetricsCache mc = new MetricsCache(systemConfig, sinksConfig, new NIOLooper());
 
-    mc.addMetrics(TopologyMaster.PublishMetrics.newBuilder()
-        .addMetrics(TopologyMaster.MetricDatum.newBuilder()
+    mc.addMetrics(TopologyManager.PublishMetrics.newBuilder()
+        .addMetrics(TopologyManager.MetricDatum.newBuilder()
             .setComponentName("c1").setInstanceId("i1").setName("__jvm-uptime-secs")
             .setTimestamp(System.currentTimeMillis()).setValue("0.1"))
-        .addExceptions(TopologyMaster.TmasterExceptionLog.newBuilder()
+        .addExceptions(TopologyManager.TmanagerExceptionLog.newBuilder()
             .setComponentName("c1").setHostname("h1").setInstanceId("i1")
             .setStacktrace("s1").setLogging("l1")
             .setCount(1)
@@ -60,7 +60,8 @@ public class MetricsCacheTest {
         .build());
 
     // query last 10 seconds
-    TopologyMaster.MetricResponse response = mc.getMetrics(TopologyMaster.MetricRequest.newBuilder()
+    TopologyManager.MetricResponse response = mc.getMetrics(
+        TopologyManager.MetricRequest.newBuilder()
         .setComponentName("c1").addInstanceId("i1")
         .setInterval(10).addMetric("__jvm-uptime-secs")
         .build());

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -22,11 +22,14 @@
 import gc
 import resource
 import traceback
+
 from heronpy.api.metrics import AssignableMetrics
-from .metrics_helper import BaseMetricsHelper
+
 import heron.instance.src.python.utils.system_constants as constants
 from heron.instance.src.python.utils import system_config
 from heron.common.src.python.utils.log import Log
+
+from .metrics_helper import BaseMetricsHelper
 
 # pylint: disable=too-many-instance-attributes
 class PyMetrics(BaseMetricsHelper):

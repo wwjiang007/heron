@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -26,7 +26,6 @@ import os
 import uuid
 
 import heronpy.api.api_constants as api_constants
-import six
 from heronpy.api.component.component_spec import HeronComponentSpec
 from heronpy.api.serializer import default_serializer
 from heronpy.proto import topology_pb2
@@ -47,7 +46,7 @@ class TopologyType(type):
     spout_specs = {}
     # Copy HeronComponentSpec items out of class_dict
     specs = TopologyType.class_dict_to_specs(class_dict)
-    for spec in iter(specs.values()):
+    for spec in iter(list(specs.values())):
       if spec.is_spout:
         TopologyType.add_spout_specs(spec, spout_specs)
       else:
@@ -73,15 +72,14 @@ class TopologyType(type):
     """Takes a class `__dict__` and returns `HeronComponentSpec` entries"""
     specs = {}
 
-    for name, spec in class_dict.items():
+    for name, spec in list(class_dict.items()):
       if isinstance(spec, HeronComponentSpec):
         # Use the variable name as the specification name.
         if spec.name is None:
           spec.name = name
         if spec.name in specs:
           raise ValueError("Duplicate component name: %s" % spec.name)
-        else:
-          specs[spec.name] = spec
+        specs[spec.name] = spec
     return specs
 
   @classmethod
@@ -103,7 +101,7 @@ class TopologyType(type):
     # add defaults
     topo_config.update(mcs.DEFAULT_TOPOLOGY_CONFIG)
 
-    for name, custom_config in class_dict.items():
+    for name, custom_config in list(class_dict.items()):
       if name == 'config' and isinstance(custom_config, dict):
         sanitized_dict = mcs._sanitize_config(custom_config)
         topo_config.update(sanitized_dict)
@@ -131,7 +129,7 @@ class TopologyType(type):
     config = topology_pb2.Config()
     conf_dict = class_dict['_topo_config']
 
-    for key, value in conf_dict.items():
+    for key, value in list(conf_dict.items()):
       if isinstance(value, str):
         kvs = config.kvs.add()
         kvs.key = key
@@ -243,7 +241,7 @@ class TopologyType(type):
       These values will need to be serialized before adding to a protobuf message.
     """
     sanitized = {}
-    for key, value in custom_config.items():
+    for key, value in list(custom_config.items()):
       if not isinstance(key, str):
         raise TypeError("Key for topology-wide configuration must be string, given: %s: %s"
                         % (str(type(key)), str(key)))
@@ -257,8 +255,7 @@ class TopologyType(type):
 
     return sanitized
 
-@six.add_metaclass(TopologyType)
-class Topology(object):
+class Topology(metaclass=TopologyType):
   """Topology is an abstract class for defining a topology
 
   Topology writers can define their custom topology by inheriting this class.
@@ -304,7 +301,7 @@ class Topology(object):
     with open(path, 'wb') as f:
       f.write(cls.protobuf_topology.SerializeToString())
 
-class TopologyBuilder(object):
+class TopologyBuilder:
   """Builder for heronpy.api.src.python topology
 
   This class dynamically creates a subclass of `Topology` with given spouts and

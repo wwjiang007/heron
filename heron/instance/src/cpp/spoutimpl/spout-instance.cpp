@@ -33,12 +33,12 @@
 namespace heron {
 namespace instance {
 
-SpoutInstance::SpoutInstance(EventLoop* eventLoop,
+SpoutInstance::SpoutInstance(std::shared_ptr<EventLoop> eventLoop,
                              std::shared_ptr<TaskContextImpl> taskContext,
-                             NotifyingCommunicator<google::protobuf::Message*>* dataFromSlave,
+                             NotifyingCommunicator<google::protobuf::Message*>* dataFromExecutor,
                              void* dllHandle)
   : taskContext_(taskContext),
-    dataFromSlave_(dataFromSlave), eventLoop_(eventLoop), spout_(NULL), active_(false) {
+    dataFromExecutor_(dataFromExecutor), eventLoop_(eventLoop), spout_(NULL), active_(false) {
   maxWriteBufferSize_ = config::HeronInternalsConfigReader::Instance()
                                ->GetHeronInstanceInternalSpoutWriteQueueCapacity();
   maxEmitBatchIntervalMs_ = config::HeronInternalsConfigReader::Instance()
@@ -63,7 +63,7 @@ SpoutInstance::SpoutInstance(EventLoop* eventLoop,
   serializer_.reset(api::serializer::IPluggableSerializer::createSerializer(
                                                            taskContext_->getConfig()));
   metrics_.reset(new SpoutMetrics(taskContext->getMetricsRegistrar()));
-  collector_.reset(new SpoutOutputCollectorImpl(serializer_, taskContext_, dataFromSlave_));
+  collector_.reset(new SpoutOutputCollectorImpl(serializer_, taskContext_, dataFromExecutor_));
   LOG(INFO) << "Instantiated spout for component " << taskContext->getThisComponentName()
             << " with task_id " << taskContext->getThisTaskId() << " and maxWriteBufferSize_ "
             << maxWriteBufferSize_ << " and maxEmitBatchIntervalMs " << maxEmitBatchIntervalMs_
@@ -130,7 +130,7 @@ void SpoutInstance::DoWork() {
 }
 
 bool SpoutInstance::canProduceTuple() {
-  return (active_ && dataFromSlave_->size() < maxWriteBufferSize_);
+  return (active_ && dataFromExecutor_->size() < maxWriteBufferSize_);
 }
 
 void SpoutInstance::produceTuple() {
@@ -173,15 +173,16 @@ bool SpoutInstance::canContinueWork() {
   int maxSpoutPending = atoi(taskContext_->getConfig()
                              ->get(api::config::Config::TOPOLOGY_MAX_SPOUT_PENDING).c_str());
   return active_ && (
-         (!ackingEnabled_ && dataFromSlave_->size() < maxWriteBufferSize_) ||
-         (ackingEnabled_ && dataFromSlave_->size() < maxWriteBufferSize_ &&
+         (!ackingEnabled_ && dataFromExecutor_->size() < maxWriteBufferSize_) ||
+         (ackingEnabled_ && dataFromExecutor_->size() < maxWriteBufferSize_ &&
           collector_->numInFlight() < maxSpoutPending));
 }
 
-void SpoutInstance::HandleGatewayTuples(proto::system::HeronTupleSet2* tupleSet) {
+void SpoutInstance::HandleGatewayTuples(pool_unique_ptr<proto::system::HeronTupleSet2> tupleSet) {
   if (tupleSet->has_data()) {
     LOG(FATAL) << "Spout cannot get incoming data tuples from other components";
   }
+
   if (tupleSet->has_control()) {
     for (auto ack : tupleSet->control().acks()) {
       handleAckTuple(ack, true);
@@ -190,7 +191,7 @@ void SpoutInstance::HandleGatewayTuples(proto::system::HeronTupleSet2* tupleSet)
       handleAckTuple(ack, false);
     }
   }
-  delete tupleSet;
+
   if (canContinueWork()) {
     eventLoop_->registerInstantCallback([this]() { this->DoWork(); });
   }

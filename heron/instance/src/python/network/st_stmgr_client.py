@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -164,4 +164,3 @@ class SingleThreadStmgrClient(HeronClient):
     """Called when new NewInstanceAssignmentMessage arrives"""
     Log.debug("In handle_assignment_message() of STStmgrClient, Physical Plan: \n%s", str(pplan))
     self.heron_instance_cls.handle_assignment_msg(pplan)
-

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -73,6 +73,7 @@ class JoinBolt(SlidingWindowBolt, StreamletBoltBase):
     self._join_type = config[JoinBolt.JOINTYPE]
 
   def processWindow(self, window_config, tuples):
+    """Process a window"""
     # our temporary map
     mymap = {}
     for tup in tuples:
@@ -80,7 +81,7 @@ class JoinBolt(SlidingWindowBolt, StreamletBoltBase):
       if not isinstance(userdata, collections.Iterable) or len(userdata) != 2:
         raise RuntimeError("Join tuples must be iterable of length 2")
       self._add(userdata[0], userdata[1], tup.component, mymap)
-    for (key, values) in mymap.items():
+    for (key, values) in list(mymap.items()):
       if self._join_type == JoinBolt.INNER:
         if values[0] and values[1]:
           self.inner_join_and_emit(key, values, window_config)

@@ -34,9 +34,9 @@ data:
     #BK_statsProviderClass: org.apache.bookkeeper.stats.prometheus.PrometheusMetricsProvider
     # use hostname as bookie id for StatefulSets deployment
     BK_useHostNameAsBookieID: "true"
----
 
-apiVersion: apps/v1beta1
+---
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: bookie
@@ -44,6 +44,10 @@ metadata:
     app: bookkeeper
     component: bookie
 spec:
+  selector:
+    matchLabels:
+      app: bookkeeper
+      component: bookie
   serviceName: "bookkeeper"
   replicas: 3
   template:
@@ -73,7 +77,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: bookie
-          image: apache/bookkeeper:4.7.3
+          image: apache/bookkeeper:4.13.0
           resources:
             requests:
               memory: "3Gi"
@@ -129,11 +133,15 @@ spec:
 ## Auto-Recovery makes sure to restore the replication factor when any bookie
 ## crashes and it's not recovering on its own.
 ##
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bookie-autorecovery
 spec:
+  selector:
+    matchLabels:
+      app: bookkeeper
+      component: bookkeeper-replication  
   replicas: 2
   template:
     metadata:
@@ -143,7 +151,7 @@ spec:
     spec:
       containers:
         - name: replication-worker
-          image: apache/bookkeeper:4.7.3
+          image: apache/bookkeeper:4.13.0
           command: [ "/bin/bash", "/opt/bookkeeper/scripts/entrypoint.sh" ]
           args: ["/opt/bookkeeper/bin/bookkeeper", "autorecovery"]
           envFrom:

@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -66,6 +67,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore("jdk.internal.reflect.*")
 @PrepareForTest({TokenSub.class, Config.class})
 public class AuroraSchedulerTest {
   private static final String AURORA_PATH = "path.aurora";
@@ -310,7 +312,7 @@ public class AuroraSchedulerTest {
             + " --state-manager-connection=null"
             + " --state-manager-root=null"
             + " --state-manager-config-file=" + expectedConf + "/statemgr.yaml"
-            + " --tmaster-binary=" + expectedBin + "/heron-tmaster"
+            + " --tmanager-binary=" + expectedBin + "/heron-tmanager"
             + " --stmgr-binary=" + expectedBin + "/heron-stmgr"
             + " --metrics-manager-classpath=" + expectedLib + "/metricsmgr/*"
             + " --instance-jvm-opts=\"\""

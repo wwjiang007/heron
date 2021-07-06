@@ -2,9 +2,8 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
-py_binary(
+pex_binary(
     name = "cpplint",
-    srcs = ["cpplint.py"],
-    main = "cpplint.py",
-    stamp = 1,
+    entrypoint = "cpplint",
+    reqs = ["cpplint==1.3.0"],
 )

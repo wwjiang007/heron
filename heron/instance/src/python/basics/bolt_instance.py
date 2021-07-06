@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -21,20 +21,17 @@
 '''bolt_instance.py: module for base bolt for python topology'''
 
 import time
-import Queue
+import queue
+
+from heron.common.src.python.utils.log import Log
+from heron.proto import topology_pb2, tuple_pb2, ckptmgr_pb2
+from heron.instance.src.python.utils.metrics import BoltMetrics
+from heron.instance.src.python.utils.tuple import TupleHelper, HeronTuple
+import heron.instance.src.python.utils.system_constants as system_constants
 
 import heronpy.api.api_constants as api_constants
 from heronpy.api.state.stateful_component import StatefulComponent
 from heronpy.api.stream import Stream
-
-from heron.common.src.python.utils.log import Log
-
-from heron.proto import topology_pb2, tuple_pb2, ckptmgr_pb2
-
-from heron.instance.src.python.utils.metrics import BoltMetrics
-from heron.instance.src.python.utils.tuple import TupleHelper, HeronTuple
-
-import heron.instance.src.python.utils.system_constants as system_constants
 
 from .base_instance import BaseInstance
 
@@ -131,8 +128,8 @@ class BoltInstance(BaseInstance):
     # Set the anchors for a tuple
     if anchors is not None:
       merged_roots = set()
-      for tup in [t for t in anchors if isinstance(t, HeronTuple) and t.roots is not None]:
-        merged_roots.update(tup.roots)
+      for tuple_ in [t for t in anchors if isinstance(t, HeronTuple) and t.roots is not None]:
+        merged_roots.update(tuple_.roots)
       for rt in merged_roots:
         to_add = data_tuple.roots.add()
         to_add.CopyFrom(rt)
@@ -157,6 +154,7 @@ class BoltInstance(BaseInstance):
       if direct_task is not None:
         sent_task_ids.append(direct_task)
       return sent_task_ids
+    return None
 
   def process_incoming_tuples(self):
     """Should be called when tuple was buffered into in_stream
@@ -181,13 +179,13 @@ class BoltInstance(BaseInstance):
     while not self.in_stream.is_empty():
       try:
         tuples = self.in_stream.poll()
-      except Queue.Empty:
+      except queue.Empty:
         break
 
       if isinstance(tuples, tuple_pb2.HeronTupleSet):
         if tuples.HasField("control"):
           raise RuntimeError("Bolt cannot get acks/fails from other components")
-        elif tuples.HasField("data"):
+        if tuples.HasField("data"):
           stream = tuples.data.stream
 
           for data_tuple in tuples.data.tuples:

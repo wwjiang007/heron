@@ -29,13 +29,13 @@
 
 class DummyCkptMgrClient : public heron::stmgr::CkptMgrClient {
  public:
-  DummyCkptMgrClient(EventLoop* eventLoop, const NetworkOptions& _options,
+  DummyCkptMgrClient(std::shared_ptr<EventLoop> eventLoop, const NetworkOptions& _options,
                      const std::string& _stmgr,
                      heron::proto::system::PhysicalPlan* _pplan);
 
   virtual ~DummyCkptMgrClient();
 
-  virtual void SaveInstanceState(heron::proto::ckptmgr::SaveInstanceStateRequest* _request);
+  virtual void SaveInstanceState(unique_ptr<heron::proto::ckptmgr::SaveInstanceStateRequest> _request);
   virtual void GetInstanceState(const heron::proto::system::Instance& _instance,
                                 const std::string& _checkpoint_id);
 

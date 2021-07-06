@@ -35,13 +35,13 @@
 namespace heron {
 namespace instance {
 
-BoltInstance::BoltInstance(EventLoop* eventLoop,
-                           std::shared_ptr<TaskContextImpl> taskContext,
-                           NotifyingCommunicator<google::protobuf::Message*>* dataToSlave,
-                           NotifyingCommunicator<google::protobuf::Message*>* dataFromSlave,
-                           void* dllHandle)
-  : taskContext_(taskContext), dataToSlave_(dataToSlave),
-    dataFromSlave_(dataFromSlave), eventLoop_(eventLoop), bolt_(NULL), active_(false),
+BoltInstance::BoltInstance(std::shared_ptr<EventLoop> eventLoop,
+    std::shared_ptr<TaskContextImpl> taskContext,
+    NotifyingCommunicator<pool_unique_ptr<google::protobuf::Message>>* dataToExecutor,
+    NotifyingCommunicator<google::protobuf::Message*>* dataFromExecutor,
+    void* dllHandle)
+  : taskContext_(taskContext), dataToExecutor_(dataToExecutor),
+    dataFromExecutor_(dataFromExecutor), eventLoop_(eventLoop), bolt_(NULL), active_(false),
     tickTimer_(-1) {
   maxWriteBufferSize_ = config::HeronInternalsConfigReader::Instance()
                                ->GetHeronInstanceInternalBoltWriteQueueCapacity();
@@ -61,7 +61,7 @@ BoltInstance::BoltInstance(EventLoop* eventLoop,
                                                            taskContext_->getConfig()));
   metrics_.reset(new BoltMetrics(taskContext->getMetricsRegistrar()));
   collector_.reset(new BoltOutputCollectorImpl(serializer_, taskContext_,
-                                               dataFromSlave_, metrics_));
+                                               dataFromExecutor_, metrics_));
 }
 
 BoltInstance::~BoltInstance() {
@@ -100,7 +100,7 @@ void BoltInstance::Deactivate() {
 }
 
 void BoltInstance::DoWork() {
-  dataToSlave_->resumeConsumption();
+  dataToExecutor_->resumeConsumption();
 }
 
 void BoltInstance::executeTuple(const proto::api::StreamId& stream,
@@ -114,10 +114,11 @@ void BoltInstance::executeTuple(const proto::api::StreamId& stream,
   metrics_->executeTuple(stream.id(), stream.component_name(), endTime - startTime);
 }
 
-void BoltInstance::HandleGatewayTuples(proto::system::HeronTupleSet2* tupleSet) {
+void BoltInstance::HandleGatewayTuples(pool_unique_ptr<proto::system::HeronTupleSet2> tupleSet) {
   if (tupleSet->has_control()) {
     LOG(FATAL) << "Bolt cannot get incoming control tuples from other components";
   }
+
   if (tupleSet->has_data()) {
     for (int i = 0; i < tupleSet->data().tuples_size(); ++i) {
       auto t = new proto::system::HeronDataTuple();
@@ -128,9 +129,9 @@ void BoltInstance::HandleGatewayTuples(proto::system::HeronTupleSet2* tupleSet) 
       executeTuple(tupleSet->data().stream(), tup);
     }
   }
-  delete tupleSet;
-  if (dataFromSlave_->size() > maxWriteBufferSize_) {
-    dataToSlave_->stopConsumption();
+
+  if (dataFromExecutor_->size() > maxWriteBufferSize_) {
+    dataToExecutor_->stopConsumption();
   }
 }
 

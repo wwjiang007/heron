@@ -90,6 +90,10 @@ tools/jdk/ijar
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 
+# Intellij bazel plugin
+.ijwb
+.clwb
+
 ## Maven generated files
 .classpath.txt
 
@@ -126,12 +130,11 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 
 # generated for the website
-website/node_modules/
-website/public/
-/bin/
+generated-site/
 
 # Visual Studio Code
 .vscode
+vs.code-workspace
 
 # integration_test
 results/

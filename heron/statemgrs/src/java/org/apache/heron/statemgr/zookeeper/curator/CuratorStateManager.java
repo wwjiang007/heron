@@ -46,7 +46,7 @@ import org.apache.heron.proto.scheduler.Scheduler;
 import org.apache.heron.proto.system.ExecutionEnvironment;
 import org.apache.heron.proto.system.PackingPlans;
 import org.apache.heron.proto.system.PhysicalPlans;
-import org.apache.heron.proto.tmaster.TopologyMaster;
+import org.apache.heron.proto.tmanager.TopologyManager;
 import org.apache.heron.spi.common.Config;
 import org.apache.heron.spi.common.Context;
 import org.apache.heron.spi.common.Key;
@@ -63,6 +63,8 @@ import org.apache.zookeeper.Watcher;
 
 public class CuratorStateManager extends FileSystemStateManager {
   private static final Logger LOG = Logger.getLogger(CuratorStateManager.class.getName());
+  private static final int TUNNEL_SETUP_RETRY = 0;  // 0 means no retry
+  private static final int TUNNEL_SETUP_RETRY_SLEEP_SEC = 5;
 
   private CuratorFramework client;
   private String connectionString;
@@ -83,17 +85,29 @@ public class CuratorStateManager extends FileSystemStateManager {
         NetworkUtils.TunnelConfig.build(config, NetworkUtils.HeronSystem.STATE_MANAGER);
 
     if (tunnelConfig.isTunnelNeeded()) {
-      Pair<String, List<Process>> tunneledResults = setupZkTunnel(tunnelConfig);
+      for (int setupCount = 0;; ++setupCount) {
+        Pair<String, List<Process>> tunneledResults = setupZkTunnel(tunnelConfig);
+        String newConnectionString = tunneledResults.first;
 
-      String newConnectionString = tunneledResults.first;
-      if (newConnectionString.isEmpty()) {
-        throw new IllegalArgumentException("Failed to connect to tunnel host '"
-            + tunnelConfig.getTunnelHost() + "'");
+        // If tunnel can't be setup correctly. Retry or bail.
+        if (!newConnectionString.isEmpty()) {
+          // Success, use the new connection string
+          connectionString = newConnectionString;
+          tunnelProcesses.addAll(tunneledResults.second);
+          break;
+        } else {
+          if (setupCount < TUNNEL_SETUP_RETRY) {
+            try {
+              TimeUnit.SECONDS.sleep(TUNNEL_SETUP_RETRY_SLEEP_SEC);
+            } catch (InterruptedException ex) {
+              Thread.currentThread().interrupt();
+            }
+          } else {
+            throw new IllegalArgumentException("Failed to connect to tunnel host '"
+                + tunnelConfig.getTunnelHost() + "'");
+          }
+        }
       }
-
-      // Use the new connection string
-      connectionString = newConnectionString;
-      tunnelProcesses.addAll(tunneledResults.second);
     }
 
     // Start it
@@ -104,10 +118,10 @@ public class CuratorStateManager extends FileSystemStateManager {
     try {
       if (!client.blockUntilConnected(ZkContext.connectionTimeoutMs(newConfig),
           TimeUnit.MILLISECONDS)) {
-        throw new RuntimeException("Failed to initialize CuratorClient");
+        throw new RuntimeException("Failed to connect to " + connectionString);
       }
     } catch (InterruptedException e) {
-      throw new RuntimeException("Failed to initialize CuratorClient", e);
+      throw new RuntimeException("Interrupted from blockUntilConnected(): " + connectionString, e);
     }
 
     if (ZkContext.isInitializeTree(newConfig)) {
@@ -321,7 +335,8 @@ public class CuratorStateManager extends FileSystemStateManager {
       // Suppress it since forPath() throws Exception
       // SUPPRESS CHECKSTYLE IllegalCatch
     } catch (Exception e) {
-      safeSetException(future, new RuntimeException("Could not getNodeData", e));
+      safeSetException(future, new RuntimeException(
+          "Could not getNodeData using watcher for path: " + path, e));
     }
 
     return future;
@@ -333,15 +348,15 @@ public class CuratorStateManager extends FileSystemStateManager {
   }
 
   @Override
-  public ListenableFuture<Boolean> setTMasterLocation(
-      TopologyMaster.TMasterLocation location,
+  public ListenableFuture<Boolean> setTManagerLocation(
+      TopologyManager.TManagerLocation location,
       String topologyName) {
-    return createNode(StateLocation.TMASTER_LOCATION, topologyName, location.toByteArray(), true);
+    return createNode(StateLocation.TMANAGER_LOCATION, topologyName, location.toByteArray(), true);
   }
 
   @Override
   public ListenableFuture<Boolean> setMetricsCacheLocation(
-      TopologyMaster.MetricsCacheLocation location,
+      TopologyManager.MetricsCacheLocation location,
       String topologyName) {
     client.getConnectionStateListenable().addListener(new ConnectionStateListener() {
       @Override
@@ -404,7 +419,7 @@ public class CuratorStateManager extends FileSystemStateManager {
   }
 
   @Override
-  public ListenableFuture<Boolean> deleteTMasterLocation(String topologyName) {
+  public ListenableFuture<Boolean> deleteTManagerLocation(String topologyName) {
     // It is a EPHEMERAL node and would be removed automatically
     final SettableFuture<Boolean> result = SettableFuture.create();
     safeSetFuture(result, true);
@@ -434,7 +449,7 @@ public class CuratorStateManager extends FileSystemStateManager {
   public static void main(String[] args) throws ExecutionException, InterruptedException,
       IllegalAccessException, ClassNotFoundException, InstantiationException {
     if (args.length < 2) {
-      throw new RuntimeException("Expects arguments: <topology_name> <zookeeper_hostname>");
+      throw new RuntimeException("Expects 2 arguments: <topology_name> <zookeeper_hostname>");
     }
 
     String zookeeperHostname = args[1];

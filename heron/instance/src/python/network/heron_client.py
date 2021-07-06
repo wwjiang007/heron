@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -22,10 +22,11 @@
 
 import asyncore
 import socket
+import time
 import traceback
+
 from abc import abstractmethod
 
-import time
 from heron.common.src.python.utils.log import Log
 import heron.instance.src.python.utils.system_constants as constants
 from heron.instance.src.python.network import HeronProtocol, REQID, StatusCode, OutgoingPacket
@@ -157,6 +158,7 @@ class HeronClient(asyncore.dispatcher):
     write_batch_time_sec = self.socket_options.nw_write_batch_time_ms * constants.MS_TO_SEC
     write_batch_size_bytes = self.socket_options.nw_write_batch_size_bytes
 
+    # pylint: disable=chained-comparison
     while (time.time() - start_cycle_time - write_batch_time_sec) < 0 and \
             bytes_written < write_batch_size_bytes and len(self.out_buffer) > 0:
       outgoing_pkt = self.out_buffer[0]
@@ -319,7 +321,6 @@ class HeronClient(asyncore.dispatcher):
 
     Should be implemented by a subclass.
     """
-    pass
 
   @abstractmethod
   def on_response(self, status, context, response):
@@ -327,7 +328,6 @@ class HeronClient(asyncore.dispatcher):
 
     Should be implemented by a subclass.
     """
-    pass
 
   @abstractmethod
   def on_incoming_message(self, message):
@@ -335,7 +335,6 @@ class HeronClient(asyncore.dispatcher):
 
     Should be implemented by a subclass.
     """
-    pass
 
   @abstractmethod
   def on_error(self):
@@ -344,4 +343,3 @@ class HeronClient(asyncore.dispatcher):
     Note that this method is not called when a connection is not yet established.
     In such a case, ``on_connect()`` with status == StatusCode.CONNECT_ERROR is called.
     """
-    pass

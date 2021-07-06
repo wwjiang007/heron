@@ -35,8 +35,8 @@
 
 namespace heron {
 namespace proto {
-namespace tmaster {
-class TMasterLocation;
+namespace tmanager {
+class TManagerLocation;
 }
 }
 }
@@ -51,13 +51,13 @@ class IMetric;
 
 class MetricsMgrSt {
  public:
-  MetricsMgrSt(sp_int32 _metricsmgr_port, sp_int32 _interval, EventLoop* eventLoop);
+  MetricsMgrSt(sp_int32 _metricsmgr_port, sp_int32 _interval, shared_ptr<EventLoop> eventLoop);
   virtual ~MetricsMgrSt();
 
   void register_metric(const sp_string& _metric_name, shared_ptr<IMetric> _metric);
   void unregister_metric(const sp_string& _metric_name);
-  void RefreshTMasterLocation(const proto::tmaster::TMasterLocation& location);
-  void RefreshMetricsCacheLocation(const proto::tmaster::MetricsCacheLocation& location);
+  void RefreshTManagerLocation(const proto::tmanager::TManagerLocation& location);
+  void RefreshMetricsCacheLocation(const proto::tmanager::MetricsCacheLocation& location);
 
   /**
       Start MetricsMgrClient object
@@ -78,7 +78,7 @@ class MetricsMgrSt {
   MetricsMgrClient* client_;
   NetworkOptions options_;
   sp_int64 timerid_;
-  EventLoop* eventLoop_;
+  shared_ptr<EventLoop> eventLoop_;
 };
 }  // namespace common
 }  // namespace heron

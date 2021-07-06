@@ -40,34 +40,35 @@ class Gateway {
         const std::string& topologyId, const std::string& instanceId,
         const std::string& componentName, int taskId, int componentIndex,
         const std::string& stmgrId, int stmgrPort, int metricsMgrPort,
-        EventLoop* eventLoop);
+        std::shared_ptr<EventLoop> eventLoop);
   virtual ~Gateway();
 
   // All kinds of initialization like starting clients
   void Start();
 
-  // Called when Slave indicates that it consumed some data
-  void HandleSlaveDataConsumed();
+  // Called when Executor indicates that it consumed some data
+  void HandleExecutorDataConsumed();
 
-  // Called when we need to consume data from slave
-  void HandleSlaveData(google::protobuf::Message* msg);
+  // Called when we need to consume data from executor
+  void HandleExecutorData(google::protobuf::Message* msg);
 
-  // Called when we need to consume metrics from slave
-  void HandleSlaveMetrics(google::protobuf::Message* msg);
+  // Called when we need to consume metrics from executor
+  void HandleExecutorMetrics(google::protobuf::Message* msg);
 
-  EventLoop* eventLoop() { return eventLoop_; }
-  void setCommunicators(NotifyingCommunicator<google::protobuf::Message*>* dataToSlave,
-                        NotifyingCommunicator<google::protobuf::Message*>* dataFromSlave,
-                        NotifyingCommunicator<google::protobuf::Message*>* metricsFromSlave) {
-    dataToSlave_ = dataToSlave;
-    dataFromSlave_ = dataFromSlave;
-    metricsFromSlave_ = metricsFromSlave;
+  std::shared_ptr<EventLoop> eventLoop() { return eventLoop_; }
+  void setCommunicators(
+          NotifyingCommunicator<pool_unique_ptr<google::protobuf::Message>>* dataToExecutor,
+          NotifyingCommunicator<google::protobuf::Message*>* dataFromExecutor,
+          NotifyingCommunicator<google::protobuf::Message*>* metricsFromExecutor) {
+    dataToExecutor_ = dataToExecutor;
+    dataFromExecutor_ = dataFromExecutor;
+    metricsFromExecutor_ = metricsFromExecutor;
   }
 
  private:
-  void HandleNewPhysicalPlan(proto::system::PhysicalPlan* pplan);
-  void HandleStMgrTuples(proto::system::HeronTupleSet2* tuples);
-  void ResumeConsumingFromSlaveTimer();
+  void HandleNewPhysicalPlan(pool_unique_ptr<proto::system::PhysicalPlan> pplan);
+  void HandleStMgrTuples(pool_unique_ptr<proto::system::HeronTupleSet2> tuples);
+  void ResumeConsumingFromExecutorTimer();
   std::string topologyName_;
   std::string topologyId_;
   int stmgrPort_;
@@ -76,20 +77,20 @@ class Gateway {
   std::shared_ptr<StMgrClient> stmgrClient_;
   std::shared_ptr<common::MetricsMgrClient> metricsMgrClient_;
   std::shared_ptr<GatewayMetrics> gatewayMetrics_;
-  NotifyingCommunicator<google::protobuf::Message*>* dataToSlave_;
-  NotifyingCommunicator<google::protobuf::Message*>* dataFromSlave_;
-  NotifyingCommunicator<google::protobuf::Message*>* metricsFromSlave_;
-  EventLoop* eventLoop_;
+  NotifyingCommunicator<pool_unique_ptr<google::protobuf::Message>>* dataToExecutor_;
+  NotifyingCommunicator<google::protobuf::Message*>* dataFromExecutor_;
+  NotifyingCommunicator<google::protobuf::Message*>* metricsFromExecutor_;
+  std::shared_ptr<EventLoop> eventLoop_;
   // This is the max number of outstanding packets that are yet to be
-  // consumed by the Slave
+  // consumed by the Executor
   int maxReadBufferSize_;
   // This is the max number of outstanding packets that are buffered
   // to be sent to the stmgr
   int maxWriteBufferSize_;
   // The maximum size of a packet
   int maxPacketSize_;
-  // Are we actively reading from slaveQueue
-  bool readingFromSlave_;
+  // Are we actively reading from executorQueue
+  bool readingFromExecutor_;
 };
 
 }  // namespace instance

@@ -28,8 +28,8 @@
 
 namespace heron {
 namespace proto {
-namespace tmaster {
-class TMasterLocation;
+namespace tmanager {
+class TManagerLocation;
 }
 }
 }
@@ -41,32 +41,33 @@ class MetricsMgrClient : public Client {
  public:
   MetricsMgrClient(const sp_string& _hostname, sp_int32 _port, const sp_string& _component_name,
                    const sp_string& _instance_id, int instance_index,
-                   EventLoop* eventLoop, const NetworkOptions& options);
+                   std::shared_ptr<EventLoop> eventLoop, const NetworkOptions& options);
   ~MetricsMgrClient();
 
   void SendMetrics(proto::system::MetricPublisherPublishMessage* _message);
-  void SendTMasterLocation(const proto::tmaster::TMasterLocation& location);
-  void SendMetricsCacheLocation(const proto::tmaster::MetricsCacheLocation& location);
+  void SendTManagerLocation(const proto::tmanager::TManagerLocation& location);
+  void SendMetricsCacheLocation(const proto::tmanager::MetricsCacheLocation& location);
 
  protected:
   virtual void HandleConnect(NetworkErrorCode status);
   virtual void HandleClose(NetworkErrorCode status);
 
  private:
-  void InternalSendTMasterLocation();
+  void InternalSendTManagerLocation();
   void InternalSendMetricsCacheLocation();
   void ReConnect();
   void SendRegisterRequest();
-  void HandleRegisterResponse(void* _ctx, proto::system::MetricPublisherRegisterResponse* _respose,
-                              NetworkErrorCode _status);
+  void HandleRegisterResponse(void* _ctx,
+                          pool_unique_ptr<proto::system::MetricPublisherRegisterResponse> _respose,
+                          NetworkErrorCode _status);
 
   sp_string hostname_;
   sp_int32 port_;
   sp_string component_name_;
   sp_string instance_id_;
   int instance_index_;
-  proto::tmaster::TMasterLocation* tmaster_location_;
-  proto::tmaster::MetricsCacheLocation* metricscache_location_;
+  proto::tmanager::TManagerLocation* tmanager_location_;
+  proto::tmanager::MetricsCacheLocation* metricscache_location_;
   // Tells if we have registered to metrics manager or not
   bool registered_;
 };

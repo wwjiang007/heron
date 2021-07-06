@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "slave/instance-base.h"
+#include "executor/instance-base.h"
 
 #include "proto/messages.h"
 #include "network/network.h"
@@ -40,9 +40,9 @@ namespace instance {
 
 class BoltInstance : public InstanceBase {
  public:
-  BoltInstance(EventLoop* eventLoop, std::shared_ptr<TaskContextImpl> taskContext,
-               NotifyingCommunicator<google::protobuf::Message*>* dataToSlave,
-               NotifyingCommunicator<google::protobuf::Message*>* dataFromSlave,
+  BoltInstance(std::shared_ptr<EventLoop> eventLoop, std::shared_ptr<TaskContextImpl> taskContext,
+               NotifyingCommunicator<pool_unique_ptr<google::protobuf::Message>>* dataToExecutor,
+               NotifyingCommunicator<google::protobuf::Message*>* dataFromExecutor,
                void* dllHandle);
   virtual ~BoltInstance();
 
@@ -52,7 +52,7 @@ class BoltInstance : public InstanceBase {
   virtual void Deactivate();
   virtual bool IsRunning() { return active_; }
   virtual void DoWork();
-  virtual void HandleGatewayTuples(proto::system::HeronTupleSet2* tupleSet);
+  virtual void HandleGatewayTuples(pool_unique_ptr<proto::system::HeronTupleSet2> tupleSet);
 
  private:
   void executeTuple(const proto::api::StreamId& stream,
@@ -62,9 +62,9 @@ class BoltInstance : public InstanceBase {
                     const proto::system::HeronDataTuple& tup);
 
   std::shared_ptr<TaskContextImpl> taskContext_;
-  NotifyingCommunicator<google::protobuf::Message*>* dataToSlave_;
-  NotifyingCommunicator<google::protobuf::Message*>* dataFromSlave_;
-  EventLoop* eventLoop_;
+  NotifyingCommunicator<pool_unique_ptr<google::protobuf::Message>>* dataToExecutor_;
+  NotifyingCommunicator<google::protobuf::Message*>* dataFromExecutor_;
+  std::shared_ptr<EventLoop> eventLoop_;
   api::bolt::IBolt* bolt_;
   std::shared_ptr<api::serializer::IPluggableSerializer> serializer_;
   std::shared_ptr<BoltOutputCollectorImpl> collector_;

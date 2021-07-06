@@ -42,26 +42,26 @@ namespace common {
 
 class HeronLocalFileStateMgr : public HeronStateMgr {
  public:
-  HeronLocalFileStateMgr(const std::string& _topleveldir, EventLoop* eventLoop);
+  HeronLocalFileStateMgr(const std::string& _topleveldir, shared_ptr<EventLoop> eventLoop);
   virtual ~HeronLocalFileStateMgr();
 
   // Sets up the basic filesystem tree at the given location
   void InitTree();
 
-  void SetTMasterLocationWatch(const std::string& _topology_name, VCallback<> _watcher);
+  void SetTManagerLocationWatch(const std::string& _topology_name, VCallback<> _watcher);
   void SetMetricsCacheLocationWatch(const std::string& _topology_name, VCallback<> _watcher);
   void SetPackingPlanWatch(const std::string& _topology_name, VCallback<> _watcher);
 
   // implement the functions
-  void GetTMasterLocation(const std::string& _topology_name,
-                          proto::tmaster::TMasterLocation* _return,
+  void GetTManagerLocation(const std::string& _topology_name,
+                          shared_ptr<proto::tmanager::TManagerLocation> _return,
                           VCallback<proto::system::StatusCode> _cb);
-  void SetTMasterLocation(const proto::tmaster::TMasterLocation& _location,
+  void SetTManagerLocation(const proto::tmanager::TManagerLocation& _location,
                           VCallback<proto::system::StatusCode> _cb);
   void GetMetricsCacheLocation(const std::string& _topology_name,
-                          proto::tmaster::MetricsCacheLocation* _return,
+                          shared_ptr<proto::tmanager::MetricsCacheLocation> _return,
                           VCallback<proto::system::StatusCode> _cb);
-  void SetMetricsCacheLocation(const proto::tmaster::MetricsCacheLocation& _location,
+  void SetMetricsCacheLocation(const proto::tmanager::MetricsCacheLocation& _location,
                           VCallback<proto::system::StatusCode> _cb);
 
   void CreateTopology(const proto::api::Topology& _top, VCallback<proto::system::StatusCode> _cb);
@@ -128,8 +128,8 @@ class HeronLocalFileStateMgr : public HeronStateMgr {
   // helper function to see if a file exists
   proto::system::StatusCode MakeSureFileDoesNotExist(const std::string& _filename);
 
-  // helper function to see if the tmaster location has changed
-  void CheckTMasterLocation(std::string _topology_name, time_t _last_change, VCallback<> _watcher,
+  // helper function to see if the tmanager location has changed
+  void CheckTManagerLocation(std::string _topology_name, time_t _last_change, VCallback<> _watcher,
                             EventLoop::Status);
   void CheckMetricsCacheLocation(std::string _topology_name, time_t _last_change,
                                  VCallback<> _watcher, EventLoop::Status);
@@ -137,7 +137,7 @@ class HeronLocalFileStateMgr : public HeronStateMgr {
                         VCallback<> _watcher, EventLoop::Status);
 
   // Hold the EventLoop for scheduling callbacks
-  EventLoop* eventLoop_;
+  shared_ptr<EventLoop> eventLoop_;
 };
 }  // namespace common
 }  // namespace heron

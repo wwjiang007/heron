@@ -27,7 +27,6 @@ metadata:
   namespace: default
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -44,8 +43,7 @@ subjects:
   namespace: default
 
 ---
-
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: heron-apiserver
@@ -79,11 +77,11 @@ spec:
           tolerationSeconds: 10
       initContainers:
         - name: init-heron-apiserver
-          image: apache/bookkeeper:4.7.3
+          image: apache/bookkeeper:4.13.0
           command: ['sh', '-c', '/opt/bookkeeper/bin/dlog admin bind -l /ledgers -s zookeeper:2181 -c distributedlog://zookeeper:2181/heron']
       containers:
         - name: heron-apiserver
-          image: heron/heron:latest
+          image: apache/heron:latest
           command: ["sh", "-c"]
           args:
             - >-
@@ -92,18 +90,13 @@ spec:
               --cluster kubernetes
               -D heron.statemgr.connection.string=zookeeper:2181
               -D heron.kubernetes.scheduler.uri=http://localhost:8001
-              -D heron.executor.docker.image=heron/heron:latest
+              -D heron.executor.docker.image=apache/heron:latest
               -D heron.class.uploader=org.apache.heron.uploader.dlog.DLUploader
               -D heron.uploader.dlog.topologies.namespace.uri=distributedlog://zookeeper:2181/heron
               -D heron.statefulstorage.classname=org.apache.heron.statefulstorage.dlog.DlogStorage
               -D heron.statefulstorage.dlog.namespace.uri=distributedlog://zookeeper:2181/heron
-        - name: kubectl-proxy
-          image: heron/kubectl:latest
-          command: ["sh", "-c"]
-          args:
-            - >
-              kubectl proxy -p 8001
----    
+
+---
 apiVersion: v1
 kind: Service
 metadata:

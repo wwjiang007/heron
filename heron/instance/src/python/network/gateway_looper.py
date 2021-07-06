@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 #  Licensed to the Apache Software Foundation (ASF) under one
@@ -26,8 +26,9 @@ import os
 import time
 import select
 
-from event_looper import EventLooper
 from heron.common.src.python.utils.log import Log
+from .event_looper import EventLooper
+
 
 class GatewayLooper(EventLooper):
   """A GatewayLooper, inheriting EventLooper
@@ -65,7 +66,7 @@ class GatewayLooper(EventLooper):
       self.poll(timeout=0.0)
 
   def wake_up(self):
-    os.write(self.pipe_w, "\n")
+    os.write(self.pipe_w, b"\n")
     Log.debug("Wake up called")
 
   def on_exit(self):
@@ -83,7 +84,7 @@ class GatewayLooper(EventLooper):
     error_lst = []
 
     if self.sock_map is not None:
-      for fd, obj in self.sock_map.items():
+      for fd, obj in list(self.sock_map.items()):
         is_r = obj.readable()
         is_w = obj.writable()
         if is_r:
@@ -104,8 +105,7 @@ class GatewayLooper(EventLooper):
       Log.debug("Trivial error: " + str(err))
       if err.args[0] != errno.EINTR:
         raise
-      else:
-        return
+      return
     Log.debug("Selected [r]: " + str(readable_lst) +
               " [w]: " + str(writable_lst) + " [e]: " + str(error_lst))
 

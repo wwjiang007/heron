@@ -40,9 +40,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.heron.api.metric.MultiCountMetric;
 import org.apache.heron.common.basics.Communicator;
+import org.apache.heron.common.basics.ExecutorLooper;
 import org.apache.heron.common.basics.NIOLooper;
 import org.apache.heron.common.basics.SingletonRegistry;
-import org.apache.heron.common.basics.SlaveLooper;
 import org.apache.heron.common.basics.SysUtils;
 import org.apache.heron.common.basics.TypeUtils;
 import org.apache.heron.common.config.SystemConfig;
@@ -199,7 +199,7 @@ public class MetricsManager {
               : TypeUtils.getInteger(restartAttempts));
 
       // Update the list of Communicator in Metrics Manager Server
-      metricsManagerServer.addSinkCommunicator(sinkExecutor.getCommunicator());
+      metricsManagerServer.addSinkCommunicator(sinkId, sinkExecutor.getCommunicator());
     }
   }
 
@@ -373,7 +373,7 @@ public class MetricsManager {
     Level loggingLevel = Level.INFO;
     String loggingDir = systemConfig.getHeronLoggingDirectory();
 
-    // Log to file and TMaster
+    // Log to file and TManager
     LoggingHelper.loggerInit(loggingLevel, true);
     LoggingHelper.addLoggingHandler(
         LoggingHelper.getFileHandler(metricsmgrId, loggingDir, true,
@@ -382,14 +382,15 @@ public class MetricsManager {
     LoggingHelper.addLoggingHandler(new ErrorReportLoggingHandler());
 
     LOG.info(String.format("Starting Metrics Manager for topology %s with topologyId %s with "
-            + "Metrics Manager Id %s, Merics Manager Port: %d, for cluster/role/env %s.",
+            + "Metrics Manager Id %s, Metrics Manager Port: %d, for cluster/role/env %s.",
         topologyName, topologyId, metricsmgrId, metricsPort,
         String.format("%s/%s/%s", cluster, role, environment)));
 
     LOG.info("System Config: " + systemConfig);
 
     // Populate the config
-    MetricsSinksConfig sinksConfig = new MetricsSinksConfig(metricsSinksConfigFilename);
+    MetricsSinksConfig sinksConfig = new MetricsSinksConfig(metricsSinksConfigFilename,
+                                                            overrideConfigFilename);
 
     LOG.info("Sinks Config:" + sinksConfig.toString());
 
@@ -441,7 +442,7 @@ public class MetricsManager {
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e + " IMetricsSink class must be a class path.");
     }
-    SlaveLooper sinkExecutorLoop = new SlaveLooper();
+    ExecutorLooper sinkExecutorLoop = new ExecutorLooper();
     Communicator<MetricsRecord> executorInMetricsQueue =
         new Communicator<MetricsRecord>(null, sinkExecutorLoop);
 
@@ -536,12 +537,11 @@ public class MetricsManager {
       // If the thread name is a key of SinkExecutors, then it is a thread running IMetricsSink
       if (sinkExecutors.containsKey(thread.getName())) {
         sinkId = thread.getName();
-        // Remove the old sink executor
-        SinkExecutor oldSinkExecutor = sinkExecutors.remove(sinkId);
         // Remove the unneeded Communicator bind with Metrics Manager Server
-        metricsManagerServer.removeSinkCommunicator(oldSinkExecutor.getCommunicator());
+        metricsManagerServer.removeSinkCommunicator(sinkId);
 
-        // Close the sink
+        // Remove the old sink executor and close the sink
+        SinkExecutor oldSinkExecutor = sinkExecutors.remove(sinkId);
         SysUtils.closeIgnoringExceptions(oldSinkExecutor);
 
         thisSinkRetryAttempts = sinksRetryAttempts.remove(sinkId);
@@ -564,7 +564,7 @@ public class MetricsManager {
         sinksRetryAttempts.put(sinkId, thisSinkRetryAttempts);
 
         // Update the list of Communicator in Metrics Manager Server
-        metricsManagerServer.addSinkCommunicator(newSinkExecutor.getCommunicator());
+        metricsManagerServer.addSinkCommunicator(sinkId, newSinkExecutor.getCommunicator());
 
         // Restart it
         executors.execute(newSinkExecutor);

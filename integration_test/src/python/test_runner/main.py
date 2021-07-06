@@ -24,7 +24,7 @@ import re
 import sys
 import time
 import uuid
-from httplib import HTTPConnection
+from http.client import HTTPConnection
 from threading import Lock, Thread
 
 from ..common import status
@@ -33,18 +33,20 @@ from heron.common.src.python.utils import log
 # The location of default configure file
 DEFAULT_TEST_CONF_FILE = "integration_test/src/python/test_runner/resources/test.json"
 
-RETRY_ATTEMPTS = 15
+RETRY_ATTEMPTS = 25
 #seconds
 RETRY_INTERVAL = 10
+
+VERBOSE = False               # Disable verbose by default
 
 successes = []
 failures = []
 
-class FileBasedExpectedResultsHandler(object):
+class FileBasedExpectedResultsHandler:
   def __init__(self, file_path):
     self.file_path = file_path
 
-  def fetch_results(self):
+  def fetch_results(self) -> str:
     # Read expected result from the expected result file
     try:
       if not os.path.exists(self.file_path):
@@ -55,14 +57,14 @@ class FileBasedExpectedResultsHandler(object):
     except Exception as e:
       raise status.TestFailure("Failed to read expected result file %s" % self.file_path, e)
 
-class HttpBasedExpectedResultsHandler(object):
+class HttpBasedExpectedResultsHandler:
   def __init__(self, server_host_port, topology_name, task_count):
     self.server_host_port = server_host_port
     self.topology_name = topology_name
     self.task_count = task_count
 
   # pylint: disable=unnecessary-lambda
-  def fetch_results(self):
+  def fetch_results(self) -> str:
     try:
       result = []
       decoder = json.JSONDecoder(strict=False)
@@ -80,17 +82,17 @@ class HttpBasedExpectedResultsHandler(object):
 
       # need to convert from a list of json objects to a string of a python list,
       # without the unicode using double quotes, not single quotes.
-      return str(map(lambda x: str(x), result)).replace("'", '"')
+      return str([str(x) for x in result]).replace("'", '"')
     except Exception as e:
       raise status.TestFailure(
           "Fetching expected result failed for %s topology" % self.topology_name, e)
 
-class HttpBasedActualResultsHandler(object):
+class HttpBasedActualResultsHandler:
   def __init__(self, server_host_port, topology_name):
     self.server_host_port = server_host_port
     self.topology_name = topology_name
 
-  def fetch_results(self):
+  def fetch_results(self) -> str:
     try:
       return fetch_from_server(self.server_host_port, self.topology_name,
                                'results', '/results/%s' % self.topology_name)
@@ -98,7 +100,7 @@ class HttpBasedActualResultsHandler(object):
       raise status.TestFailure("Fetching result failed for %s topology" % self.topology_name, e)
 
 # pylint: disable=unnecessary-lambda
-class ExactlyOnceResultsChecker(object):
+class ExactlyOnceResultsChecker:
   """Compares what results we found against what was expected. Verifies and exact match"""
 
   def __init__(self, topology_name, expected_results_handler, actual_results_handler):
@@ -131,8 +133,8 @@ class ExactlyOnceResultsChecker(object):
     else:
       failure = status.TestFailure("Actual result did not match expected result")
       # lambda required below to remove the unicode 'u' from the output
-      logging.info("Actual result ---------- \n" + str(map(lambda x: str(x), actual_results)))
-      logging.info("Expected result ---------- \n" + str(map(lambda x: str(x), expected_results)))
+      logging.info("Actual result ---------- \n" + str([str(x) for x in actual_results]))
+      logging.info("Expected result ---------- \n" + str([str(x) for x in expected_results]))
       raise failure
 
 class AtLeastOnceResultsChecker(ExactlyOnceResultsChecker):
@@ -159,9 +161,9 @@ class AtLeastOnceResultsChecker(ExactlyOnceResultsChecker):
       failure = status.TestFailure("Actual result did not match expected result")
       # lambda required below to remove the unicode 'u' from the output
       logging.info("Actual value frequencies ---------- \n" + ', '.join(
-          map(lambda (k, v): "%s(%s)" % (str(k), v), actual_counts.iteritems())))
+          ["%s(%s)" % (str(k_v[0]), k_v[1]) for k_v in iter(actual_counts.items())]))
       logging.info("Expected value frequencies ---------- \n" + ', '.join(
-          map(lambda (k, v): "%s(%s)" % (str(k), v), expected_counts.iteritems())))
+          ["%s(%s)" % (str(k_v1[0]), k_v1[1]) for k_v1 in iter(expected_counts.items())]))
       raise failure
 
 def _frequency_dict(values):
@@ -219,13 +221,13 @@ def update_state_server(http_server_host_port, topology_name, key, value):
   response = connection.getresponse()
   return response.status == 200
 
-def fetch_from_server(server_host_port, topology_name, data_name, path):
+def fetch_from_server(server_host_port, topology_name, data_name, path) -> str:
   ''' Make a http get request to fetch actual results from http server '''
   for i in range(0, RETRY_ATTEMPTS):
     logging.info("Fetching %s for topology %s, retry count: %d", data_name, topology_name, i)
     response = get_http_response(server_host_port, path)
     if response.status == 200:
-      return response.read()
+      return response.read().decode()
     elif i != RETRY_ATTEMPTS:
       logging.info("Fetching %s failed with status: %s; reason: %s; body: %s",
                    data_name, response.status, response.reason, response.read())
@@ -258,8 +260,10 @@ def submit_topology(heron_cli_path, cli_config_path, cluster, role,
   # Form the command to submit a topology.
   # Note the single quote around the arg for heron.package.core.uri.
   # This is needed to prevent shell expansion.
-  cmd = "%s submit --verbose --config-path=%s %s %s %s %s" %\
-        (heron_cli_path, cli_config_path, cluster_token(cluster, role, env),
+  cmd = "%s submit %s --config-path=%s %s %s %s %s" %\
+        (heron_cli_path, 
+        "--verbose" if VERBOSE else "",
+        cli_config_path, cluster_token(cluster, role, env),
          jar_path, classpath, args)
 
   if pkg_uri is not None:
@@ -297,11 +301,11 @@ def filter_test_topologies(test_topologies, test_pattern):
   initial_topologies = test_topologies
   if test_pattern:
     pattern = re.compile(test_pattern)
-    test_topologies = filter(lambda x: pattern.match(x['topologyName']), test_topologies)
+    test_topologies = [x for x in test_topologies if pattern.match(x['topologyName'])]
 
   if len(test_topologies) == 0:
     logging.error("Test filter '%s' did not match any configured test names:\n%s",
-                  test_pattern, '\n'.join(map(lambda x: x['topologyName'], initial_topologies)))
+                  test_pattern, '\n'.join([x['topologyName'] for x in initial_topologies]))
     sys.exit(1)
   return test_topologies
 
@@ -421,7 +425,7 @@ def main():
   log.configure(level=logging.DEBUG)
   conf_file = DEFAULT_TEST_CONF_FILE
   # Read the configuration file from package
-  conf_string = pkgutil.get_data(__name__, conf_file)
+  conf_string = pkgutil.get_data(__name__, conf_file).decode()
   decoder = json.JSONDecoder(strict=False)
   # Convert the conf file to a json format
   conf = decoder.decode(conf_string)

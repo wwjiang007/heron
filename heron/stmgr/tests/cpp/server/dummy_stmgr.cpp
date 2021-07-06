@@ -28,9 +28,9 @@
 
 using std::shared_ptr;
 
-///////////////////////////// DummyTMasterClient ///////////////////////////////////////////
-DummyTMasterClient::DummyTMasterClient(
-    EventLoopImpl* eventLoop, const NetworkOptions& _options, const sp_string& stmgr_id,
+///////////////////////////// DummyTManagerClient ///////////////////////////////////////////
+DummyTManagerClient::DummyTManagerClient(
+    shared_ptr<EventLoopImpl> eventLoop, const NetworkOptions& _options, const sp_string& stmgr_id,
     const sp_string& stmgr_host, sp_int32 stmgr_port, sp_int32 shell_port,
     const std::vector<shared_ptr<heron::proto::system::Instance>>& _instances)
     : Client(eventLoop, _options),
@@ -39,20 +39,21 @@ DummyTMasterClient::DummyTMasterClient(
       stmgr_port_(stmgr_port),
       shell_port_(shell_port),
       instances_(_instances) {
-  InstallResponseHandler(make_unique<heron::proto::tmaster::StMgrRegisterRequest>(),
-                         &DummyTMasterClient::HandleRegisterResponse);
+  InstallResponseHandler(make_unique<heron::proto::tmanager::StMgrRegisterRequest>(),
+                         &DummyTManagerClient::HandleRegisterResponse);
   // Setup the call back function to be invoked when retrying
   retry_cb_ = [this]() { this->Retry(); };
 }
 
-DummyTMasterClient::~DummyTMasterClient() {}
+DummyTManagerClient::~DummyTManagerClient() {}
 
-void DummyTMasterClient::HandleRegisterResponse(
-    void*, heron::proto::tmaster::StMgrRegisterResponse* response, NetworkErrorCode) {
-  delete response;
+void DummyTManagerClient::HandleRegisterResponse(
+    void*,
+    pool_unique_ptr<heron::proto::tmanager::StMgrRegisterResponse> response,
+    NetworkErrorCode) {
 }
 
-void DummyTMasterClient::HandleConnect(NetworkErrorCode _status) {
+void DummyTManagerClient::HandleConnect(NetworkErrorCode _status) {
   if (_status == OK) {
     CreateAndSendRegisterRequest();
   } else {
@@ -61,10 +62,10 @@ void DummyTMasterClient::HandleConnect(NetworkErrorCode _status) {
   }
 }
 
-void DummyTMasterClient::HandleClose(NetworkErrorCode) {}
+void DummyTManagerClient::HandleClose(NetworkErrorCode) {}
 
-void DummyTMasterClient::CreateAndSendRegisterRequest() {
-  auto request = make_unique<heron::proto::tmaster::StMgrRegisterRequest>();
+void DummyTManagerClient::CreateAndSendRegisterRequest() {
+  auto request = make_unique<heron::proto::tmanager::StMgrRegisterRequest>();
   heron::proto::system::StMgr* stmgr = request->mutable_stmgr();
   sp_string cwd;
   stmgr->set_id(stmgr_id_);
@@ -77,22 +78,23 @@ void DummyTMasterClient::CreateAndSendRegisterRequest() {
   for (auto iter = instances_.begin(); iter != instances_.end(); ++iter) {
     request->add_instances()->CopyFrom(**iter);
   }
-  SendRequest(std::move(request), NULL);
+  SendRequest(std::move(request), nullptr);
 }
 
 ///////////////////////////// DummyStMgr /////////////////////////////////////////////////
-DummyStMgr::DummyStMgr(EventLoopImpl* ss, const NetworkOptions& options, const sp_string& stmgr_id,
+DummyStMgr::DummyStMgr(shared_ptr<EventLoopImpl> ss, const NetworkOptions& options,
+                       const sp_string& stmgr_id,
                        const sp_string& stmgr_host, sp_int32 stmgr_port,
-                       const sp_string& tmaster_host, sp_int32 tmaster_port, sp_int32 shell_port,
+                       const sp_string& tmanager_host, sp_int32 tmanager_port, sp_int32 shell_port,
                        const std::vector<shared_ptr<heron::proto::system::Instance>>& _instances)
     : Server(ss, options), num_start_bp_(0), num_stop_bp_(0) {
-  NetworkOptions tmaster_options;
-  tmaster_options.set_host(tmaster_host);
-  tmaster_options.set_port(tmaster_port);
-  tmaster_options.set_max_packet_size(1_MB);
-  tmaster_options.set_socket_family(PF_INET);
+  NetworkOptions tmanager_options;
+  tmanager_options.set_host(tmanager_host);
+  tmanager_options.set_port(tmanager_port);
+  tmanager_options.set_max_packet_size(1_MB);
+  tmanager_options.set_socket_family(PF_INET);
 
-  tmaster_client_ = new DummyTMasterClient(ss, tmaster_options, stmgr_id, stmgr_host, stmgr_port,
+  tmanager_client_ = new DummyTManagerClient(ss, tmanager_options, stmgr_id, stmgr_host, stmgr_port,
                                            shell_port, _instances);
   InstallRequestHandler(&DummyStMgr::HandleStMgrHelloRequest);
   InstallMessageHandler(&DummyStMgr::HandleStartBackPressureMessage);
@@ -100,14 +102,14 @@ DummyStMgr::DummyStMgr(EventLoopImpl* ss, const NetworkOptions& options, const s
 }
 
 DummyStMgr::~DummyStMgr() {
-  tmaster_client_->Stop();
-  delete tmaster_client_;
+  tmanager_client_->Stop();
+  delete tmanager_client_;
 }
 
 sp_int32 DummyStMgr::Start() {
   if (SP_OK == Server::Start()) {
-    tmaster_client_->setStmgrPort(get_serveroptions().get_port());
-    tmaster_client_->Start();
+    tmanager_client_->setStmgrPort(get_serveroptions().get_port());
+    tmanager_client_->Start();
     return SP_OK;
   } else {
     return SP_NOTOK;
@@ -119,20 +121,19 @@ void DummyStMgr::HandleNewConnection(Connection* conn) {}
 void DummyStMgr::HandleConnectionClose(Connection*, NetworkErrorCode) {}
 
 void DummyStMgr::HandleStMgrHelloRequest(REQID _id, Connection* _conn,
-                                         heron::proto::stmgr::StrMgrHelloRequest* _request) {
+                               pool_unique_ptr<heron::proto::stmgr::StrMgrHelloRequest> _request) {
   other_stmgrs_ids_.push_back(_request->stmgr());
   heron::proto::stmgr::StrMgrHelloResponse response;
   response.mutable_status()->set_status(heron::proto::system::OK);
   SendResponse(_id, _conn, response);
-  delete _request;
 }
 
 void DummyStMgr::HandleStartBackPressureMessage(Connection*,
-                                                heron::proto::stmgr::StartBackPressureMessage*) {
+                                  pool_unique_ptr<heron::proto::stmgr::StartBackPressureMessage>) {
   ++num_start_bp_;
 }
 
 void DummyStMgr::HandleStopBackPressureMessage(Connection*,
-                                               heron::proto::stmgr::StopBackPressureMessage*) {
+                                   pool_unique_ptr<heron::proto::stmgr::StopBackPressureMessage>) {
   ++num_stop_bp_;
 }
